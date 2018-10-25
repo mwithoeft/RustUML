@@ -1,0 +1,5 @@
+Syntax
+Datenmodell
+JPEG Erzeugung
+Parser anfangen
+Spezifikationsdokument
