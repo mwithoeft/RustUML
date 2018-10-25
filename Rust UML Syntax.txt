@@ -1,0 +1,35 @@
+Keywörter für Rust UML
+
+type "Diagrammtype"    //type "class diagram" //type "object diagram"
+
+
+
+//Klassendiagramm:
+
+classname "Name der Klasse"		//classname "Ball"
+property "Klasseneigenschaft"   //property "abstract"
+keywords "schlüsselwörter"		 //keywords "interface, gui" //keywords "gui"
+attribute "Modifikator, Attributentype1(optional),Attributentype2(optional), Name des Attributes, Datentyp, Wert(optional)" 
+	// attribute "+,size,int,5" //attribute "+,size,int" //Attributentype Keywörter: "static", "final"
+constructor "Modifikator, parameter1:Datentyp, parameter2:Datentyp,..." //constructor "+, ywert:int, xwert:int"
+method "Modifikator, Methodentype1(optional), Methodentype2(optional), Name, Datentyp der Rückgabe, parameter1:Datentyp, parameter2:Datentyp,..." 
+	// method "-, länge, int, xwert:int, ywert:int"  //Methodentype Keywörter: "static", "abstract", "final"	
+classname ...
+	
+//Beziehungen:
+relationship "Beziehungstype, von Klasse eins, nach Klasse zwei"  //Beziehungstype Keywörter: "extends", "implements", "assosiation", "aggregation", "composition"  
+	//relationship "extends, Vater, Kind"
+	
+
+	
+//objektdiagramm
+
+objectname "Name des Objekts, Name der klasse"		//objectname "Blauer Ball,Ball"
+objstereotype "Stereotyp des Objekts" 				//objstereotype "TestKlasse"
+attribute "Modifikator(optional),Geerbt?, Attributentype1(optional),Attributentype2(optional), Name des Attributes, Datentyp, Wert" 
+	// attribute "+,y,size,int,5" //attribute "+,n,size,int" //Attributentype Keywörter: "static", "final"
+objectname ...
+
+//Beziehungen:
+relationship "Beziehungstype, von Klasse eins, nach Klasse zwei"  //Beziehungstype Keywörter:"assosiation", "aggregation", "composition"  
+	//relationship "composition, Haus, Wand"
