@@ -1,4 +1,4 @@
-Keywörter für Rust UML
+﻿Keywörter für Rust UML
 
 type "Diagrammtype"    //type "class diagram" //type "object diagram"
 
@@ -19,8 +19,42 @@ classname ...
 //Beziehungen:
 relationship "Beziehungstype, von Klasse eins, nach Klasse zwei"  //Beziehungstype Keywörter: "extends", "implements", "assosiation", "aggregation", "composition"  
 	//relationship "extends, Vater, Kind"
-	
+!Multiplizitäten
 
+
+
+
+//Anwendungsfalldiagramm
+elementType "Element Type, Element name ,behälter(Optional)"	//keywords "subject", "actor", "useCase", "extPoint"
+relationship "Beziehungstype, erstes Element, zweites Element, notiz inhalt(optional)"	//keywords "association","generalization","include","extend"
+
+
+
+//Aktivitätsdiagramm
+package "name "
+elementType "element Type , name" 		//keywords "state", "receiveSignal", "sendSignal", "timeSignal", "dataObjekt"
+relationship "erstes element, zweites element"	//Keywords "startpoint", "endpoint"	
+
+
+//Sequenzdiagramm
+
+objectToken "objekt name, klassen name"
+relationship "beziehungstype , erstes token , zweites token, name"	//keywords: "synchronic", "asynchronous", "return", "undetermined"
+delete "löscher, gelöschter"
+
+
+
+//Zustandsdiagramm
+state "name"
+event "state1, state2, name, condition(Optional)"		//Keywords: "startpoint", "endpoint"
+choice "condition, if state,else state"
+
+
+
+
+//Komponentendiagramm
+//Paketdiagramm
+//Verteilungsdiagramm
 	
 //objektdiagramm
 
@@ -33,3 +67,7 @@ objectname ...
 //Beziehungen:
 relationship "Beziehungstype, von Klasse eins, nach Klasse zwei"  //Beziehungstype Keywörter:"assosiation", "aggregation", "composition"  
 	//relationship "composition, Haus, Wand"
+
+
+
+conrod Bibliotek Grafische darstellung
