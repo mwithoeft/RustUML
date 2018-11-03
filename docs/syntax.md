@@ -1,13 +1,16 @@
 # Syntax der UML Diagramme
 
-> Im Folgenden soll wird die verwendete Syntax zur Darstellung und zum Parsen der UML-Diagramme erläutert.
+## Allgemeines zur Syntax
+
+> Im Folgenden soll die verwendete Syntax zur Darstellung und zum Parsen der UML-Diagramme erläutert werden.
 > Diese Syntax muss verwendet werden, damit die Erstellung bzw. Generierung eines UML-Diagramms aus der Eingabe heraus erfolgreich verläuft.
-> Zuerst soll Allgemein Dargestellt werden, wie der Diagrammtyp in der Syntax festzulegen ist. Danach wird auf die einzelnen UML-Diagramme im Detail eingegangen, da sich die Syntax der verschiedenen Diagrammtypen unterscheidet.
+> Zuerst soll im Allgemeinen dargestellt werden, wie der Diagrammtyp in der Syntax festzulegen ist. Danach wird auf die einzelnen UML-Diagramme im Detail eingegangen, da sich die Syntax der verschiedenen Diagrammtypen unterscheidet.
+> Alle Keywörter beginnen immer mit einem **kleinen** Buchstaben! Die **Rechtschreibung** ist unbedingt zu beachten, damit die Eingabe korrekt verarbeitet werden kann! Nach der Eingabe einer Zeile folgt ein **Zeilenumbruch** als Trennung der einzelnen Eingaben.  
 
 ## Festlegung des Diagrammtyps
 
-> Als erstes erwartet der Parser die Festlegung des Diagrammtyps. Folgende Diagrammtypen stehen zur Verfügung:  
-> Als erstes wird der deutsche Diagrammtyp aufgelistet, dahinter steht das Keywort, das für die Syntax entscheidend ist! Die alle Keywörter beginnen immer mit einem **kleinen** Buchstaben! Die **Rechtschreibung** ist unbedingt zu beachten, damit die Eingabe korrekt verarbeitet werden kann!  
+> Als Erstes erwartet der Parser die Festlegung des Diagrammtyps. 
+> Hier wird zuerst die Bezeichnung des Diagramms auf Deutsch aufgelistet, dahinter steht das Keywort, das für die Syntax und die Erkennung der richtigen Typs entscheidend ist!  Folgende Diagrammtypen stehen zur Verfügung:  
 
 - Klassendiagramm: `"class diagram"`
 - Anwendungsfalldiagramm: `"application diagram"`
@@ -19,12 +22,12 @@
 - Verteilungsdiagramm: `"distribution diagram"`
 - Objektdiagramm: `"object diagram"`  
 
-> Zu wissen, wie die Diagrammtypen benannt werden reicht jedoch nicht. **Zuerst** schaut sich der Parser danach um, ob der Typ des Diagramm festlegt wird. Dies geschieht mit Hilfe des Schlüsselworts `type`.
+> Zu wissen, wie die Diagrammtypen benannt werden reicht jedoch nicht. **Zuerst** schaut sich der Parser nämlich danach um, ob der Typ des Diagramms festlegt wird. Zusätzlich benötigen wir das Schlüsselwort `type`.
 > Die Erste Zeile einer Eingabe könnte also wie im folgenden Beispiel aussehen:  
 
 `type "class diagram"`  
 
-> Das reicht um den Diagrammtypen festzulegen. Dabei dürfen die **Anführungszeichen** nicht vergessen werden! Nach der Eingabe einer Zeile folgt ein **Zeilenumbruch** als Trennung der einzelnen Eingaben.
+> Das reicht um den Diagrammtypen festzulegen und dem Parser die Art des verwendeten UML-Diagramms mitzuteilen. Dabei dürfen die **Anführungszeichen** nicht vergessen werden!
 
 ## Klassendiagramm
 
@@ -40,8 +43,9 @@
 
 **Schlüsselwörter (im UML-Diagramm):**  
 `keywords "Schlüsselwörter"`  
-*Beispiel:* `keywords "interface, gui"`  
-*Weitere Schlüsselwörter:* `"interface"`, `"gui"`, `"main"`, ...
+*Beispiele:*  
+`keywords "interface, gui"`  
+`keywords "main"`  
 
 **Attribute:**  
 `attribute "Modifikator, Attributentyp1(optional), Attributentyp2(optional), Name des Attributes, Datentyp, Wert(optional)"`  
