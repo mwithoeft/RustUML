@@ -2,3 +2,4 @@
 
 * [Home](/)
 * [Syntax](syntax.md)
+* [Diagrammplanung](diagrammplanung.md)

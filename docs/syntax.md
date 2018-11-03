@@ -26,7 +26,7 @@
 
 > Das reicht um den Diagrammtypen festzulegen. Dabei dürfen die **Anführungszeichen** nicht vergessen werden! Nach der Eingabe einer Zeile folgt ein **Zeilenumbruch** als Trennung der einzelnen Eingaben.
 
-## Klassendiagramm:
+## Klassendiagramm
 
 > Im Folgenden werden die einzelnen Möglichkeiten zur Eingabe eines Klassendiagramms erläutert. Dabei steht zuerst immer eine abstrakte Darstellung der Eingabe, gefolgt von einem Beispiel. Danach werden alle weiteren möglichen Schlüsselwörter aufgelistet.
 
@@ -73,7 +73,7 @@
 
 > Soll *keine Multiplizität* angegeben werden schreibt man an der Stelle einfach ein `-`.
 
-## Anwedungsfalldiagramm:
+## Anwedungsfalldiagramm
 
 > Im Folgenden werden die einzelnen Möglichkeiten zur Eingabe eines Anwendungsfalldiagramms erläutert. Dabei steht zuerst immer eine abstrakte Darstellung der Eingabe, gefolgt von einem Beispiel. Danach werden alle weiteren möglichen Schlüsselwörter aufgelistet.
 
@@ -87,7 +87,7 @@
 *Beispiel*: `relationship "association, sender, empfänger"`  
 *Beziehungstypen:* `association`, `generalization`, `include`, `extend`
 
-## Aktivitätsdiagramm:
+## Aktivitätsdiagramm
 
 > Im Folgenden werden die einzelnen Möglichkeiten zur Eingabe eines Aktivitätsdiagramms erläutert. Dabei steht zuerst immer eine abstrakte Darstellung der Eingabe, gefolgt von einem Beispiel. Danach werden alle weiteren möglichen Schlüsselwörter aufgelistet.
 
@@ -109,7 +109,7 @@
 `relationship "startpoint, endpoint"`  
 *Schlüsselwörter:* `startpoint`, `endpoint`	
 
-## Sequenzdiagramm:  
+## Sequenzdiagramm
 
 > Im Folgenden werden die einzelnen Möglichkeiten zur Eingabe eines Sequenzdiagramms erläutert. Dabei steht zuerst immer eine abstrakte Darstellung der Eingabe, gefolgt von einem Beispiel. Danach werden alle weiteren möglichen Schlüsselwörter aufgelistet.
 
@@ -126,7 +126,7 @@
 `delete "Löscher, Gelöschter"`  
 *Beispiel:* `delete "Kunde, PIN"`  
 
-## Zustandsdiagramm:  
+## Zustandsdiagramm
 
 > Im Folgenden werden die einzelnen Möglichkeiten zur Eingabe eines Zustandsdiagramms erläutert. Dabei steht zuerst immer eine abstrakte Darstellung der Eingabe, gefolgt von einem Beispiel. Danach werden alle weiteren möglichen Schlüsselwörter aufgelistet.
 
@@ -162,7 +162,7 @@
 *Beispiel:* `objectstereotype "TestKlasse"`  
 
 **Attribute:**  
-`attribute "Modifikator(optional), geerbt?, Attributentyp1(optional),Attributentyp2(optional), Name des Attributs, Datentyp, Wert"`  
+`attribute "Modifikator(optional), Vererbung?(y/n), Attributentyp1(optional),Attributentyp2(optional), Name des Attributs, Datentyp, Wert"`  
 *Beispiele:*  
 `attribute "+, y, size, int, 5"`  
 `attribute "#, n, static, final, size, int, 10"`  
