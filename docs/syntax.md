@@ -79,12 +79,12 @@
 
 **Elementtypen:**  
 `elementtype "Elementtyp, Elementname , Behälter(Optional)"`  
-*Beispiel*: `elementtype "actor, sender"`  
+*Beispiel:* `elementtype "actor, sender"`  
 *Schlüsselwörter der Typen:* `subject`, `actor`, `usecase`, `extpoint`
 
 **Beziehungen:**  
 `relationship "Beziehungstyp, erstes Element, zweites Element, Inhalt der Notiz(optional)"`  
-*Beispiel*: `relationship "association, sender, empfänger"`  
+*Beispiel:* `relationship "association, sender, empfänger"`  
 *Beziehungstypen:* `association`, `generalization`, `include`, `extend`
 
 ## Aktivitätsdiagramm
@@ -115,7 +115,7 @@
 
 **Tokens**:  
 `objectToken "Objektname, Klassenname"`  
-*Beispiel*: `objectToken "Mann, Mensch"`  
+*Beispiel:* `objectToken "Mann, Mensch"`  
 
 **Beziehungen:**  
 `relationship "Beziehungstyp, erstes Token , zweites Token, name"`  
