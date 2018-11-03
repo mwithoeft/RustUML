@@ -73,7 +73,7 @@
 
 > Soll *keine Multiplizität* angegeben werden schreibt man an der Stelle einfach ein `-`.
 
-## Anwedungsfalldiagramm
+## Anwendungsfalldiagramm
 
 > Im Folgenden werden die einzelnen Möglichkeiten zur Eingabe eines Anwendungsfalldiagramms erläutert. Dabei steht zuerst immer eine abstrakte Darstellung der Eingabe, gefolgt von einem Beispiel. Danach werden alle weiteren möglichen Schlüsselwörter aufgelistet.
 
