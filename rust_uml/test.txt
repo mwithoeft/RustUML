@@ -1,0 +1,5 @@
+type "class diagram"
+
+classname "Testklasse"
+property "abstract"
+keywords "gui"
