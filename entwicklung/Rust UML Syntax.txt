@@ -1,4 +1,4 @@
-﻿Keywörter für Rust UML
+﻿Keywörter für Rust UML (Upgedatete Version zu finden in Docsify)
 
 type "Diagrammtype"    //type "class diagram" //type "object diagram"
 
@@ -13,26 +13,26 @@ attribute "Modifikator, Attributentype1(optional),Attributentype2(optional), Nam
 	// attribute "+,size,int,5" //attribute "+,size,int" //Attributentype Keywörter: "static", "final"
 constructor "Modifikator, parameter1:Datentyp, parameter2:Datentyp,..." //constructor "+, ywert:int, xwert:int"
 method "Modifikator, Methodentype1(optional), Methodentype2(optional), Name, Datentyp der Rückgabe, parameter1:Datentyp, parameter2:Datentyp,..." 
-	// method "-, länge, int, xwert:int, ywert:int"  //Methodentype Keywörter: "static", "abstract", "final"	
+	// method "-, länge, int, xwert:int, ywert:int"  //Methodentype Keywörter: "static", "final"	
 classname ...
 	
 //Beziehungen:
-relationship "Beziehungstype, von Klasse eins, nach Klasse zwei"  //Beziehungstype Keywörter: "extends", "implements", "assosiation", "aggregation", "composition"  
+relationship "Beziehungstyp, von Klasse 1, nach Klasse 2, Multiplizität Klasse 1, Multiplizität Klasse 2"  //Beziehungstype Keywörter: "extends", "implements", "association", "aggregation", "composition"  
 	//relationship "extends, Vater, Kind"
-!Multiplizitäten
-
+!Multiplizitäten -> Hinzugefügt in Docsify
+**
 
 
 
 //Anwendungsfalldiagramm
-elementType "Element Type, Element name ,behälter(Optional)"	//keywords "subject", "actor", "useCase", "extPoint"
+elementtype "Element Type, Element name ,behälter(Optional)"	//keywords "subject", "actor", "useCase", "extPoint"
 relationship "Beziehungstype, erstes Element, zweites Element, notiz inhalt(optional)"	//keywords "association","generalization","include","extend"
 
 
 
 //Aktivitätsdiagramm
 package "name "
-elementType "element Type , name" 		//keywords "state", "receiveSignal", "sendSignal", "timeSignal", "dataObjekt"
+elementtype "element Type , name" 		//keywords "state", "receivesignal", "sendsignal", "timesignal", "dataobject"
 relationship "erstes element, zweites element"	//Keywords "startpoint", "endpoint"	
 
 
@@ -65,7 +65,7 @@ attribute "Modifikator(optional),Geerbt?, Attributentype1(optional),Attributenty
 objectname ...
 
 //Beziehungen:
-relationship "Beziehungstype, von Klasse eins, nach Klasse zwei"  //Beziehungstype Keywörter:"assosiation", "aggregation", "composition"  
+relationship "Beziehungstype, von Objekt eins, nach Objekt zwei"  //Beziehungstype Keywörter:"association", "aggregation", "composition"  
 	//relationship "composition, Haus, Wand"
 
 

@@ -1,4 +1,4 @@
 <!-- docs/_sidebar.md -->
 
 * [Home](/)
-* [Second](Second.md)
+* [Syntax](syntax.md)
