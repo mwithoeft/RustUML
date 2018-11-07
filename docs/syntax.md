@@ -13,7 +13,7 @@
 > Hier wird zuerst die Bezeichnung des Diagramms auf Deutsch aufgelistet, dahinter steht das Keywort, das für die Syntax und die Erkennung der richtigen Typs entscheidend ist!  Folgende Diagrammtypen stehen zur Verfügung:  
 
 - Klassendiagramm: `"class diagram"`
-- Anwendungsfalldiagramm: `"application diagram"`
+- Anwendungsfalldiagramm: `"usecase diagram"`
 - Akitivitätsdiagramm: `"action diagram"`
 - Sequenzdiagramm: `"sequence diagram"`
 - Zustandsdiagramm: `"state diagram"`
