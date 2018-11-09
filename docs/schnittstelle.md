@@ -44,7 +44,7 @@ struct Methode {
     _name: String,
     _returntyp: String,
     _wert: String,
-    _methoden: Vec<Methodenparameter>
+    _parameter: Vec<Methodenparameter>
 }
 ```
 
