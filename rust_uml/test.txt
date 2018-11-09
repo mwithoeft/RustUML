@@ -1,5 +1,9 @@
-type "class diagram"
-
 classname "Testklasse"
 property "abstract"
-keywords "gui"
+keywords "gui, interface"
+attribute "-, static, final, length, float"
+attribute "+, size, int, 5"
+method "#, final, static, height, double, xwert:int, ywert:int"
+
+relationship "extends, Vater, Kind, -, -"
+relationship "association, Gebäude, Raum, 1, 0..*"
