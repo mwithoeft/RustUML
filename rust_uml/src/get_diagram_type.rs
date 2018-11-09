@@ -29,9 +29,9 @@ pub fn read_file(filepath: String) -> (Vec<&'static str>, DiagramType) {
 
 
     //Leere Zeilen aus dem String entfernen, Trennungszeichen
+    inhalt = inhalt.replace(" ", "");
     inhalt = inhalt.replace("\"\r\n", "\"|");
     inhalt = inhalt.replace("\r\n", "");
-    inhalt = inhalt.replace(" ", "");
 
 
     let split = inhalt.split("|");
