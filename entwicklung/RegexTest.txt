@@ -18,3 +18,5 @@ attribute"+,size,int,5"
 method"#,final,static,height,double,xwert:int,ywert:int"
 relationship"extends,Vater,Kind,-,-"
 relationship"association,Gebäude,Raum,1,0..*"
+
+Bei mehreren Angaben muss nun am Komma getrennt werden und entsprechend weiter geparsed werden
