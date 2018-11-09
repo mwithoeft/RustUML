@@ -1,0 +1,20 @@
+//
+Es wird hier immer das Keyword geprüft und dann gibt es eine Gruppe mit dem Inhalt
+
+Für classname: ^classname"([^"]+?)"
+Für property: ^property"([^"]+?)"
+Für Keywords: ^keywords"([^"]+?)"
+Für Attribute: ^attribute"([^"]+?)"
+Für Methoden: ^method"([^"]+?)"
+Für Beziehungen: ^relationship"([^"]+?)"
+
+
+
+classname"Test"
+property"abstract,else"
+keywords"gui,interface"
+attribute"-,static,final,length,float"
+attribute"+,size,int,5"
+method"#,final,static,height,double,xwert:int,ywert:int"
+relationship"extends,Vater,Kind,-,-"
+relationship"association,Gebäude,Raum,1,0..*"
