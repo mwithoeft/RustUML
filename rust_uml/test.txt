@@ -1,3 +1,5 @@
+type "classdiagram"    
+
 classname "Testklasse"
 property "abstract"
 keywords "gui, interface"

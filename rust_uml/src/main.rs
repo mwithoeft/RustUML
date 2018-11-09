@@ -6,9 +6,7 @@ mod parsing;
 
 fn main() {
     //Deklaration der Parser-Stukturen
-    /**
-     * Für Klassendiagramme
-    */
+    //Für Klassendiagramme
     let mut klassen: Vec<parsing::parse_class::Klasse> = Vec::new();
     let mut beziehungen: Vec<parsing::parse_class::Beziehung> = Vec::new();
 
@@ -18,13 +16,19 @@ fn main() {
 
     //Auslese der Datei, wenn Diagrammtyp angegeben
     let mut vektor : Vec<&'static str>;
-    let mut tupel = get_diagram_type::read_file(filepath);
+    let tupel = get_diagram_type::read_file(filepath);
 
     //Aufrufen des Diagramm entsprechenden Parsers
     vektor = tupel.0;
     let typ : get_diagram_type::DiagramType = tupel.1;
     match typ {
-	    get_diagram_type::DiagramType::CLASS => { println!("CLASS!"); }
+	    get_diagram_type::DiagramType::CLASS => { 
+            parsing::parse_class::parse(&mut vektor, &mut klassen, &mut beziehungen);
+
+            for i in klassen {
+                println!("{}", i._name);
+            }
+        }
 	    get_diagram_type::DiagramType::USECASE => { println!("USECASE!"); }
         get_diagram_type::DiagramType::ACTION => { println!("ACTION!"); }
         get_diagram_type::DiagramType::SEQUENCE => { println!("SEQUENCE!"); }
