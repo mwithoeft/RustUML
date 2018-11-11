@@ -78,7 +78,7 @@ enum Beziehungstyp {
     EXTENDS,
     IMPLEMENTS,
     ASSOCIATION,
-	DEPENDENCY,
+    DEPENDENCY,
     AGGREGATION,
     COMPOSITION
 }
