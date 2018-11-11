@@ -28,22 +28,22 @@ pub struct Methodenparameter {
     pub _name: String,
     pub _datentyp: String
 }
-
-
-
 pub struct Beziehung {
-    _beziehungstyp: Beziehungstyp,
-    _klasse1: String,
-    _klasse2: String,
-    _klasse1mult: String,
-    _klasse2_mult: String
+    pub _beziehungstyp: Beziehungstyp,
+    pub _vonKlasse: String,
+    pub _vonKlassePfeil: bool,
+    pub _vonKlasseMult: String,
+    pub _zuKlasse: String,
+    pub _zuKlassePfeil: bool,
+    pub _zuKlasseMult: String
 }
-enum Beziehungstyp {
+pub enum Beziehungstyp {
     EXTENDS,
     IMPLEMENTS,
     ASSOCIATION,
     AGGREGATION,
-    COMPOSITION
+    COMPOSITION,
+    DEPENDENCY
 }
 
 fn build_klasse(_name: String, _property: String, _keywords:String) -> Klasse {
