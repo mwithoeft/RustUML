@@ -22,12 +22,7 @@ pub struct Methode {
     pub _static: bool,
     pub _name: String,
     pub _returntyp: String,
-    pub _wert: String,
-    pub _parameter: Vec<Methodenparameter>
-}
-pub struct Methodenparameter {
-    pub _name: String,
-    pub _datentyp: String
+    pub _parameter: Vec<String>
 }
 pub struct Beziehung {
     pub _beziehungstyp: Beziehungstyp,
@@ -66,21 +61,14 @@ fn build_attribut(_modifikator: char, _final: bool, _static: bool, _name: String
         _wert
     }
 }
-fn build_methode(_modifikator: char, _final: bool, _static: bool, _name: String, _returntyp: String, _wert: String) -> Methode {
+fn build_methode(_modifikator: char, _final: bool, _static: bool, _name: String, _returntyp: String) -> Methode {
     Methode {
         _modifikator,
         _final,
         _static,
         _name,
         _returntyp,
-        _wert,
         _parameter: Vec::new()
-    }
-}
-fn build_methodenparamter(_name: String, _datentyp: String) -> Methodenparameter {
-    Methodenparameter {
-        _name,
-        _datentyp
     }
 }
 
@@ -99,7 +87,9 @@ pub fn parse(string_vec: &mut Vec<&'static str>, klassen: &mut Vec<Klasse>, bezi
 
     for s in string_vec {
         if parse_classname(s) != "" {
-            //Hier muss noch getestet werden ob bisher bestehende Klasse regulär ist und gepusht werden kann
+            if class._name != "" {
+                klassen.push(class);
+            }
             class = build_klasse(parse_classname(s), String::from(""), String::from(""));
         }
         if parse_property(s) != "" {
@@ -112,11 +102,12 @@ pub fn parse(string_vec: &mut Vec<&'static str>, klassen: &mut Vec<Klasse>, bezi
             Some(x) => {class._attribute.push(x)}
             None    => {}
         }
+        match parse_method(s) {
+            Some(x) => {class._methoden.push(x)}
+            None    => {}
+        }
 
     }
-
-
-    class._attribute.push(build_attribut('a', false, false, String::from("Name"), String::from("Property"), String::from("Name")));
 
     klassen.push(class);
 
@@ -131,7 +122,6 @@ fn parse_classname(s: &str) -> String {
     }
     name
 }
-
 fn parse_property(s: &str) -> String {
     let re = Regex::new("^property\"([^\"]+?)\"").unwrap();
     let mut property = String::from("");
@@ -171,7 +161,7 @@ fn parse_keywords(s: &str) -> String {
     keywords
 }
 fn parse_attribute(s: &str) -> Option<Attribut> {
-    let (_modifikator, _final, _static, _name, _datentyp, _wert) : (char, bool, bool, String, String, String);
+    let (mut _modifikator, mut _final, mut _static, mut _name, mut _datentyp, mut _wert) : (char, bool, bool, String, String, String) = (' ', false, false, String::from(""), String::from(""), String::from(""));
 
     let re = Regex::new("^attribute\"([^\"]+?)\"").unwrap();
     if re.is_match(s) {
@@ -179,10 +169,51 @@ fn parse_attribute(s: &str) -> Option<Attribut> {
         let u = caps.get(1).map_or(String::from(""), |m| String::from(m.as_str()));
         let v: Vec<&str> = u.split(',').collect();
         for (i, item) in v.iter().enumerate() {
-            println!("{}", i);
+            if i == 0 {
+                _modifikator = item.chars().next().unwrap();
+            } else if item.to_string() == "static" {
+                _static = true;
+            } else if item.to_string() == "final" {
+                _final = true;
+            } else if _name == "" {
+                _name = item.to_string();
+            } else if _datentyp == "" {
+                _datentyp = item.to_string();
+            } else if _wert == "" {
+                _wert = item.to_string();
+            } else {
+                println!("Zu viele Eingaben! Hier stimmt was nicht!");
+            }
         }
+        return Some(build_attribut(_modifikator, _final, _static, _name, _datentyp, _wert));
     }
-
+    None
+}
+fn parse_method(s: &str) -> Option<Methode> {
+    let re = Regex::new("^method\"([^\"]+?)\"").unwrap();
+    if re.is_match(s) {
+        let mut method : Methode = build_methode(' ', false, false, String::from(""), String::from(""));
+        let caps = re.captures(s).unwrap();
+        let u = caps.get(1).map_or(String::from(""), |m| String::from(m.as_str()));
+        let v: Vec<&str> = u.split(',').collect();
+        for (i, item) in v.iter().enumerate() {
+            if i == 0 {
+                method._modifikator = item.chars().next().unwrap();
+            } else if item.to_string() == "static" {
+                method._static = true;
+            } else if item.to_string() == "final" {
+                method._final = true;
+            } else if method._name == "" {
+                method._name = item.to_string();
+            } else if method._returntyp == "" {
+                method._returntyp = item.to_string();
+            } else {
+                method._parameter.push(item.to_string());
+            }
+        }
+        return Some(method);
+        
+    }
     None
 }
 

@@ -6,6 +6,18 @@ keywords "gui, interface"
 attribute "-, static, final, length, float"
 attribute "+, size, int, 5"
 method "#, final, static, height, double, xwert:int, ywert:int"
+method "-, static, länge, int, höhe:double, breite:double"
+
+relationship "extends, Vater, false, -, Kind, true, -"
+relationship "association, Gebäude, true, 1, Raum, false, 0..*"
+
+
+classname "2. Klasse"
+keywords "interface"
+attribute "-, static, final, length, float"
+attribute "+, size, int, 5"
+method "#, final, static, height, double, xwert:int, ywert:int"
+method "-, static, länge, int, höhe:double, breite:double"
 
 relationship "extends, Vater, false, -, Kind, true, -"
 relationship "association, Gebäude, true, 1, Raum, false, 0..*"

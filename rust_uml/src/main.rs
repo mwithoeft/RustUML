@@ -29,8 +29,31 @@ fn main() {
                 println!("{}", i._name);
                 println!("{}", i._property);
                 println!("{}", i._keywords);
+                println!("");
+                for s in i._attribute {
+                    println!("{}", s._modifikator);
+                    println!("{}", s._static);
+                    println!("{}", s._final);
+                    println!("{}", s._name);
+                    println!("{}", s._datentyp);
+                    println!("{}", s._wert);
+                }
+                println!("");
+                for s in i._methoden {
+                    println!("{}", s._modifikator);
+                    println!("{}", s._static);
+                    println!("{}", s._final);
+                    println!("{}", s._name);
+                    println!("{}", s._returntyp);
+                    for t in s._parameter {
+                        println!("{}", t);
+                    }
+                }
+
             }
         }
+
+        
 	    get_diagram_type::DiagramType::USECASE => { println!("USECASE!"); }
         get_diagram_type::DiagramType::ACTION => { println!("ACTION!"); }
         get_diagram_type::DiagramType::SEQUENCE => { println!("SEQUENCE!"); }
