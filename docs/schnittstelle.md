@@ -63,12 +63,12 @@ struct Methodenparameter {
 ```rust
 pub struct Beziehung {
     _beziehungstyp: Beziehungstyp,
-    _vonKlasse: String,
-	_vonKlassePfeil: bool,
-	_vonKlasseMult: String,
-    _zuKlasse: String,
-	_zuKlassePfeil: bool,
-    _zuKlasseMult: String
+    _von_klasse_name: String,
+    _von_klasse_pfeil: bool,
+    _von_klasse_mult: String,
+    _zu_klasse_name: String,
+    _zu_klasse_pfeil: bool,
+    _zu_klasse_mult: String
 }
 ```
 
