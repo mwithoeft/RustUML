@@ -44,15 +44,7 @@ struct Methode {
     _name: String,
     _returntyp: String,
     _wert: String,
-    _parameter: Vec<Methodenparameter>
-}
-```
-
-###### Methodenparameter als Substruktur einer Methode
-```rust
-struct Methodenparameter {
-    _name: String,
-    _datentyp: String
+    _parameter: Vec<String>
 }
 ```
 
