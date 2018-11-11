@@ -63,10 +63,12 @@ struct Methodenparameter {
 ```rust
 pub struct Beziehung {
     _beziehungstyp: Beziehungstyp,
-    _klasse1: String,
-    _klasse2: String,
-    _klasse1mult: String,
-    _klasse2_mult: String
+    _vonKlasse: String,
+	_vonKlassePfeil: bool,
+	_vonKlasseMult: String,
+    _zuKlasse: String,
+	_zuKlassePfeil: bool,
+    _zuKlasseMult: String
 }
 ```
 
@@ -76,6 +78,7 @@ enum Beziehungstyp {
     EXTENDS,
     IMPLEMENTS,
     ASSOCIATION,
+	DEPENDENCY,
     AGGREGATION,
     COMPOSITION
 }

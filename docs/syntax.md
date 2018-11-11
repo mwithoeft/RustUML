@@ -57,6 +57,8 @@
 *Datentypen:* `int`, `float`, `String`, ...
 
 **Methoden:**  
+> Soll der Konstruktor definiert werden, so ist der Methodenname der Name der Klasse! 
+
 `method "Modifikator, Methodentyp1(optional), Methodentyp2(optional), Name, Datentyp der Rückgabe, parameter1:Datentyp, parameter2:Datentyp, ..."`  
 *Beispiele:*   
 `method "-, length, int, xwert:int, ywert:int"`  
@@ -69,11 +71,11 @@
 > Nach dem Definieren der einzelnen Klassen können nun noch die Beziehung der einzelnen Klassen untereinander definiert werden:  
 
 **Beziehungen:**  
-`relationship "Beziehungstyp, von Klasse 1, nach Klasse 2, Multiplizität Klasse 1, Multiplizität Klasse 2"`  
+`relationship "Beziehungstyp, 'von Klasse' Name, Pfeil auf 'von Klasse' (true/false), Multiplizität 'von Klasse', 'zu Klasse' Name, Pfeil auf 'zu Klasse' (true/false)  Multiplizität 'zu Klasse'"`  
 *Beispiele:*  
-`relationship "extends, Vater, Kind, -, -"`  
-`relationship "association, Gebäude, Raum, 1, 0..*"`  
-*Beziehungstypen:* `extends`, `implements`, `association`, `aggregation`, `composition`
+`relationship "extends, Vater, false, -, Kind, true, -"`  
+`relationship "association, Gebäude, true, 1, Raum, false, 0..*"`  
+*Beziehungstypen:* `extends`, `implements`, `association`, `aggregation`, `composition`, `dependency`
 
 > Soll *keine Multiplizität* angegeben werden schreibt man an der Stelle einfach ein `-`.
 
