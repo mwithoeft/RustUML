@@ -43,7 +43,6 @@ struct Methode {
     _static: bool,
     _name: String,
     _returntyp: String,
-    _wert: String,
     _parameter: Vec<String>
 }
 ```
