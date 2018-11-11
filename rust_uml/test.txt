@@ -7,5 +7,5 @@ attribute "-, static, final, length, float"
 attribute "+, size, int, 5"
 method "#, final, static, height, double, xwert:int, ywert:int"
 
-relationship "extends, Vater, Kind, -, -"
-relationship "association, Gebäude, Raum, 1, 0..*"
+relationship "extends, Vater, false, -, Kind, true, -"
+relationship "association, Gebäude, true, 1, Raum, false, 0..*"

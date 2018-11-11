@@ -27,6 +27,8 @@ fn main() {
 
             for i in klassen {
                 println!("{}", i._name);
+                println!("{}", i._property);
+                println!("{}", i._keywords);
             }
         }
 	    get_diagram_type::DiagramType::USECASE => { println!("USECASE!"); }
