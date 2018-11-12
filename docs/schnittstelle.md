@@ -71,7 +71,8 @@ enum Beziehungstyp {
     ASSOCIATION,
     DEPENDENCY,
     AGGREGATION,
-    COMPOSITION
+    COMPOSITION,
+    UNDEFINED
 }
 ```
 
