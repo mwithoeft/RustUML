@@ -1,5 +1,4 @@
 use regex::Regex;
-use std::option;
 
 pub struct Klasse {
     pub _name: String,
@@ -39,7 +38,8 @@ pub enum Beziehungstyp {
     ASSOCIATION,
     AGGREGATION,
     COMPOSITION,
-    DEPENDENCY
+    DEPENDENCY,
+    UNDEFINED
 }
 
 fn build_klasse(_name: String, _property: String, _keywords:String) -> Klasse {
@@ -71,21 +71,26 @@ fn build_methode(_modifikator: char, _final: bool, _static: bool, _name: String,
         _parameter: Vec::new()
     }
 }
+fn build_beziehung(_beziehungstyp: Beziehungstyp, _von_klasse_name: String, _von_klasse_pfeil: bool, _von_klasse_mult: String, _zu_klasse_name: String, _zu_klasse_pfeil: bool, _zu_klasse_mult: String) -> Beziehung {
+    Beziehung {
+        _beziehungstyp,
+        _von_klasse_name,
+        _von_klasse_pfeil,
+        _von_klasse_mult,
+        _zu_klasse_name,
+        _zu_klasse_pfeil,
+        _zu_klasse_mult
+    }
+}
 
 
-
-
-
-
-
-
-
-pub fn parse(string_vec: &mut Vec<&'static str>, klassen: &mut Vec<Klasse>, beziehungen : &mut Vec<Beziehung>) {
+pub fn parse(string_vec: &mut Vec<&'static str>, mut klassen: &mut Vec<Klasse>, beziehungen : &mut Vec<Beziehung>) {
 
 
     let mut class : Klasse = build_klasse(String::from(""), String::from(""), String::from(""));
 
-    for s in string_vec {
+    //Parse die Klassen
+    for s in string_vec.iter() {
         if parse_classname(s) != "" {
             if class._name != "" {
                 klassen.push(class);
@@ -106,11 +111,17 @@ pub fn parse(string_vec: &mut Vec<&'static str>, klassen: &mut Vec<Klasse>, bezi
             Some(x) => {class._methoden.push(x)}
             None    => {}
         }
-
     }
-
-    klassen.push(class);
-
+    if class._name != "" {
+        klassen.push(class);
+    }
+    //Parse die Beziehungen
+    for s in string_vec.iter() {
+        match parse_relationship(s, &mut klassen) {
+            Some(x) => {beziehungen.push(x)}
+            None    => {}
+        }
+    }
 }
 
 fn parse_classname(s: &str) -> String {
@@ -215,5 +226,72 @@ fn parse_method(s: &str) -> Option<Methode> {
         
     }
     None
+}
+fn parse_relationship(s: &str, mut klassen: &mut Vec<Klasse>) -> Option<Beziehung> {
+    let re = Regex::new("^relationship\"([^\"]+?)\"").unwrap();
+    if re.is_match(s) {
+        let mut relationship : Beziehung = build_beziehung(Beziehungstyp::UNDEFINED, String::from(""), false, String::from(""), String::from(""), false, String::from(""));
+        let caps = re.captures(s).unwrap();
+        let u = caps.get(1).map_or(String::from(""), |m| String::from(m.as_str()));
+        let v: Vec<&str> = u.split(',').collect();
+        for (i, item) in v.iter().enumerate() {
+            if i == 0 {
+                relationship._beziehungstyp = get_beziehungstyp(&item);
+            } else if i == 1 {
+                relationship._von_klasse_name = check_class(&item, &mut klassen);
+            } else if i == 2 {
+                if item.to_string() == "true" {
+                    relationship._von_klasse_pfeil = true;
+                }
+            } else if i == 3 {
+                if item.to_string() != "-" {
+                    relationship._von_klasse_mult = item.to_string();
+                }
+            } else if i == 4 {
+                relationship._zu_klasse_name = check_class(&item, &mut klassen);
+            } else if i == 5 {
+                if item.to_string() == "true" {
+                    relationship._zu_klasse_pfeil = true;
+                }
+            } else if i == 6 {
+                if item.to_string() != "-" {
+                    relationship._zu_klasse_mult = item.to_string();
+                }
+            } else {
+                //Fehler in der Eingabe
+            }
+        }
+        match relationship._beziehungstyp {
+            Beziehungstyp::UNDEFINED => {return None;}//Fehler in der Eingabe
+            _ => {return Some(relationship);}
+        }
+    }
+    None
+}
+fn get_beziehungstyp(s: &str) -> Beziehungstyp {
+    if s == "extends" {
+        return Beziehungstyp::EXTENDS;
+    } else if s == "implements" {
+        return Beziehungstyp::IMPLEMENTS;
+    } else if s == "association" {
+        return Beziehungstyp::ASSOCIATION;
+    } else if s == "aggregation" {
+        return Beziehungstyp::AGGREGATION;
+    } else if s == "composition" {
+        return Beziehungstyp::COMPOSITION;
+    } else if s == "dependency" {
+        return Beziehungstyp::DEPENDENCY;
+    }
+    Beziehungstyp::UNDEFINED
+}
+fn check_class(s: &str, klassen: &mut Vec<Klasse>) -> String {
+    for class in klassen {
+        if s == class._name {
+            return String::from(s);
+        }
+    }
+    //Klasse gibt es in der bisherigen Deklaration nicht
+    println!("\nFEHLER, Beziehung mit ungültiger Klasse!\n");
+    String::from("")
 }
 

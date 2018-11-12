@@ -29,7 +29,6 @@ fn main() {
                 println!("{}", i._name);
                 println!("{}", i._property);
                 println!("{}", i._keywords);
-                println!("");
                 for s in i._attribute {
                     println!("{}", s._modifikator);
                     println!("{}", s._static);
@@ -38,7 +37,6 @@ fn main() {
                     println!("{}", s._datentyp);
                     println!("{}", s._wert);
                 }
-                println!("");
                 for s in i._methoden {
                     println!("{}", s._modifikator);
                     println!("{}", s._static);
@@ -49,7 +47,15 @@ fn main() {
                         println!("{}", t);
                     }
                 }
-
+                println!("");
+            }
+            for i in beziehungen {
+                println!("{}", i._von_klasse_name);
+                println!("{}", i._von_klasse_pfeil);
+                println!("{}", i._von_klasse_mult);
+                println!("{}", i._zu_klasse_name);
+                println!("{}", i._zu_klasse_pfeil);
+                println!("{}", i._zu_klasse_mult);
             }
         }
 
