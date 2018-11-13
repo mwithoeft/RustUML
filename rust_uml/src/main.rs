@@ -1,78 +1,94 @@
-extern crate regex;
+extern crate image;
+extern crate imageproc;
+extern crate rusttype;
 
-mod check_file;
-mod get_diagram_type;
 mod parsing;
 
-fn main() {
-    //Deklaration der Parser-Stukturen
-    //Für Klassendiagramme
-    let mut klassen: Vec<parsing::parse_class::Klasse> = Vec::new();
-    let mut beziehungen: Vec<parsing::parse_class::Beziehung> = Vec::new();
+use std::string::String
 
+use image::{ Rgb, RgbImage};
+use imageproc::rect::Rect;
+use rusttype::{FontCollection, Scale};
+use imageproc::drawing::{
+    draw_hollow_rect_mut,
+    draw_filled_rect_mut,
+    draw_line_segment_mut,
+    draw_text_mut
+    
+};
 
-    //Eingabe des Dateinamens:
-    let filepath = check_file::get_file_path();
+const WIDTH: u32 = 1680;
+const HEIGHT: u32 = 720;
 
-    //Auslese der Datei, wenn Diagrammtyp angegeben
-    let mut vektor : Vec<&'static str>;
-    let tupel = get_diagram_type::read_file(filepath);
-
-    //Aufrufen des Diagramm entsprechenden Parsers
-    vektor = tupel.0;
-    let typ : get_diagram_type::DiagramType = tupel.1;
-    match typ {
-	    get_diagram_type::DiagramType::CLASS => { 
-            parsing::parse_class::parse(&mut vektor, &mut klassen, &mut beziehungen);
-
-            for i in klassen {
-                println!("{}", i._name);
-                println!("{}", i._property);
-                println!("{}", i._keywords);
-                for s in i._attribute {
-                    println!("{}", s._modifikator);
-                    println!("{}", s._static);
-                    println!("{}", s._final);
-                    println!("{}", s._name);
-                    println!("{}", s._datentyp);
-                    println!("{}", s._wert);
-                }
-                for s in i._methoden {
-                    println!("{}", s._modifikator);
-                    println!("{}", s._static);
-                    println!("{}", s._final);
-                    println!("{}", s._name);
-                    println!("{}", s._returntyp);
-                    for t in s._parameter {
-                        println!("{}", t);
-                    }
-                }
-                println!("");
-            }
-            for i in beziehungen {
-                println!("{}", i._von_klasse_name);
-                println!("{}", i._von_klasse_pfeil);
-                println!("{}", i._von_klasse_mult);
-                println!("{}", i._zu_klasse_name);
-                println!("{}", i._zu_klasse_pfeil);
-                println!("{}", i._zu_klasse_mult);
-            }
-        }
-
-        
-	    get_diagram_type::DiagramType::USECASE => { println!("USECASE!"); }
-        get_diagram_type::DiagramType::ACTION => { println!("ACTION!"); }
-        get_diagram_type::DiagramType::SEQUENCE => { println!("SEQUENCE!"); }
-        get_diagram_type::DiagramType::STATE => { println!("STATE!"); }
-        get_diagram_type::DiagramType::COMPONENT => { println!("COMPONENT!"); }
-        get_diagram_type::DiagramType::PACKAGE => { println!("PACKAGE!"); }
-        get_diagram_type::DiagramType::DISTRIBUTION => { println!("DISTRIBUTION!"); }
-        get_diagram_type::DiagramType::OBJECT => { println!("OBJECT!"); }
-        get_diagram_type::DiagramType::NOTFOUND => { println!("NOTFOUND!"); }
+fn breite(name: String, attribut: String, methode: String)-> int{
+    let bname = name.chars().count();
+    let aname = attribut.chars().count();
+    let mname = methode.chars().count();
+    if (bname > aname && bname > mname){
+        return bname;
+    }else if( aname > mname){
+        return aname;
+    }else{
+        return mname;
     }
+
+    
 
 
 }
+fn beispielbild(){
+    let white = Rgb ([255u8, 255u8, 255u8]);
+    let black = Rgb ([0u8, 0u8, 0u8]);
+    let mut image = RgbImage::new(WIDTH, HEIGHT);
+
+    let font = Vec::from(include_bytes!("DejaVuSans.ttf") as &[u8]);
+    let font = FontCollection::from_bytes(font).unwrap().into_font().unwrap();
+
+    let height = 12.4;
+    let scale = Scale { x: height * 2.0, y: height };
+    let scale_attribut = Scale { x: height , y: height/2.0};
+    
+
+    //Weiß machen
+    draw_filled_rect_mut(&mut image, Rect::at(0, 0).of_size(1680, 720), white);
+    
 
 
 
+    //Linkes Klassen Diagramm
+    draw_hollow_rect_mut(&mut image, Rect::at(20, 70).of_size(150, 170), black);
+    draw_hollow_rect_mut(&mut image, Rect::at(20, 130).of_size(150, 50), black);
+    //Attribute
+    draw_text_mut(&mut image, Rgb([0u8, 0u8, 0u8]), 70, 90, scale, &font, "Auto");
+    draw_text_mut(&mut image, Rgb([0u8, 0u8, 0u8]), 25, 135, scale_attribut, &font, "+ anzahlTüren : int");
+    draw_text_mut(&mut image, Rgb([0u8, 0u8, 0u8]), 25, 145, scale_attribut, &font, "+ ps : int");
+    draw_text_mut(&mut image, Rgb([0u8, 0u8, 0u8]), 25, 155, scale_attribut, &font, "+ km : int");
+    draw_text_mut(&mut image, Rgb([0u8, 0u8, 0u8]), 25, 165, scale_attribut, &font, "+ tüv : boolean");
+    //Methoden
+    draw_text_mut(&mut image, Rgb([0u8, 0u8, 0u8]), 21, 185, scale_attribut, &font, "+ fahren(strecke: int) : void");
+    draw_text_mut(&mut image, Rgb([0u8, 0u8, 0u8]), 21, 195, scale_attribut, &font, "+ tanken(sorte: String) : int");
+
+
+
+    //Rechtes Klassen Diagramm
+    draw_hollow_rect_mut(&mut image, Rect::at(300, 20).of_size(150, 250), black);
+    draw_hollow_rect_mut(&mut image, Rect::at(300, 70).of_size(150, 75), black);
+    draw_text_mut(&mut image, Rgb([0u8, 0u8, 0u8]), 330, 40, scale, &font, "Händler");
+
+
+
+    //Beziehung
+    draw_line_segment_mut(&mut image, (170f32, 135f32), (300f32, 135f32), black);
+    draw_line_segment_mut(&mut image, (290f32, 145f32), (300f32, 135f32), black);
+    draw_line_segment_mut(&mut image, (290f32, 125f32), (300f32, 135f32), black);
+
+
+    
+
+
+    image.save("UML.png").unwrap();
+}
+
+fn main(){
+    println!("This is {} neat", breite("Auto", "- anzahlRäder:int", "+fahren():void "));
+}
