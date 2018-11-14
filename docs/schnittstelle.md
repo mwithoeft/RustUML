@@ -10,7 +10,7 @@
 > **Eine Struktur kann und wird mehrfach erzeugt werden. Gleiche Strukturen befinden sich in einer generischen Liste.**
 ## Klassendiagramm
 
-Um eine sinnvolle Struktur für das Klassendiagramm zu gewährleisten, wurden in Rust mehrere Strukturen erstellt:
+> Um eine sinnvolle Struktur für das Klassendiagramm zu gewährleisten, wurden in Rust mehrere Strukturen erstellt:
 
 #### Klasse als Hauptstruktur
 ```rust
