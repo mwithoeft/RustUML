@@ -1,6 +1,5 @@
-Bis zum 8. November:
-Syntax
-Datenmodell
-JPEG Erzeugung
-Parser anfangen
-Spezifikationsdokument
+Regex erweitern
+Imageröße und Relationen
+Schnittstellendoku
+Testfälle(Unit & Integration)
+Integration der Software (Anfang bis Ende eines Typs)
