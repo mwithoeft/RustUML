@@ -1,8 +1,13 @@
 extern crate regex;
+extern crate image;
+extern crate imageproc;
+extern crate rusttype;
+
 
 mod check_file;
 mod get_diagram_type;
 mod parsing;
+mod build_class_diagram;
 
 fn main() {
     //Deklaration der Parser-Stukturen
@@ -25,38 +30,7 @@ fn main() {
 	    get_diagram_type::DiagramType::CLASS => { 
             parsing::parse_class::parse(&mut vektor, &mut klassen, &mut beziehungen);
 
-            for i in klassen {
-                println!("{}", i._name);
-                println!("{}", i._property);
-                println!("{}", i._keywords);
-                for s in i._attribute {
-                    println!("{}", s._modifikator);
-                    println!("{}", s._static);
-                    println!("{}", s._final);
-                    println!("{}", s._name);
-                    println!("{}", s._datentyp);
-                    println!("{}", s._wert);
-                }
-                for s in i._methoden {
-                    println!("{}", s._modifikator);
-                    println!("{}", s._static);
-                    println!("{}", s._final);
-                    println!("{}", s._name);
-                    println!("{}", s._returntyp);
-                    for t in s._parameter {
-                        println!("{}", t);
-                    }
-                }
-                println!("");
-            }
-            for i in beziehungen {
-                println!("{}", i._von_klasse_name);
-                println!("{}", i._von_klasse_pfeil);
-                println!("{}", i._von_klasse_mult);
-                println!("{}", i._zu_klasse_name);
-                println!("{}", i._zu_klasse_pfeil);
-                println!("{}", i._zu_klasse_mult);
-            }
+            build_class_diagram::build_klassendiagramm(&mut klassen, &mut beziehungen);
         }
 
         

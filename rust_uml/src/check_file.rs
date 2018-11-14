@@ -22,8 +22,8 @@ pub fn get_file_path() -> String {
 fn check_file(input: &str) -> (bool, String) {
     let mut path = env::current_dir().unwrap();
     let mut s = String::from(input);
-    s.remove(s.len()-1);
-    s.remove(s.len()-1);
+    s.pop();
+    s.pop();
     path.push(s);
     path.set_extension("txt");
 
