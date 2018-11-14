@@ -125,7 +125,7 @@ pub fn parse(string_vec: &mut Vec<&'static str>, mut klassen: &mut Vec<Klasse>, 
 }
 
 fn parse_classname(s: &str) -> String {
-    let re = Regex::new("^classname\"([^\"]+?)\"").unwrap();
+    let re = Regex::new("^classname\"([^\"]+?)\"$").unwrap();
     let mut name = String::from("");
     if re.is_match(s) {
         let caps = re.captures(s).unwrap();
@@ -134,7 +134,7 @@ fn parse_classname(s: &str) -> String {
     name
 }
 fn parse_property(s: &str) -> String {
-    let re = Regex::new("^property\"([^\"]+?)\"").unwrap();
+    let re = Regex::new("^property\"([^\"]+?)\"$").unwrap();
     let mut property = String::from("");
     if re.is_match(s) {
         let caps = re.captures(s).unwrap();
@@ -142,8 +142,10 @@ fn parse_property(s: &str) -> String {
         if u.contains(","){
             let v: Vec<&str> = u.split(',').collect();
             for t in v {
-                property.push_str(t);
-                property.push_str(" ");
+                if t != "" {
+                    property.push_str(t);
+                    property.push_str(" ");
+                }
             }
             property = String::from(property.trim());
         } else {
@@ -153,7 +155,7 @@ fn parse_property(s: &str) -> String {
     property
 }
 fn parse_keywords(s: &str) -> String {
-    let re = Regex::new("^keywords\"([^\"]+?)\"").unwrap();
+    let re = Regex::new("^keywords\"([^\"]+?)\"$").unwrap();
     let mut keywords = String::from("");
     if re.is_match(s) {
         let caps = re.captures(s).unwrap();
@@ -161,8 +163,10 @@ fn parse_keywords(s: &str) -> String {
         if u.contains(","){
             let v: Vec<&str> = u.split(',').collect();
             for t in v {
-                keywords.push_str(t);
-                keywords.push_str(" ");
+                if t != "" {
+                    keywords.push_str(t);
+                    keywords.push_str(" ");
+                }
             }
             keywords = String::from(keywords.trim());
         } else {
@@ -174,7 +178,7 @@ fn parse_keywords(s: &str) -> String {
 fn parse_attribute(s: &str) -> Option<Attribut> {
     let (mut _modifikator, mut _final, mut _static, mut _name, mut _datentyp, mut _wert) : (char, bool, bool, String, String, String) = (' ', false, false, String::from(""), String::from(""), String::from(""));
 
-    let re = Regex::new("^attribute\"([^\"]+?)\"").unwrap();
+    let re = Regex::new("^attribute\"([^\"]+?)\"$").unwrap();
     if re.is_match(s) {
         let caps = re.captures(s).unwrap();
         let u = caps.get(1).map_or(String::from(""), |m| String::from(m.as_str()));
@@ -201,7 +205,7 @@ fn parse_attribute(s: &str) -> Option<Attribut> {
     None
 }
 fn parse_method(s: &str) -> Option<Methode> {
-    let re = Regex::new("^method\"([^\"]+?)\"").unwrap();
+    let re = Regex::new("^method\"([^\"]+?)\"$").unwrap();
     if re.is_match(s) {
         let mut method : Methode = build_methode(' ', false, false, String::from(""), String::from(""));
         let caps = re.captures(s).unwrap();
@@ -228,7 +232,7 @@ fn parse_method(s: &str) -> Option<Methode> {
     None
 }
 fn parse_relationship(s: &str, mut klassen: &mut Vec<Klasse>) -> Option<Beziehung> {
-    let re = Regex::new("^relationship\"([^\"]+?)\"").unwrap();
+    let re = Regex::new("^relationship\"([^\"]+?)\"$").unwrap();
     if re.is_match(s) {
         let mut relationship : Beziehung = build_beziehung(Beziehungstyp::UNDEFINED, String::from(""), false, String::from(""), String::from(""), false, String::from(""));
         let caps = re.captures(s).unwrap();
@@ -295,3 +299,64 @@ fn check_class(s: &str, klassen: &mut Vec<Klasse>) -> String {
     String::from("")
 }
 
+//Hier beginnen die Unit-Tests
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    //Testet Parse Classname
+    #[test]
+    fn test_parse_classname() {
+        assert_eq!("Testklasse", parse_classname("classname\"Testklasse\""));
+    }
+    #[test]
+    fn test_parse_classname_wrong_keyword() {
+        assert_eq!("", parse_classname("cclassname\"Testklasse\""));
+    }
+    #[test]
+    fn test_parse_classname_wrong_parameters() {
+        assert_eq!("", parse_classname("classname\"T\"estklasse\""));
+    }
+    //Testet Parse Property
+    #[test]
+    fn test_parse_property() {
+        assert_eq!("abstract", parse_property("property\"abstract\""));
+    }
+    #[test]
+    fn test_parse_property_wrong_comma_no_problem() {
+        assert_eq!("abstract", parse_property("property\"abstract,\""));
+    }
+    #[test]
+    fn test_parse_property_multiple_properties() {
+        assert_eq!("abstract second", parse_property("property\"abstract,second\""));
+    }
+    #[test]
+    fn test_parse_property_too_many_commas_no_problem() {
+        assert_eq!("abstract second", parse_property("property\"abstract,,,,,,,,,second\""));
+    }
+    #[test]
+    fn test_parse_property_wrong_keyword() {
+        assert_eq!("", parse_property("pproperty\"abstract\""));
+    }
+    //Testet Parse Keywords
+    #[test]
+    fn test_parse_keywords() {
+        assert_eq!("interface", parse_keywords("keywords\"interface\""));
+    }
+    #[test]
+    fn test_parse_keywords_wrong_comma_no_problem() {
+        assert_eq!("interface", parse_keywords("keywords\"interface,\""));
+    }
+    #[test]
+    fn test_parse_keywords_multiple_properties() {
+        assert_eq!("gui interface", parse_keywords("keywords\"gui,interface\""));
+    }
+    #[test]
+    fn test_parse_keywords_too_many_commas_no_problem() {
+        assert_eq!("gui interface", parse_keywords("keywords\"gui,,,,,,,,,interface\""));
+    }
+    #[test]
+    fn test_parse_keywords_wrong_keyword() {
+        assert_eq!("", parse_keywords("kkeywords\"interface\""));
+    }
+}
