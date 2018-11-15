@@ -1,3 +1,5 @@
 rust_uml/target
 **/*.rs.bk
 *.lock
+*.png
+
