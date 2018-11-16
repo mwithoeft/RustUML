@@ -1,4 +1,4 @@
-# Rust UML - Visualisation von UML Diagrammen durch Texteingabe
+# Rust UML - UML Diagramme durch Texteingabe
 
 # Was ist RustUML?
 > RustUML ist ein Projekt von Valentin Hertel und Moritz Withöft, welches im Zuge einer Praktikumsaufgabe im Studium an der Fachhochschule Bielefeld entstanden ist. Mit RustUML lässt sich ein vorher überlegtes UML-Diagramm visualisieren. Dabei muss der Nutzer nicht selber an graphischen Oberflächen tätig werden, sondern kann seine Definition für ein UML-Diagramm per Text verarbeiten lassen.
