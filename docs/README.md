@@ -1,9 +1,6 @@
 # WIP: Rust UML Visualisation
 
-> Hier ensteht eine Software zur textuellen Eingabe von UML-Diagrammen,
-> die dann visuell in einer webbasierten Anwedung dargestellt werden soll.
->
->
+> Hier ensteht aktuell eine Software zur textuellen Eingabe von UML-Diagrammen, die dann in ein visuelles UML-Diagramm (Bild) übersetzt wird.
 
 **[GitHub-Page](https://mwithoeft.github.io/RustUML/)**
 
