@@ -13,7 +13,11 @@ fn main() {
     //Deklaration der Parser-Stukturen
     //Für Klassendiagramme
     let mut klassen: Vec<parsing::parse_class::Klasse> = Vec::new();
-    let mut beziehungen: Vec<parsing::parse_class::Beziehung> = Vec::new();
+    let mut beziehungen_class: Vec<parsing::parse_class::Beziehung> = Vec::new();
+    //Für Usecasediagramme
+    let mut typen: Vec<parsing::parse_usecase::Typ> = Vec::new();
+    let mut beziehungen_usecase: Vec<parsing::parse_usecase::Beziehung> = Vec::new();
+
 
 
     //Eingabe des Dateinamens:
@@ -28,13 +32,13 @@ fn main() {
     let typ : get_diagram_type::DiagramType = tupel.1;
     match typ {
 	    get_diagram_type::DiagramType::CLASS => { 
-            parsing::parse_class::parse(&mut vektor, &mut klassen, &mut beziehungen);
-
-            build_class_diagram::build_klassendiagramm(&mut klassen, &mut beziehungen);
+            parsing::parse_class::parse(&mut vektor, &mut klassen, &mut beziehungen_class);
+            build_class_diagram::build_klassendiagramm(&mut klassen, &mut beziehungen_class);
+        } 
+	    get_diagram_type::DiagramType::USECASE => {
+            parsing::parse_usecase::parse(&mut vektor, &mut typen, &mut beziehungen_usecase);
+            
         }
-
-        
-	    get_diagram_type::DiagramType::USECASE => { println!("USECASE!"); }
         get_diagram_type::DiagramType::ACTION => { println!("ACTION!"); }
         get_diagram_type::DiagramType::SEQUENCE => { println!("SEQUENCE!"); }
         get_diagram_type::DiagramType::STATE => { println!("STATE!"); }

@@ -1,5 +1,5 @@
 pub mod parse_action;
-pub mod parse_application;
+pub mod parse_usecase;
 pub mod parse_class;
 pub mod parse_component;
 pub mod parse_distribution;
