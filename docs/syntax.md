@@ -93,8 +93,9 @@
 *Beziehungstypen:* `association`, `generalization`, `include`, `extend`
 > Soll *keine Multiplizität* angegeben werden schreibt man an der Stelle einfach ein `-`.  
 
-> Es können nur mehrere 'von Elemente' angegeben werden, wenn es sich um eine Generalisierung handelt! Hierbei ist wiederum keine Angabe der Multiplizität möglich. Beziehungen, bei denen eine Angabe der Multiplizität möglich ist, können nicht mit mehreren 'von Elementen' ausgestattet werden, da dies nur für eine Generalisierung möglich ist!
-*Beispiel Assoziation/Andere:* `relationship "association, sender, *, empfänger, -"` 
+> Es können nur mehrere 'von Elemente' angegeben werden, wenn es sich um eine Generalisierung handelt! Hierbei ist wiederum keine Angabe der Multiplizität möglich. Beziehungen, bei denen eine Angabe der Multiplizität möglich ist, können nicht mit mehreren 'von Elementen' ausgestattet werden, da dies nur für eine Generalisierung möglich ist!  
+
+*Beispiel Assoziation/Andere:* `relationship "association, sender, *, empfänger, -"`  
 *Beispiel Generalisierung:* `relationship "generalization, sender1, sender2, hauptsender"`
 
 ## Aktivitätsdiagramm
