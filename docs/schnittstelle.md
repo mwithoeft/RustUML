@@ -47,7 +47,7 @@ struct Methode {
 }
 ```
 
-## Beziehungen
+### Beziehungen
 > Nun gilt es noch, die Beziehungen vernünftigt darzustellen. Dazu gibt es eine extra Struktur. Natürlich können auch Beziehungen mehrfach erzeugt werden und in die dafür vorgesehene generische Liste eingefügt werden.
 
 #### Beziehung als Hauptstruktur
@@ -75,4 +75,49 @@ enum Beziehungstyp {
     UNDEFINED
 }
 ```
+## Anwendungsfalldiagramm
+> Im Anwendungsfalldiagramm sieht die Schnittstelle ein wenig anders aus. Hier gibt es nur zwei Hauptstrukturen. Einmal die Struktur zur Anlegung der einzelnen Typen eines Anwendungsfalldiagramms. Die zweite Struktur ist die, in der die Beziehung abgespeichert werden.
 
+#### Typ als Hauptstruktur
+```rust
+pub struct Typ {
+    _elementtyp: TypEnum,
+    _elementname: String,
+    _behaelter: String
+}
+```
+
+##### Der Elementtyp als ENUM, in der die verschiedenen Elementarten definiert werden
+```rust
+pub enum TypEnum {
+    SUBJECT,
+    ACTOR,
+    USECASE,
+    EXTPOINT,
+    UNDEFINED
+}
+```
+
+#### Beziehungen
+```rust
+pub struct Beziehung {
+    _beziehungstyp: Beziehungstyp,
+    _von_element_name: Vec<String>,
+    _von_element_mult: String,
+    _zu_element_name: String,
+    _zu_element_mult: String,
+    _notiz: String
+}
+```
+> `_von_element_name` ist hier als Vektor angelegt, weil es bei der Generalisierung mehrere 'von Elemente' geben kann. Bei allen anderen Beziehungstypen kann das nicht vorkommen, dort hat der Vektor dann nur einen String als Inhalt.
+
+##### Der Beziehungstyp als ENUM, in der die verschiedene Beziehungstypen definiert werden
+```rust
+pub enum Beziehungstyp {
+    ASSOCIATION,
+    GENERALIZATION,
+    INCLUDE,
+    EXTEND,
+    UNDEFINED
+}
+```
