@@ -6,7 +6,8 @@ use imageproc::drawing::{
     draw_hollow_rect_mut,
     draw_filled_rect_mut,
     draw_line_segment_mut,
-    draw_text_mut
+    draw_text_mut,
+    draw_hollow_circle_mut
     
 };
 
@@ -14,87 +15,222 @@ use parsing;
 
 const WIDTH: u32 = 1680;
 const HEIGHT: u32 = 720;
-const C_NAME_HIGHT: u32 = 60;
-const x: i32 = 250; // mindest abstand x-Achse
-const y: i32 = 300; // mindest abstand y-Achse
+const X_MIN: i32 = 300; // mindest abstand x-Achse
+const Y_MIN: i32 = 400; // mindest abstand y-Achse
+const FONT_SIZE_TITLE: f32 = 20.0;
+const FONT_SIZE: f32 = 6.0;
+const TITEL_MIN: u32 = 30;
+const MIN_RAND_LINKS: u32 = 2;
+const FONT_SPACE: u32 = 6;
 
 
-fn breite(name: String, attribute: &Vec<String> , methoden: &Vec<String>)-> usize{
-    let mut breite : usize;
-    breite = name.chars().count();
-    for a in attribute {
-        if a.chars().count() > breite {
-            breite = a.chars().count();
-        }
-    }
 
-    for m in methoden{
-        if m.chars().count() > breite {
-            breite = m.chars().count();
-        }
-    }
-    breite*5
+
+struct Pngclass{
+    id:i32,
+    breite: u32,
+    hoehe_kopf: u32,
+    hoehe_att: u32,
+    hoehe_meth: u32,
+    rel_point_LORU: ((i32,i32),(i32,i32),(i32,i32),(i32,i32)),
+    attribute: Vec<String>,
+    methoden: Vec<String>,
+    name: String
 }
 
-fn hoehe(property: &str ,keywords: &str, attribute: &Vec<String> , methoden: &Vec<String>)-> (i32,i32,i32){
-    let mut hoehe_kopf:i32 = 60;
-    let mut hoehe_att:i32 = 0;
-    let mut hoehe_meth:i32 = 0;
+fn buildclass(id: i32)->Pngclass{
+    Pngclass {
+        id,
+        breite: 1,
+        hoehe_kopf: 0,
+        hoehe_att: 0,
+        hoehe_meth: 0,
+        rel_point_LORU:((0,0),(0,0),(0,0),(0,0)),
+        attribute: Vec::new(),
+        methoden: Vec::new(),
+        name: String::new()
+    }
+}
+
+fn breite(name: String, attribute: &Vec<String> , methoden: &Vec<String>)-> u32{
+    let mut breite : usize;
+    breite = name.chars().count() * FONT_SIZE_TITLE as usize;
+    for a in attribute {
+        if a.chars().count()*FONT_SIZE as usize > breite {
+            breite = a.chars().count()*FONT_SIZE as usize;
+        }
+    }
+    for m in methoden{
+        if m.chars().count()*FONT_SIZE as usize > breite {
+            breite = m.chars().count()*FONT_SIZE as usize;
+        }
+    }
+   
+    breite as u32
+}
+
+fn hoehe(property: &str ,keywords: &str, attribute: &Vec<String> , methoden: &Vec<String>)-> (u32,u32,u32){
+    //Default werte
+    let mut hoehe_kopf:u32 = TITEL_MIN;
+    let mut hoehe_att:u32 = 0;
+    let mut hoehe_meth:u32 = 0;
+
     if !property.is_empty(){
-        hoehe_kopf += 10;
+        hoehe_kopf += FONT_SPACE;
     }
     if !keywords.is_empty(){
-        hoehe_kopf += 10;
+        hoehe_kopf += FONT_SPACE;
     }
-    hoehe_att += 10;
-    for a in attribute{
-        hoehe_att += 10;
+    hoehe_att += FONT_SPACE;
+    for _a in attribute{
+        hoehe_att += FONT_SPACE;
     }
-    for m in methoden{
-        hoehe_meth += 10;
+    hoehe_meth += FONT_SPACE;
+    for _m in methoden{
+        hoehe_meth += FONT_SPACE;
     }
-    hoehe_meth+=10;
 
-    (hoehe_kopf as i32 , hoehe_att as i32, hoehe_meth as i32)
+    (hoehe_kopf , hoehe_att, hoehe_meth)
 }
 
-pub fn build_klassendiagramm(mut klassen: &mut Vec<parsing::parse_class::Klasse>, mut beziehungen : &mut Vec<parsing::parse_class::Beziehung>){
+
+
+pub fn build_klassendiagramm( klassen: &mut Vec<parsing::parse_class::Klasse>, mut beziehungen : &mut Vec<parsing::parse_class::Beziehung>){
     let mut image = creat_png();
     let mut i: i32 = 0;
     let mut j: i32 = 0;
-    let black = Rgb ([0u8, 0u8, 0u8]);
+    let _black = Rgb ([0u8, 0u8, 0u8]);
+    let mut class: Vec<Pngclass>= Vec::new();
+
     
     
 
     for s in klassen {
-        let w_tuple = berechne_werte(&s._name ,&s._property ,&s._keywords , &mut s._attribute, &mut s._methoden);
-
-        //berechnete werte für Klassen namen einsetzten und kasten zeichnen
-        draw_hollow_rect_mut(&mut image, Rect::at(20+i*x, 70+j*y                      ).of_size(w_tuple.0 as u32, (w_tuple.1).0 as u32), black);
-        //berechnete werte für Attribute namen einsetzten und kasten zeichnen
-        draw_hollow_rect_mut(&mut image, Rect::at(20+i*x, 70+j*y+(w_tuple.1).0 as i32).of_size(w_tuple.0 as u32, (w_tuple.1).1 as u32), black);
-        //berechnete werte für Methoden namen einsetzten und kasten zeichnen
-        draw_hollow_rect_mut(&mut image, Rect::at(20+i*x, 70+j*y+(w_tuple.1).0+(w_tuple.1).1 as i32).of_size(w_tuple.0 as u32, (w_tuple.1).2 as u32), black);
-
+        class.push(buildclass(i));
+        berechne_werte(&s._name ,&s._property ,&s._keywords , &mut s._attribute, &mut s._methoden,  i, &mut class);
+        image = draw_class(image, &mut class, i, j);
         i=i+1;
         if i> 6 {
             i=0;
             j+=1;
         }
     }
+
+    image = draw_relation(image, &mut beziehungen, class);
     image.save("UML.png").unwrap();
+    print!("PNG erstellt");
 }
 
 fn berechne_werte(name: &str,property: &str , keywords: &str, attribute: &mut Vec<parsing::parse_class::Attribut>, 
-                methoden: &mut Vec<parsing::parse_class::Methode>)->( usize, (i32,i32,i32), Vec<String>, Vec<String>){
-    let mut attribute_string: Vec<String> = attribut_to_string(attribute);
-    let mut methoden_string: Vec<String> = methode_to_string(methoden);
-
-    ( breite(name.to_string(), &attribute_string, &methoden_string), hoehe(property, keywords, &attribute_string, &methoden_string), attribute_string, methoden_string)
+                methoden: &mut Vec<parsing::parse_class::Methode>, id: i32, pngclass: &mut Vec<Pngclass>){
+   
+    for class in pngclass{
+        if class.id == id{
+            class.attribute = attribut_to_string(attribute);
+            class.methoden = methode_to_string(methoden);
+            class.breite = breite(name.to_string(), &class.attribute, &class.methoden);
+            class.hoehe_kopf = hoehe(property, keywords, &class.attribute, &class.methoden).0;
+            class.hoehe_att = hoehe(property, keywords, &class.attribute, &class.methoden).1;
+            class.hoehe_meth = hoehe(property, keywords, &class.attribute, &class.methoden).2;
+            class.name =name.to_string();
+        }
+    }  
 }
 
-fn png_bearbeiten(bild: &mut RgbImage){
-   
+fn draw_class(image: RgbImage, class: &mut Vec<Pngclass>, id:i32, j:i32)-> RgbImage{
+    let mut bild = image;
+    let x: i32 = 20+id*X_MIN;
+    let y: i32 = 70+j*Y_MIN;
+    let _black = Rgb ([0u8, 0u8, 0u8]);
+    let _red = Rgb([255u8, 0u8, 0u8]);
+    let title_scale = Scale { x: FONT_SIZE_TITLE*2.0 , y: FONT_SIZE_TITLE};
+    let scale = Scale { x: FONT_SIZE * 2.0 , y: FONT_SIZE};
+    let font = Vec::from(include_bytes!("DejaVuSans.ttf") as &[u8]);
+    let font = FontCollection::from_bytes(font).unwrap().into_font().unwrap();
+    let mut counter: u32 = 2;
+    for class in class {
+        if class.id == id{
+            //berechnete werte für Klassen namen einsetzten und kasten zeichnen
+             draw_hollow_rect_mut( &mut bild, Rect::at(x, y                      ).of_size(class.breite, class.hoehe_kopf), _black);
+            //berechnete werte für Attribute namen einsetzten und kasten zeichnen
+            draw_hollow_rect_mut( &mut bild, Rect::at(x, y+class.hoehe_kopf as i32).of_size(class.breite, class.hoehe_att), _black);
+            //berechnete werte für Methoden namen einsetzten und kasten zeichnen
+            draw_hollow_rect_mut( &mut bild, Rect::at(x, y+class.hoehe_kopf as i32+class.hoehe_att as i32).of_size(class.breite, class.hoehe_meth), _black);
+
+            class.rel_point_LORU = ((x ,y +((class.hoehe_kopf+class.hoehe_att+class.hoehe_meth)/2) as i32),
+                                    (x +(class.breite/2) as i32,y),
+                                    (x +class.breite as i32,y+((class.hoehe_kopf+class.hoehe_att+class.hoehe_meth)/2) as i32),
+                                    (x +(class.breite/2) as i32,y +(class.hoehe_kopf+class.hoehe_att+class.hoehe_meth) as i32));
+                                    
+           
+            draw_hollow_circle_mut(&mut bild, class.rel_point_LORU.0, 2, _red);
+            draw_hollow_circle_mut(&mut bild, class.rel_point_LORU.1, 2, _red);
+            draw_hollow_circle_mut(&mut bild, class.rel_point_LORU.2, 2, _red);
+            draw_hollow_circle_mut(&mut bild, class.rel_point_LORU.3, 2, _red);
+            
+
+
+            //Klassen namen schreiben x wert = x des linken randes + die Differenz aus der hälfte der breite und die hälft der Wortlänge
+            // y wert = y wert des oberen randes + die Differenz aus der gesamten kopf höhe und der konstanten Titel_min
+            draw_text_mut(&mut bild, _black, (x + class.breite as i32 / 2 - (class.name.chars().count()*FONT_SIZE_TITLE as usize /2) as i32) as u32, 
+                            y as u32+ class.hoehe_kopf - TITEL_MIN, title_scale, &font, &class.name);
+            //Attribute schreiben
+            for att in &class.attribute {
+                draw_text_mut(&mut bild, _black, (x as u32 + MIN_RAND_LINKS ) as u32, 
+                                y as u32+ class.hoehe_kopf + counter, scale, &font, &att);
+                counter+= FONT_SPACE;
+
+            }
+            counter = 2;
+            for meth in &class.methoden {
+                draw_text_mut(&mut bild, _black, (x as u32 + MIN_RAND_LINKS ) as u32, 
+                                y as u32+ class.hoehe_kopf + class.hoehe_att + counter, scale, &font, &meth);
+                counter+= FONT_SPACE;
+
+            }
+
+
+        }
+    }
+    bild
+}
+
+fn draw_relation(image: RgbImage, relation: &mut Vec<parsing::parse_class::Beziehung>, class:  Vec<Pngclass> )-> RgbImage{
+    let mut bild = image;
+    let mut from: (i32, String, (i32,i32));
+    let mut to: (i32, String, (i32,i32)) ;
+    let mut temp_point_from: ((i32,i32),(i32,i32),(i32,i32),(i32,i32)) = ((0,0),(0,0),(0,0),(0,0));
+    let mut temp_point_to: ((i32,i32),(i32,i32),(i32,i32),(i32,i32)) = ((0,0),(0,0),(0,0),(0,0));
+    let start_point: i32;
+    let end_point: i32;
+/*
+    for r in relation{
+        for c in &class{
+            if r._von_klasse_name == c.name{
+                 from.0 = c.id;
+                 from.1 = c.name.to_string();
+                 temp_point_from = c.rel_point_LORU;
+            }
+            if r._zu_klasse_name == c.name{
+                 to.0 = c.id;
+                 to.1 = c.name.to_string();
+                 temp_point_to = c.rel_point_LORU;
+            }
+            if !(from.1.is_empty() && to.1.is_empty()){
+
+                if from.0 < to.0{
+                    from.2 = temp_point_from.2;
+                    to.2 = temp_point_to.0;
+                }else {
+                    from.2 = temp_point_from.0;
+                    to.2 = temp_point_to.2;
+                }
+            }
+        }
+        
+    }
+*/
+    bild
 }
 
 
@@ -149,56 +285,4 @@ fn creat_png() ->RgbImage{
     let mut image = RgbImage::new(WIDTH, HEIGHT);
     draw_filled_rect_mut(&mut image, Rect::at(0, 0).of_size(WIDTH, HEIGHT), white);  
     image
-}
-
-fn beispielbild(){
-    let white = Rgb ([255u8, 255u8, 255u8]);
-    
-    let mut image = RgbImage::new(WIDTH, HEIGHT);
-
-    let font = Vec::from(include_bytes!("DejaVuSans.ttf") as &[u8]);
-    let font = FontCollection::from_bytes(font).unwrap().into_font().unwrap();
-
-    let height = 12.4;
-    let scale = Scale { x: height * 2.0, y: height };
-    let scale_attribut = Scale { x: height , y: height/2.0};
-    let black = Rgb ([0u8, 0u8, 0u8]);
-
-    //Weiß machen
-    draw_filled_rect_mut(&mut image, Rect::at(0, 0).of_size(WIDTH, HEIGHT), white);
-
-
-
-    //Linkes Klassen Diagramm
-    draw_hollow_rect_mut(&mut image, Rect::at(20, 70).of_size(150, 170), black);
-    draw_hollow_rect_mut(&mut image, Rect::at(20, 130).of_size(150, 50), black);
-    //Attribute
-    draw_text_mut(&mut image, Rgb([0u8, 0u8, 0u8]), 70, 90, scale, &font, "Auto");
-    draw_text_mut(&mut image, Rgb([0u8, 0u8, 0u8]), 25, 135, scale_attribut, &font, "+ anzahlTüren : int");
-    draw_text_mut(&mut image, Rgb([0u8, 0u8, 0u8]), 25, 145, scale_attribut, &font, "+ ps : int");
-    draw_text_mut(&mut image, Rgb([0u8, 0u8, 0u8]), 25, 155, scale_attribut, &font, "+ km : int");
-    draw_text_mut(&mut image, Rgb([0u8, 0u8, 0u8]), 25, 165, scale_attribut, &font, "+ tüv : boolean");
-    //Methoden
-    draw_text_mut(&mut image, Rgb([0u8, 0u8, 0u8]), 21, 185, scale_attribut, &font, "+ fahren(strecke: int) : void");
-    draw_text_mut(&mut image, Rgb([0u8, 0u8, 0u8]), 21, 195, scale_attribut, &font, "+ tanken(sorte: String) : int");
-
-
-
-    //Rechtes Klassen Diagramm
-    draw_hollow_rect_mut(&mut image, Rect::at(300, 20).of_size(150, 250), black);
-    draw_hollow_rect_mut(&mut image, Rect::at(300, 70).of_size(150, 75), black);
-    draw_text_mut(&mut image, Rgb([0u8, 0u8, 0u8]), 330, 40, scale, &font, "Händler");
-
-
-
-    //Beziehung
-    draw_line_segment_mut(&mut image, (170f32, 135f32), (300f32, 135f32), black);
-    draw_line_segment_mut(&mut image, (290f32, 145f32), (300f32, 135f32), black);
-    draw_line_segment_mut(&mut image, (290f32, 125f32), (300f32, 135f32), black);
-
-
-    
-
-
-    image.save("UML.png").unwrap();
 }
