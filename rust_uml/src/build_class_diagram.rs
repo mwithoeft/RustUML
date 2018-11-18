@@ -90,11 +90,6 @@ fn berechne_werte(name: &str,property: &str , keywords: &str, attribute: &mut Ve
     let mut attribute_string: Vec<String> = attribut_to_string(attribute);
     let mut methoden_string: Vec<String> = methode_to_string(methoden);
 
-    println!("{}",breite(name.to_string(), &attribute_string, &methoden_string));
-    println!("kopf:{}",hoehe(property, keywords, &attribute_string, &methoden_string).0);
-    println!("attribute:{}",hoehe(property, keywords, &attribute_string, &methoden_string).1);
-    println!("methoden:{}",hoehe(property, keywords, &attribute_string, &methoden_string).2);
-
     ( breite(name.to_string(), &attribute_string, &methoden_string), hoehe(property, keywords, &attribute_string, &methoden_string), attribute_string, methoden_string)
 }
 
