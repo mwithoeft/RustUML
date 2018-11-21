@@ -29,4 +29,4 @@ method "-, static, länge, int, höhe:double, breite:double"
 
 
 relationship "extends, Vater, false, -, Kind, true, -"
-relationship "association, Gebäude, true, 1, Raum, false, 0..*"
+relationship "aggregation, Gebäude, true, 1, Raum, false, 0..*"

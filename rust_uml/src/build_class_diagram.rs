@@ -32,7 +32,7 @@ struct Pngclass{
     hoehe_kopf: u32,
     hoehe_att: u32,
     hoehe_meth: u32,
-    rel_point_LORU: ((i32,i32),(i32,i32),(i32,i32),(i32,i32)),
+    rel_point_LORU: ((f32,f32),(f32,f32),(f32,f32),(f32,f32)),
     attribute: Vec<String>,
     methoden: Vec<String>,
     name: String
@@ -45,7 +45,7 @@ fn buildclass(id: i32)->Pngclass{
         hoehe_kopf: 0,
         hoehe_att: 0,
         hoehe_meth: 0,
-        rel_point_LORU:((0,0),(0,0),(0,0),(0,0)),
+        rel_point_LORU:((0.0,0.0),(0.0,0.0),(0.0,0.0),(0.0,0.0)),
         attribute: Vec::new(),
         methoden: Vec::new(),
         name: String::new()
@@ -157,16 +157,16 @@ fn draw_class(image: RgbImage, class: &mut Vec<Pngclass>, id:i32, j:i32)-> RgbIm
             //berechnete werte für Methoden namen einsetzten und kasten zeichnen
             draw_hollow_rect_mut( &mut bild, Rect::at(x, y+class.hoehe_kopf as i32+class.hoehe_att as i32).of_size(class.breite, class.hoehe_meth), _black);
 
-            class.rel_point_LORU = ((x ,y +((class.hoehe_kopf+class.hoehe_att+class.hoehe_meth)/2) as i32),
-                                    (x +(class.breite/2) as i32,y),
-                                    (x +class.breite as i32,y+((class.hoehe_kopf+class.hoehe_att+class.hoehe_meth)/2) as i32),
-                                    (x +(class.breite/2) as i32,y +(class.hoehe_kopf+class.hoehe_att+class.hoehe_meth) as i32));
+            class.rel_point_LORU = ((x as f32 ,(y + ((class.hoehe_kopf+class.hoehe_att+class.hoehe_meth)/2)as i32) as f32),
+                                    (x as f32 +(class.breite/2) as f32,y as f32),
+                                    (x as f32 +class.breite as f32,(y+((class.hoehe_kopf+class.hoehe_att+class.hoehe_meth)/2) as i32) as f32),
+                                    (x as f32 +(class.breite/2) as f32,(y +(class.hoehe_kopf+class.hoehe_att+class.hoehe_meth) as i32) as f32));
                                     
            
-            draw_hollow_circle_mut(&mut bild, class.rel_point_LORU.0, 2, _red);
-            draw_hollow_circle_mut(&mut bild, class.rel_point_LORU.1, 2, _red);
-            draw_hollow_circle_mut(&mut bild, class.rel_point_LORU.2, 2, _red);
-            draw_hollow_circle_mut(&mut bild, class.rel_point_LORU.3, 2, _red);
+            //draw_hollow_circle_mut(&mut bild, class.rel_point_LORU.0, 2, _red);
+            //draw_hollow_circle_mut(&mut bild, class.rel_point_LORU.1, 2, _red);
+            //draw_hollow_circle_mut(&mut bild, class.rel_point_LORU.2, 2, _red);
+            //draw_hollow_circle_mut(&mut bild, class.rel_point_LORU.3, 2, _red);
             
 
 
@@ -197,13 +197,18 @@ fn draw_class(image: RgbImage, class: &mut Vec<Pngclass>, id:i32, j:i32)-> RgbIm
 
 fn draw_relation(image: RgbImage, relation: &mut Vec<parsing::parse_class::Beziehung>, class:  Vec<Pngclass> )-> RgbImage{
     let mut bild = image;
-    let mut from: (i32, String, (i32,i32));
-    let mut to: (i32, String, (i32,i32)) ;
-    let mut temp_point_from: ((i32,i32),(i32,i32),(i32,i32),(i32,i32)) = ((0,0),(0,0),(0,0),(0,0));
-    let mut temp_point_to: ((i32,i32),(i32,i32),(i32,i32),(i32,i32)) = ((0,0),(0,0),(0,0),(0,0));
+    let mut from: (i32, String, (f32,f32)) = (-1,"".to_string(),(-1.0,-1.0));
+    let mut to: (i32, String, (f32,f32)) = (-1,"".to_string(),(-1.0,-1.0));
+    let mut temp_point_from: ((f32,f32),(f32,f32),(f32,f32),(f32,f32)) = ((1.0,1.0),(1.0,1.0),(1.0,1.0),(1.0,1.0));
+    let mut temp_point_to: ((f32,f32),(f32,f32),(f32,f32),(f32,f32)) = ((1.0,1.0),(1.0,1.0),(1.0,1.0),(1.0,1.0));
     let start_point: i32;
     let end_point: i32;
-/*
+    let _black = Rgb ([0u8, 0u8, 0u8]);
+    let white = Rgb ([255u8, 255u8, 255u8]);
+    let scale = Scale { x: FONT_SIZE * 2.0 , y: FONT_SIZE};
+    let font = Vec::from(include_bytes!("DejaVuSans.ttf") as &[u8]);
+    let font = FontCollection::from_bytes(font).unwrap().into_font().unwrap();
+
     for r in relation{
         for c in &class{
             if r._von_klasse_name == c.name{
@@ -216,20 +221,100 @@ fn draw_relation(image: RgbImage, relation: &mut Vec<parsing::parse_class::Bezie
                  to.1 = c.name.to_string();
                  temp_point_to = c.rel_point_LORU;
             }
-            if !(from.1.is_empty() && to.1.is_empty()){
+            if !(from.0 == -1 && to.0 == -1){
 
                 if from.0 < to.0{
                     from.2 = temp_point_from.2;
+                    from.2 = temp_point_from.2;
+                    to.2 = temp_point_to.0;
                     to.2 = temp_point_to.0;
                 }else {
                     from.2 = temp_point_from.0;
+                    from.2 = temp_point_from.0;
+                    to.2 = temp_point_to.2;
                     to.2 = temp_point_to.2;
                 }
             }
         }
+        draw_line_segment_mut(&mut bild, from.2, to.2, _black);
+        
+
+        match r._beziehungstyp{
+            parsing::parse_class::Beziehungstyp::EXTENDS => {
+                draw_line_segment_mut(&mut bild, from.2, (((from.2).0)+9.0,(from.2).1), white);
+                draw_line_segment_mut(&mut bild, ((from.2).0, (from.2).1), (((from.2).0)+10.0, ((from.2).1)-10.0), _black);
+                draw_line_segment_mut(&mut bild, ((from.2).0, (from.2).1), (((from.2).0)+10.0, ((from.2).1)+10.0), _black);
+                draw_line_segment_mut(&mut bild, (((from.2).0)+10.0, ((from.2).1)+10.0), (((from.2).0)+10.0, ((from.2).1)-10.0), _black);
+            }
+            parsing::parse_class::Beziehungstyp::IMPLEMENTS=>{
+                draw_line_segment_mut(&mut bild, from.2, (((from.2).0)+9.0,(from.2).1), white);
+                draw_line_segment_mut(&mut bild, ((from.2).0, (from.2).1), (((from.2).0)+10.0, ((from.2).1)-10.0), _black);
+                draw_line_segment_mut(&mut bild, ((from.2).0, (from.2).1), (((from.2).0)+10.0, ((from.2).1)+10.0), _black);
+                draw_line_segment_mut(&mut bild, (((from.2).0)+10.0, ((from.2).1)+10.0), (((from.2).0)+10.0, ((from.2).1)-10.0), _black);
+
+                for i in 1..9{
+                    draw_line_segment_mut(&mut bild, (((from.2).0)+i as f32, ((from.2).1)), (((from.2).0)+i as f32, ((from.2).1)), white);
+                }
+            }
+            parsing::parse_class::Beziehungstyp::ASSOCIATION=>{}
+            parsing::parse_class::Beziehungstyp::AGGREGATION=>{
+                draw_line_segment_mut(&mut bild, from.2, (((from.2).0)+19.0,(from.2).1), white);
+                draw_line_segment_mut(&mut bild, ((from.2).0, (from.2).1), (((from.2).0)+9.0, ((from.2).1)-5.0), _black);
+                draw_line_segment_mut(&mut bild, ((from.2).0, (from.2).1), (((from.2).0)+9.0, ((from.2).1)+5.0), _black);
+                draw_line_segment_mut(&mut bild, (((from.2).0)+10.0, ((from.2).1)+5.0), (((from.2).0)+20.0, (from.2).1), _black);
+                draw_line_segment_mut(&mut bild, (((from.2).0)+10.0, ((from.2).1)-5.0), (((from.2).0)+20.0, (from.2).1), _black);
+            }
+            parsing::parse_class::Beziehungstyp::COMPOSITION=>{
+                draw_line_segment_mut(&mut bild, ((from.2).0, (from.2).1), (((from.2).0)+9.0, ((from.2).1)-5.0), _black);
+                draw_line_segment_mut(&mut bild, ((from.2).0, (from.2).1), (((from.2).0)+9.0, ((from.2).1)+5.0), _black);
+               
+                draw_line_segment_mut(&mut bild, (((from.2).0)+10.0, ((from.2).1)+5.0), (((from.2).0)+20.0, (from.2).1), _black);
+                draw_line_segment_mut(&mut bild, (((from.2).0)+10.0, ((from.2).1)-5.0), (((from.2).0)+20.0, (from.2).1), _black);
+
+                for i in 1..5{
+
+                    draw_line_segment_mut(&mut bild, (((from.2).0)+i as f32 *2.0,((from.2).1)+i as f32), (((from.2).0)+20.0-i as f32*2.0, ((from.2).1)+i as f32), _black);
+                    draw_line_segment_mut(&mut bild, (((from.2).0)+i as f32 *2.0,((from.2).1)-i as f32), (((from.2).0)+20.0-i as f32*2.0, ((from.2).1)-i as f32), _black);
+
+                  // draw_line_segment_mut(&mut bild, (((from.2).0)+20.0-i as f32, (from.2).1), (((from.2).0)+20.0-i as f32, ((from.2).1)+i as f32), _black);
+                   // draw_line_segment_mut(&mut bild, (((from.2).0)+20.0-i as f32, (from.2).1), (((from.2).0)+20.0-i as f32, ((from.2).1)-i as f32), _black);
+                }
+                
+            }
+            parsing::parse_class::Beziehungstyp::DEPENDENCY=>{}
+            parsing::parse_class::Beziehungstyp::UNDEFINED=>{}
+        }
+
+        if !(r._von_klasse_name.is_empty()) {
+
+            let mut p: (u32,u32) = (0,0);
+
+            p.0 = (from.2).0 as u32 +20;
+            p.1 = (from.2).1 as u32 -10;
+
+            draw_text_mut(&mut bild, _black, p.0, p.1, scale, &font, &r._von_klasse_name);;
+
+
+
+        }else if !(r._zu_klasse_name.is_empty()){
+
+            let mut p: (u32,u32) = (0,0);
+
+            p.0 = (from.2).0 as u32 -40;
+            p.1 = (from.2).1 as u32 -10;
+
+            draw_text_mut(&mut bild, _black, p.0, p.1, scale, &font, &r._zu_klasse_name);;
+
+
+
+
+        }
+
         
     }
-*/
+
+
+
     bild
 }
 
