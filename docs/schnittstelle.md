@@ -118,6 +118,7 @@ pub enum Beziehungstyp {
     GENERALIZATION,
     INCLUDE,
     EXTEND,
+    EXTENDS,
     UNDEFINED
 }
 ```
