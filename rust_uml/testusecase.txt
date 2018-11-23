@@ -1,0 +1,14 @@
+type "usecase diagram"
+
+elementtype "subject, Bibliothekssystem"
+
+elementtype "actor, Mitglied"
+elementtype "actor, Mitarbeiter"
+elementtype "usecase, Buch-ausleihen"
+elementtype "usecase, Buch-suchen"
+elementtype "usecase, Verfuegbarkeit-pruefen"
+
+relationship "association, Mitglied, -, Buch-ausleihen, -"
+relationship "extends, Mitarbeiter, -, Mitglied, -"
+relationship "include, Buch-ausleihen, -, Verfuegbarkeit-pruefen, -"
+relationship "generalization, Buch-ausleihen, Verfuegbarkeit-pruefen, Buch-suchen, Testgeneralisierung"
