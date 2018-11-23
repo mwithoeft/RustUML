@@ -6,9 +6,11 @@
 # Was muss ich dafür können?
 > Nicht viel. Auf unserer GitHub-Seite lässt sich die extra für dieses Programm definierte Syntax finden, mit der das UML-Diagramm erzeugt werden kann. Die Einarbeitung in der Syntax ist nicht schwer und zu jedem Aspekt sind Beispiele gegeben, die das Kennenlerne der Syntax erleichtern.
 
-**[GitHub-Page](https://mwithoeft.github.io/RustUML/)**
 
-## Authors
+
+# Authors
 
 * **Valentin Hertel** - [GIT](https://github.com/Valentin235)  
 * **Moritz Withöft** - [GIT](https://github.com/mwithoeft)
+
+**[GitHub-Page](https://mwithoeft.github.io/RustUML/)**
