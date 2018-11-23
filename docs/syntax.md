@@ -81,7 +81,7 @@
 
 ## Anwendungsfalldiagramm
 
-> Im Folgenden werden die einzelnen Möglichkeiten zur Eingabe eines Anwendungsfalldiagramms erläutert. Dabei steht zuerst immer eine abstrakte Darstellung der Eingabe, gefolgt von einem Beispiel. Danach werden alle weiteren möglichen Schlüsselwörter aufgelistet. **Leerzeichen** werden beim Parsen **komplett entfernt**. Möchte man ein Leerzeichen zwischen zwei Worten haben trennt man diese Worte mit einem `-`(Bindestrich!).
+> Im Folgenden werden die einzelnen Möglichkeiten zur Eingabe eines Anwendungsfalldiagramms erläutert. Dabei steht zuerst immer eine abstrakte Darstellung der Eingabe, gefolgt von einem Beispiel. Danach werden alle weiteren möglichen Schlüsselwörter aufgelistet. **Leerzeichen** werden beim Parsen **komplett entfernt**. Möchte man ein Leerzeichen zwischen zwei Worten haben trennt man diese Worte mit einem `-`(Bindestrich!). Es müssen zudem erst alle Elementtypen angegeben werden, bevor die Beziehungen geschrieben werden.
 
 **Elementtypen:**  
 `elementtype "Elementtyp, Elementname , Behälter(Optional)"`  
