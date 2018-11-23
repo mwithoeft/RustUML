@@ -20,3 +20,12 @@
 `^relationship\"([^\"]+?)\"$`
 
 > Wie hier zu sehen, unterscheiden sich die regulären Ausdrücke kaum. Das liegt daran, dass im Grunde für alle Eingaben die gleiche Syntax gilt, sich jedoch immer das Schlüsselwort zum richtigen Parsen unterscheidet. Der reguläre Ausdrück prüft also immer erst, ob die Zeile mit dem richtigen Schlüsselwort beginnt (Whitespaces sind hier auf Grund von vorheriger Verarbeitung kein Problem) und dann ob es eine Eingabe zwischen den Anführungszeichen gibt. Dabei wird auch direkt überprüft, ob zwischen den Anführungszeichen *überhaupt* etwas steht, um eine leere Eingabe schnell zu identifizieren. Die Klammern sorgen hier dafür, dass nach einer erfolgreichen Überprüfung schnell auf die Daten innerhalb der Anführungszeichen (die Parameter) zugegriffen werden kann. Eine weitere Prüfung der Parameter findet dann in einzelnen Funktionen statt, die die Eingabe in eine Struktur einlesen sollen, wenn diese korrekt ist.
+
+## Anwendungsfalldiagramm
+
+> Auch beim Anwendungsfalldiagramm wurden die regulären Ausdrücke angepasst. Auch hier musste jeweils nur das Schlüsselwort verändert werden.
+
+**Elementtyp:**  
+`^elementtype\"([^\"]+?)\"$`  
+**Beziehungen:**  
+`^relationship\"([^\"]+?)\"$`  
