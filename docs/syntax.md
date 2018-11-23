@@ -90,8 +90,9 @@
 
 **Beziehungen:**  
 `relationship "Beziehungstyp, 'von Element' Name, 'von Element' Multiplizizät, 'von Element' Name2(Optional),..., 'zu Element' Name, 'zu Element' Multiplizität, Inhalt der Notiz/Bedingung(optional)"`   
-*Beziehungstypen:* `association`, `generalization`, `include`, `extend`
+*Beziehungstypen:* `association`, `generalization`, `include`, `extend`, `extends`  
 > Soll *keine Multiplizität* angegeben werden schreibt man an der Stelle einfach ein `-`.  
+> **Unterschied von extend und extends:** `extends` wird geschrieben wenn ein Akteur von einem anderen erbt. Extended ein Usecase einen anderen schreibt man `extend`! Bei der Eingabe ist auf diesen Unterschied zu achten, weil er sehr bedeutsam ist!
 
 > Es können nur mehrere 'von Elemente' angegeben werden, wenn es sich um eine Generalisierung handelt! Hierbei ist wiederum keine Angabe der Multiplizität möglich. Beziehungen, bei denen eine Angabe der Multiplizität möglich ist, können nicht mit mehreren 'von Elementen' ausgestattet werden, da dies nur für eine Generalisierung möglich ist!  
 
