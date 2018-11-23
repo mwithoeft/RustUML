@@ -19,7 +19,7 @@
 - Zustandsdiagramm: `"state diagram"`
 - Komponentendiagramm: `"component diagram"`
 - Paketdiagramm: `"package diagram"`
-- Verteilungsdiagramm: `"distribution diagram"`
+- Verteilungsdiagramm: `"deployment diagram"`
 - Objektdiagramm: `"object diagram"`  
 
 > Zu wissen, wie die Diagrammtypen benannt werden reicht jedoch nicht. **Zuerst** schaut sich der Parser nämlich danach um, ob der Typ des Diagramms festlegt wird. Zusätzlich benötigen wir das Schlüsselwort `type`.
@@ -157,8 +157,96 @@
 *Beispiel:* `choice "Punkte > 100, Klausur bestanden, Klausur nicht bestanden"`  
 
 ## Komponentendiagramm
+
+> Im Folgenden werden die einzelnen Möglichkeiten zur Eingabe eines Komponentendiagramms erläutert. Dabei steht zuerst immer eine abstrakte Darstellung der Eingabe, gefolgt von einem Beispiel. Danach werden alle weiteren möglichen Schlüsselwörter aufgelistet.
+
+**Komponenten:**  
+`component "Komponentenname, Elternkomponente(Optional), Interfacename(Optional)"`  
+*Beispiele:*  
+`component "Webdienst, komponente"` *Komponente ist hier ein Interface!*  
+`component "Mailserver, Webdienst, komponente"` *Komponente ist hier ein Interface, aber Webdienst die Elternkomponente!*  
+`component "Testserver, Webdienst"` *Webdienst ist hier die Elternkomponente und kein Interface!*
+> Der Interface name darf nicht der Name einer schon vorhandenen Komponente sein, weil die erzeugte Komponente diese sonst als Elternkomponente ansieht!
+
+**Ports:**  
+`port "Porttyp, Portname, Kommentar(Optional)"`  
+*Beispiel:* `port "required, PaymentAuthorization"`  
+*Schlüsselwörter der Porttypen:* `required`, `provided`	
+
+**Beziehungen:**  
+`relationship "Beziehungstyp, 'von Komponente/Port', 'von Komponente/Port' Multiplizizät, 'zu Komponente/Port', ' zu Komponente/Port' Multiplizizät, Kommentar(Optional)"`  
+*Beispiele:*  
+`relationship "dependency, Webdienst, 1, PaymentAutorization, 1..*, Validierung"`  
+`relationship "composition, Testserver, -, MailserverSC, -"`  
+*Schlüsselwörter der Beziehungstypen:* `dependency`, `generalization`, `partassemly`, `composition`
+> Soll *keine Multiplizität* angegeben werden schreibt man an der Stelle einfach ein `-`. Möchte man sich mit der Schnittstelle einer Komponente vervinden schreibt man hinter den Namen noch `SC`.
+
 ## Paketdiagramm
+
+> Im Folgenden werden die einzelnen Möglichkeiten zur Eingabe eines Paketdiagramms erläutert. Dabei steht zuerst immer eine abstrakte Darstellung der Eingabe, gefolgt von einem Beispiel. Danach werden alle weiteren möglichen Schlüsselwörter aufgelistet.
+
+**Pakete:**  
+`package "Paketname, Elternpaket, Paketeigenschaft, Paketattribut1(Optional), Paketattribut2(Optional), ..."`  
+*Beispiel:* `package "ServiceProvider, -, interface, ServiceFactorie, ServiceType"`  
+> Gibt es *kein Elternpaket* oder *keine Paketeigenschaft* schreibt man an der Stelle einfach ein `-`.
+
+**Elemente:**  
+`element "Modifikator, Elementname, Kommentar(Optional)"`  
+*Beispiele:*  
+`element "+, Katalog"`  
+`element "-, Account"`  
+*Modifikatoren:* `-`, `+`,   
+
+**Beziehungen:**  
+`relationship "Beziehungstyp, 'von Paket' Name, Pfeil auf 'von Paket' (true/false), Multiplizität 'von Paket', 'zu Paket' Name, Pfeil auf 'zu Paket' (true/false)  Multiplizität 'zu Paket', Kommentar(Optional)"`  
+*Beispiele:*  
+`relationship "access, WebApplication, false, -, Presentation, true, -"`  
+`relationship "import, WebApplication, false, 1, Domain, false, 1..*"`  
+*Beziehungstypen:* `required`, `import`, `access`, `merge`, `dependency`, `composition`  
+
+> Bei *merge* gibt es die Ausnahme, dass es mehrere 'von Pakete' geben darf. Hier wird das letzte angegebene Paket als 'zu Paket' betrachtet. Die Syntax ändert sich dabei nicht, das heißt es werden pro Paket in der Reihenfolge erwartet: `'Paket' Name, Pfeil auf 'Paket' (true/false), Multiplizität 'Paket'`  
+
+*Beispiel:* `relationship "merge, Kernel, false, -, Profiles, false, -, Constructs, true, -"`  
+> Soll *keine Multiplizität* angegeben werden schreibt man an der Stelle einfach ein `-`.
+
+
 ## Verteilungsdiagramm
+
+> Im Folgenden werden die einzelnen Möglichkeiten zur Eingabe eines Verteilungsdiagramms erläutert. Dabei steht zuerst immer eine abstrakte Darstellung der Eingabe, gefolgt von einem Beispiel. Danach werden alle weiteren möglichen Schlüsselwörter aufgelistet.
+
+**System:**  
+`system "Systemname, Systemattribut1(Optional), SystemAttribut2(Optional), ..."`
+*Beispiel:* `system "Deployment of Components"` 
+
+**Knoten:**  
+`node "Knotentyp, Name des Knotens, Elternknoten, Knoteneigenschaft(Optional)"`  
+*Beispiel:* `node "device, :Server, -"`
+*Schlüsselwörter der Knotentypen:* `device`, `execution`  
+> Es gibt zwei Arten von Knoten: Die "Geräte"-Knoten und die ausführenden Umgebungsknoten.  
+> Gibt es *keinen Elternknoten* schreibt man an der Stelle einfach ein `-`.
+
+**Attribute:**  
+`attribute "Inhalt"`  
+*Beispiel:* `attribute "session-type: Stateful"`
+> Das definierte Attribut bezieht sich immer auf den zuletzt definierten Knoten!
+
+**Beziehungen:**  
+`relationship "Beziehungstyp, 'von Knoten' Name, Pfeil auf 'von Knoten' (true/false), Multiplizität 'von Knoten', 'zu Knoten' Name, Pfeil auf 'zu Knoten' (true/false)  Multiplizität 'zu Knoten', Kommentar(Optional)"`  
+*Beispiele:*  
+`relationship "composition, Apache, false, -, ApplicationServer, true, -"`  
+`relationship "deploy, portfolio.jar, false, -, ApacheServer, true, -"`  
+*Beziehungstypen:* `association`, `activity`, `generalization`, `aggregation`, `dependency`, `composition`  
+
+> Soll *keine Multiplizität* angegeben werden schreibt man an der Stelle einfach ein `-`.
+> Bei *generalization* gibt es die Ausnahme, dass es mehrere 'von Knoten' geben darf. Hier wird der letzte angegebene Knoten als 'zu Knoten' betrachtet. Die Syntax ändert sich dabei nicht, das heißt es werden pro Paket in der Reihenfolge erwartet: `'Knoten' Name, Pfeil auf 'Knoten' (true/false), Multiplizität 'Knoten'`  
+
+*Beispiel:* `relationship "generalization, ApacheServer, false, -, WAMPServer, false, -, WebServer, true, -"`  
+
+**Notizen:**  
+`note "Bezugsknoten, Inhalt"`  
+*Beispiel:* `note ":Server, Needs maintainance every now and again"`
+> Hier ist aufzupassen, dass **NODE** und **NOTE** nicht verwechselt werden!
+
 
 ## Objektdiagramm
 

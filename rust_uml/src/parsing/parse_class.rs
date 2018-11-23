@@ -299,6 +299,11 @@ fn check_class(s: &str, klassen: &mut Vec<Klasse>) -> String {
     String::from("")
 }
 
+
+
+
+
+
 //Hier beginnen die Unit-Tests
 #[cfg(test)]
 mod tests {
