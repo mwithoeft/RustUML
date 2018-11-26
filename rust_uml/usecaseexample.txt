@@ -1,0 +1,19 @@
+type "usecase diagram"
+
+elementtype "subject, Multimediasystem"
+
+elementtype "actor, Benutzer1"
+elementtype "actor, Benutzer2"
+elementtype "usecase, CD-brennen"
+elementtype "usecase, CD-erstellen"
+elementtype "usecase, CD-beschriften"
+elementtype "usecase, Booklet-erstellen"
+elementtype "extpoint, Beschriftung, CD-erstellen"
+
+relationship "association, Benutzer1, -, CD-erstellen, -"
+relationship "association, Benutzer1, -, CD-brennen, -"
+relationship "association, Benutzer1, -, Booklet-erstellen, -"
+relationship "association, Benutzer2, -, CD-beschriften, -"
+relationship "include, CD-erstellen, -, CD-brennen, -"
+relationship "include, CD-erstellen, -, Booklet-erstellen, -"
+relationship "extend, CD-beschriften, -, CD-erstellen, -"
