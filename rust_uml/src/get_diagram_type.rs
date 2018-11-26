@@ -46,7 +46,8 @@ pub fn read_file(filepath: String) -> (Vec<&'static str>, DiagramType) {
 
     let find = v[0];
     v.remove(0);
-
+	//println!("{}", find);
+	
     //Klassendiagramm?
     let mut re = Regex::new("^type\"classdiagram\"").unwrap();
     if re.is_match(find) {

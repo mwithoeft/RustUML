@@ -16,7 +16,7 @@ use parsing;
 const WIDTH: u32 = 1680;
 const HEIGHT: u32 = 720;
 const X_MIN: i32 = 300; // mindest abstand x-Achse
-const Y_MIN: i32 = 400; // mindest abstand y-Achse
+const Y_MIN: i32 = 200; // mindest abstand y-Achse
 const FONT_SIZE_TITLE: f32 = 20.0;
 const FONT_SIZE: f32 = 6.0;
 const TITEL_MIN: u32 = 30;
@@ -35,7 +35,9 @@ struct Pngclass{
     rel_point_LORU: ((f32,f32),(f32,f32),(f32,f32),(f32,f32)),
     attribute: Vec<String>,
     methoden: Vec<String>,
-    name: String
+    name: String,
+    property: String,
+    keywords: String
 }
 
 fn buildclass(id: i32)->Pngclass{
@@ -48,7 +50,9 @@ fn buildclass(id: i32)->Pngclass{
         rel_point_LORU:((0.0,0.0),(0.0,0.0),(0.0,0.0),(0.0,0.0)),
         attribute: Vec::new(),
         methoden: Vec::new(),
-        name: String::new()
+        name: String::new(),
+        property: String::new(),
+        keywords: String::new()
     }
 }
 
@@ -99,6 +103,7 @@ pub fn build_klassendiagramm( klassen: &mut Vec<parsing::parse_class::Klasse>, m
     let mut image = creat_png();
     let mut i: i32 = 0;
     let mut j: i32 = 0;
+    let mut id: i32= 0;
     let _black = Rgb ([0u8, 0u8, 0u8]);
     let mut class: Vec<Pngclass>= Vec::new();
 
@@ -106,11 +111,12 @@ pub fn build_klassendiagramm( klassen: &mut Vec<parsing::parse_class::Klasse>, m
     
 
     for s in klassen {
-        class.push(buildclass(i));
-        berechne_werte(&s._name ,&s._property ,&s._keywords , &mut s._attribute, &mut s._methoden,  i, &mut class);
-        image = draw_class(image, &mut class, i, j);
+        class.push(buildclass(id));
+        berechne_werte(&s._name ,&s._property ,&s._keywords , &mut s._attribute, &mut s._methoden,  id, &mut class );
+        image = draw_class(image, &mut class,id, i, j);
         i=i+1;
-        if i> 6 {
+        id = id + 1;
+        if i> 4 {
             i=0;
             j+=1;
         }
@@ -133,13 +139,15 @@ fn berechne_werte(name: &str,property: &str , keywords: &str, attribute: &mut Ve
             class.hoehe_att = hoehe(property, keywords, &class.attribute, &class.methoden).1;
             class.hoehe_meth = hoehe(property, keywords, &class.attribute, &class.methoden).2;
             class.name =name.to_string();
+            class.property = property.to_string();
+            class.keywords = keywords.to_string();
         }
     }  
 }
 
-fn draw_class(image: RgbImage, class: &mut Vec<Pngclass>, id:i32, j:i32)-> RgbImage{
+fn draw_class(image: RgbImage, class: &mut Vec<Pngclass>, id:i32, i:i32, j:i32)-> RgbImage{
     let mut bild = image;
-    let x: i32 = 20+id*X_MIN;
+    let x: i32 = 20+i*X_MIN;
     let y: i32 = 70+j*Y_MIN;
     let _black = Rgb ([0u8, 0u8, 0u8]);
     let _red = Rgb([255u8, 0u8, 0u8]);
@@ -172,8 +180,13 @@ fn draw_class(image: RgbImage, class: &mut Vec<Pngclass>, id:i32, j:i32)-> RgbIm
 
             //Klassen namen schreiben x wert = x des linken randes + die Differenz aus der hälfte der breite und die hälft der Wortlänge
             // y wert = y wert des oberen randes + die Differenz aus der gesamten kopf höhe und der konstanten Titel_min
+            draw_text_mut(&mut bild, _black, (x + class.breite as i32 / 2 - (class.property.chars().count()*FONT_SIZE as usize /2) as i32) as u32, y as u32+ 3, scale, &font, &class.property);
+           
             draw_text_mut(&mut bild, _black, (x + class.breite as i32 / 2 - (class.name.chars().count()*FONT_SIZE_TITLE as usize /2) as i32) as u32, 
                             y as u32+ class.hoehe_kopf - TITEL_MIN, title_scale, &font, &class.name);
+            
+            draw_text_mut(&mut bild, _black, (x + class.breite as i32 / 2 - (class.keywords.chars().count()*FONT_SIZE as usize /2) as i32) as u32, y as u32+ class.hoehe_kopf - 10 , scale, &font, &class.keywords);
+           
             //Attribute schreiben
             for att in &class.attribute {
                 draw_text_mut(&mut bild, _black, (x as u32 + MIN_RAND_LINKS ) as u32, 
@@ -241,10 +254,35 @@ fn draw_relation(image: RgbImage, relation: &mut Vec<parsing::parse_class::Bezie
 
         match r._beziehungstyp{
             parsing::parse_class::Beziehungstyp::EXTENDS => {
-                draw_line_segment_mut(&mut bild, from.2, (((from.2).0)+9.0,(from.2).1), white);
-                draw_line_segment_mut(&mut bild, ((from.2).0, (from.2).1), (((from.2).0)+10.0, ((from.2).1)-10.0), _black);
-                draw_line_segment_mut(&mut bild, ((from.2).0, (from.2).1), (((from.2).0)+10.0, ((from.2).1)+10.0), _black);
-                draw_line_segment_mut(&mut bild, (((from.2).0)+10.0, ((from.2).1)+10.0), (((from.2).0)+10.0, ((from.2).1)-10.0), _black);
+                let mut spitze: (f32,f32) = (0.0,0.0);
+                let mut lfluegel: (f32,f32) = (0.0,0.0);
+                let mut rfluegel: (f32,f32) = (0.0,0.0);
+
+                if(r._von_klasse_pfeil){
+                    spitze = from.2;
+                    lfluegel = ((from.2).0+10.0,(from.2).1+10.0);
+                    rfluegel = ((from.2).0+10.0,(from.2).1-10.0);
+                    draw_line_segment_mut(&mut bild, spitze, (((from.2).0)+9.0,(from.2).1), white);
+                    draw_line_segment_mut(&mut bild, spitze, lfluegel, _black);
+                    draw_line_segment_mut(&mut bild, spitze, rfluegel, _black);
+                    draw_line_segment_mut(&mut bild, lfluegel, rfluegel, _black);
+                }
+
+                //spitze = (0.0,0.0);
+                //lfluegel = (0.0,0.0);
+                //rfluegel = (0.0,0.0);
+
+                
+                if(r._zu_klasse_pfeil){
+                    spitze = to.2;
+                    lfluegel = ((to.2).0-10.0,(to.2).1+10.0);
+                    rfluegel = ((to.2).0-10.0,(to.2).1-10.0);
+
+                    draw_line_segment_mut(&mut bild, to.2, (((to.2).0)-9.0,(to.2).1), white);
+                    draw_line_segment_mut(&mut bild, spitze, lfluegel, _black);
+                    draw_line_segment_mut(&mut bild, spitze, rfluegel, _black);
+                    draw_line_segment_mut(&mut bild, lfluegel, rfluegel, _black);
+                }
             }
             parsing::parse_class::Beziehungstyp::IMPLEMENTS=>{
                 draw_line_segment_mut(&mut bild, from.2, (((from.2).0)+9.0,(from.2).1), white);
@@ -285,29 +323,23 @@ fn draw_relation(image: RgbImage, relation: &mut Vec<parsing::parse_class::Bezie
             parsing::parse_class::Beziehungstyp::UNDEFINED=>{}
         }
 
-        if !(r._von_klasse_name.is_empty()) {
 
+        if !(r._von_klasse_mult.is_empty()) {
             let mut p: (u32,u32) = (0,0);
 
             p.0 = (from.2).0 as u32 +20;
             p.1 = (from.2).1 as u32 -10;
 
-            draw_text_mut(&mut bild, _black, p.0, p.1, scale, &font, &r._von_klasse_name);;
+            draw_text_mut(&mut bild, _black, p.0, p.1, scale, &font, &r._von_klasse_mult);;
 
-
-
-        }else if !(r._zu_klasse_name.is_empty()){
-
+        }
+        if !(r._zu_klasse_mult.is_empty()){
             let mut p: (u32,u32) = (0,0);
 
-            p.0 = (from.2).0 as u32 -40;
-            p.1 = (from.2).1 as u32 -10;
+            p.0 = (to.2).0 as u32 -(FONT_SIZE as u32*r._zu_klasse_mult.chars().count()as u32 ) ;
+            p.1 = (to.2).1 as u32 -10;
 
-            draw_text_mut(&mut bild, _black, p.0, p.1, scale, &font, &r._zu_klasse_name);;
-
-
-
-
+            draw_text_mut(&mut bild, _black, p.0, p.1, scale, &font, &r._zu_klasse_mult);;
         }
 
         
