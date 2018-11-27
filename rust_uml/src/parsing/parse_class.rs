@@ -137,6 +137,7 @@ fn parse_property(s: &str) -> String {
     let re = Regex::new("^property\"([^\"]+?)\"$").unwrap();
     let mut property = String::from("");
     if re.is_match(s) {
+        property.push_str("{");
         let caps = re.captures(s).unwrap();
         let u = caps.get(1).map_or(String::from(""), |m| String::from(m.as_str()));
         if u.contains(","){
@@ -149,8 +150,9 @@ fn parse_property(s: &str) -> String {
             }
             property = String::from(property.trim());
         } else {
-            property = u;
+            property.push_str(&u);
         }
+        property.push_str("}");
     }
     property
 }
@@ -158,6 +160,7 @@ fn parse_keywords(s: &str) -> String {
     let re = Regex::new("^keywords\"([^\"]+?)\"$").unwrap();
     let mut keywords = String::from("");
     if re.is_match(s) {
+        keywords.push_str("<<");
         let caps = re.captures(s).unwrap();
         let u = caps.get(1).map_or(String::from(""), |m| String::from(m.as_str()));
         if u.contains(","){
@@ -170,8 +173,9 @@ fn parse_keywords(s: &str) -> String {
             }
             keywords = String::from(keywords.trim());
         } else {
-            keywords = u;
+            keywords.push_str(&u);
         }
+        keywords.push_str(">>");
     }
     keywords
 }
