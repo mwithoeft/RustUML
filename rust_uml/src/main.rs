@@ -63,11 +63,7 @@ fn main() {
         get_diagram_type::DiagramType::PACKAGE => { println!("PACKAGE!"); }
         get_diagram_type::DiagramType::DISTRIBUTION => { println!("Deployment!"); }
         get_diagram_type::DiagramType::OBJECT => { println!("OBJECT!"); }
-        get_diagram_type::DiagramType::NOTFOUND => { println!("NOTFOUND!"); 
-            parsing::parse_class::parse(&mut vektor, &mut klassen, &mut beziehungen);
-
-            build_class_diagram::build_klassendiagramm(&mut klassen, &mut beziehungen);
-        }
+        get_diagram_type::DiagramType::NOTFOUND => { println!("NOTFOUND!"); }
     }
 
 

@@ -1,4 +1,0 @@
-<<interface>>
-multiplizitäten
-DEPENDENCY
-Pfeile in beide richtungen

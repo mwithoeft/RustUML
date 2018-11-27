@@ -267,11 +267,6 @@ fn draw_relation(image: RgbImage, relation: &mut Vec<parsing::parse_class::Bezie
                     draw_line_segment_mut(&mut bild, spitze, rfluegel, _black);
                     draw_line_segment_mut(&mut bild, lfluegel, rfluegel, _black);
                 }
-
-                //spitze = (0.0,0.0);
-                //lfluegel = (0.0,0.0);
-                //rfluegel = (0.0,0.0);
-
                 
                 if(r._zu_klasse_pfeil){
                     spitze = to.2;
@@ -294,7 +289,28 @@ fn draw_relation(image: RgbImage, relation: &mut Vec<parsing::parse_class::Bezie
                     draw_line_segment_mut(&mut bild, (((from.2).0)+i as f32, ((from.2).1)), (((from.2).0)+i as f32, ((from.2).1)), white);
                 }
             }
-            parsing::parse_class::Beziehungstyp::ASSOCIATION=>{}
+            parsing::parse_class::Beziehungstyp::ASSOCIATION=>{
+                let mut spitze: (f32,f32) = (0.0,0.0);
+                let mut lfluegel: (f32,f32) = (0.0,0.0);
+                let mut rfluegel: (f32,f32) = (0.0,0.0);
+
+                if(r._von_klasse_pfeil){
+                    spitze = from.2;
+                    lfluegel = ((from.2).0+10.0,(from.2).1+10.0);
+                    rfluegel = ((from.2).0+10.0,(from.2).1-10.0);
+                    draw_line_segment_mut(&mut bild, spitze, lfluegel, _black);
+                    draw_line_segment_mut(&mut bild, spitze, rfluegel, _black);
+                }
+                
+                if(r._zu_klasse_pfeil){
+                    spitze = to.2;
+                    lfluegel = ((to.2).0-10.0,(to.2).1+10.0);
+                    rfluegel = ((to.2).0-10.0,(to.2).1-10.0);
+
+                    draw_line_segment_mut(&mut bild, spitze, lfluegel, _black);
+                    draw_line_segment_mut(&mut bild, spitze, rfluegel, _black);
+                }
+            }
             parsing::parse_class::Beziehungstyp::AGGREGATION=>{
                 draw_line_segment_mut(&mut bild, from.2, (((from.2).0)+19.0,(from.2).1), white);
                 draw_line_segment_mut(&mut bild, ((from.2).0, (from.2).1), (((from.2).0)+9.0, ((from.2).1)-5.0), _black);
@@ -319,7 +335,28 @@ fn draw_relation(image: RgbImage, relation: &mut Vec<parsing::parse_class::Bezie
                 }
                 
             }
-            parsing::parse_class::Beziehungstyp::DEPENDENCY=>{}
+            parsing::parse_class::Beziehungstyp::DEPENDENCY=>{
+                 let mut spitze: (f32,f32) = (0.0,0.0);
+                let mut lfluegel: (f32,f32) = (0.0,0.0);
+                let mut rfluegel: (f32,f32) = (0.0,0.0);
+
+                if(r._von_klasse_pfeil){
+                    spitze = from.2;
+                    lfluegel = ((from.2).0+10.0,(from.2).1+10.0);
+                    rfluegel = ((from.2).0+10.0,(from.2).1-10.0);
+                    draw_line_segment_mut(&mut bild, spitze, lfluegel, _black);
+                    draw_line_segment_mut(&mut bild, spitze, rfluegel, _black);
+                }
+                
+                if(r._zu_klasse_pfeil){
+                    spitze = to.2;
+                    lfluegel = ((to.2).0-10.0,(to.2).1+10.0);
+                    rfluegel = ((to.2).0-10.0,(to.2).1-10.0);
+
+                    draw_line_segment_mut(&mut bild, spitze, lfluegel, _black);
+                    draw_line_segment_mut(&mut bild, spitze, rfluegel, _black);
+                }
+            }
             parsing::parse_class::Beziehungstyp::UNDEFINED=>{}
         }
 
