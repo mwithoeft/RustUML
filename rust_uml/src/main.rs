@@ -8,6 +8,7 @@ mod check_file;
 mod get_diagram_type;
 mod parsing;
 mod build_class_diagram;
+mod build_usecase_diagram;
 
 fn main() {
     //Deklaration der Parser-Stukturen
@@ -56,7 +57,6 @@ fn main() {
                 println!("");
             }
             */
-        }
 
         }
         
