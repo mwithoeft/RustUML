@@ -38,7 +38,9 @@ fn main() {
 
 	    get_diagram_type::DiagramType::USECASE => {
             parsing::parse_usecase::parse(&mut vektor, &mut typen, &mut beziehungen_usecase);
-            
+            build_usecase_diagram::build_usecase_diagramm(&mut typen, &mut beziehungen_usecase);
+
+            /*
             println!("Elementtypen:");
             for s in typen {
                 println!("{}", s._elementname);
@@ -53,6 +55,8 @@ fn main() {
                 println!("{}", s._zu_element_mult);
                 println!("");
             }
+            */
+        }
 
         }
         

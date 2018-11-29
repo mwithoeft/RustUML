@@ -14,3 +14,4 @@ quickcheck = "0.6"
 rand = "0.4.0"
 rusttype = "0.5"
 rayon = "1.0"
+either = { version = "1.0", default-features = false }
