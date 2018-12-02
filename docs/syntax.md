@@ -132,7 +132,7 @@
 **Beziehungen:**  
 `relationship "Beziehungstyp, erstes Token , zweites Token, name"`  
 *Beispiel:* `relationship "synchronic, Patient, Doktor, Rezept"`  
-*Beziehungstypen*: `synchronic`, `asynchronous`, `return`, `undetermined`  
+*Beziehungstypen*: `synchronous`, `asynchronous`, `return`, `undetermined`  
 
 **Löschen:**  
 `delete "Löscher, Gelöschter"`  
