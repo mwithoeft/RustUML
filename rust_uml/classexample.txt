@@ -36,3 +36,4 @@ relationship "aggregation, Kategorie, true, 1, Artikel, false, 1..*"
 
 
 
+
