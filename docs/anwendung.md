@@ -1,1 +1,1 @@
-<script src="https://cdn.jsdelivr.net/gh/mwithoeft/RustUMLBuilds/docsify/rust_uml.js"></script>
+<script src="https://rawgit.com/mwithoeft/RustUMLBuilds/master/docsify/rust_uml.js"></script>
