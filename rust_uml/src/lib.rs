@@ -106,16 +106,16 @@ impl Component for Model {
 impl Renderable<Model> for Model {
     fn view(&self) -> Html<Self> {
         html! {
-            <section>
-            <div>
-                <textarea rows=5,
-                    value=&self.text_area,
-                    oninput=|e| Msg::GotInput(e.value),
-                    placeholder="Hier können Sie ihre Spezifikation eintragen",>
-                </textarea>
-                <div id="bild",>
+            <div id="mantel",>
+                <div id="bild",></div>
+                <div id="textfeld",>
+                    <textarea rows=5,
+                        value=&self.text_area,
+                        oninput=|e| Msg::GotInput(e.value),
+                        placeholder="Hier können Sie ihre Spezifikation eintragen",>
+                    </textarea>
                 </div>
-                <div>
+                <div id="buttons",>
                     <select id="selectBox", onchange=|_| Msg::SelectType,>
                         <option value="class",>{"Klassendiagramm"}</option>
                         <option value="usecase",>{"Anwendungsfalldiagramm"}</option>
@@ -130,7 +130,6 @@ impl Renderable<Model> for Model {
                     <button onclick=|_| Msg::Clicked,>{ "Jetzt Parsen!" }</button>
                 </div>
             </div>
-            </section>
         }
     }
 }

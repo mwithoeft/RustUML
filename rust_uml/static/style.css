@@ -1,3 +1,8 @@
+#textfeld {
+	min-width: 600px;
+    max-width: 600px;
+    min-height: 600px;
+}
 textarea {
     border: 2px solid black;
     min-width: 600px;
@@ -32,8 +37,12 @@ option {
     background-color: rgb(121, 211, 124);
 }
 
+button {
+	border: 1px solid #4CAF50;
+}
+
 button:hover {
     background-color: white; 
     color: black; 
-    border: 2px solid #4CAF50;
+    border: 1px solid #4CAF50;
 }
