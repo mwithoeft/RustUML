@@ -5,4 +5,4 @@
 * [Schnittstellen](schnittstelle.md)
 * [Reguläre Ausdrücke](regex.md)
 * [Diagrammplanung](diagrammplanung.md)
-* [Rust-UML Anwendung](anwendung.md)
+* [Die Anwendung](anwendung.md)
