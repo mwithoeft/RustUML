@@ -14,6 +14,9 @@ use rust_uml::Model;
 fn main() {
     yew::initialize();
     let body = document().query_selector("body").unwrap().unwrap();
+    /* Für Docsify
+    let body = document().query_selector("body").unwrap().unwrap();
+    */
 
     let mount_class = "rust_uml";
     let mount_point = document().create_element("div").unwrap();
