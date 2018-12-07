@@ -1,0 +1,18 @@
+[package]
+name = "rust_uml"
+version = "0.1.0"
+authors = ["mwithoeft <moritz_pit.withoeft@fh-bielefeld.de>"]
+
+[dependencies]
+yew = {git = "https://github.com/DenisKolodin/yew"}
+stdweb = "0.4.10"
+regex = "1"
+conv = "0.3.1"
+itertools = "0.7.0"
+num = "0.2.0"
+quickcheck = "0.6"
+rand = "0.4.0"
+rusttype = "0.5"
+rayon = "1.0"
+either = { version = "1.0", default-features = false }
+svg = "0.5.11"

@@ -1,0 +1,73 @@
+﻿Keywörter für Rust UML (Upgedatete Version zu finden in Docsify)
+
+type "Diagrammtype"    //type "class diagram" //type "object diagram"
+
+
+
+//Klassendiagramm:
+
+classname "Name der Klasse"		//classname "Ball"
+property "Klasseneigenschaft"   //property "abstract"
+keywords "schlüsselwörter"		 //keywords "interface, gui" //keywords "gui"
+attribute "Modifikator, Attributentype1(optional),Attributentype2(optional), Name des Attributes, Datentyp, Wert(optional)" 
+	// attribute "+,size,int,5" //attribute "+,size,int" //Attributentype Keywörter: "static", "final"
+constructor "Modifikator, parameter1:Datentyp, parameter2:Datentyp,..." //constructor "+, ywert:int, xwert:int"
+method "Modifikator, Methodentype1(optional), Methodentype2(optional), Name, Datentyp der Rückgabe, parameter1:Datentyp, parameter2:Datentyp,..." 
+	// method "-, länge, int, xwert:int, ywert:int"  //Methodentype Keywörter: "static", "final"	
+classname ...
+	
+//Beziehungen:
+relationship "Beziehungstyp, von Klasse 1, nach Klasse 2, Multiplizität Klasse 1, Multiplizität Klasse 2"  //Beziehungstype Keywörter: "extends", "implements", "association", "aggregation", "composition"  
+	//relationship "extends, Vater, Kind"
+!Multiplizitäten -> Hinzugefügt in Docsify
+**
+
+
+
+//Anwendungsfalldiagramm
+elementtype "Element Type, Element name ,behälter(Optional)"	//keywords "subject", "actor", "useCase", "extPoint"
+relationship "Beziehungstype, erstes Element, zweites Element, notiz inhalt(optional)"	//keywords "association","generalization","include","extend"
+
+
+
+//Aktivitätsdiagramm
+package "name "
+elementtype "element Type , name" 		//keywords "state", "receivesignal", "sendsignal", "timesignal", "dataobject"
+relationship "erstes element, zweites element"	//Keywords "startpoint", "endpoint"	
+
+
+//Sequenzdiagramm
+
+objectToken "objekt name, klassen name"
+relationship "beziehungstype , erstes token , zweites token, name"	//keywords: "synchronic", "asynchronous", "return", "undetermined"
+delete "löscher, gelöschter"
+
+
+
+//Zustandsdiagramm
+state "name"
+event "state1, state2, name, condition(Optional)"		//Keywords: "startpoint", "endpoint"
+choice "condition, if state,else state"
+
+
+
+
+//Komponentendiagramm
+//Paketdiagramm
+//Verteilungsdiagramm
+	
+//objektdiagramm
+
+objectname "Name des Objekts, Name der klasse"		//objectname "Blauer Ball,Ball"
+objstereotype "Stereotyp des Objekts" 				//objstereotype "TestKlasse"
+attribute "Modifikator(optional),Geerbt?, Attributentype1(optional),Attributentype2(optional), Name des Attributes, Datentyp, Wert" 
+	// attribute "+,y,size,int,5" //attribute "+,n,size,int" //Attributentype Keywörter: "static", "final"
+objectname ...
+
+//Beziehungen:
+relationship "Beziehungstype, von Objekt eins, nach Objekt zwei"  //Beziehungstype Keywörter:"association", "aggregation", "composition"  
+	//relationship "composition, Haus, Wand"
+
+
+
+conrod Bibliotek Grafische darstellung
