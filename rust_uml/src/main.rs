@@ -15,7 +15,7 @@ fn main() {
     yew::initialize();
     let body = document().query_selector("body").unwrap().unwrap();
 
-    let mount_class = "markdown-section";
+    let mount_class = "rust_uml";
     let mount_point = document().create_element("div").unwrap();
     mount_point.class_list().add(mount_class).unwrap();
     body.append_child(&mount_point);
