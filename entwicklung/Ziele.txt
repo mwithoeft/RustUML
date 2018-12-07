@@ -1,5 +1,0 @@
-Regex erweitern
-Imageröße und Relationen
-Schnittstellendoku
-Testfälle(Unit & Integration)
-Integration der Software (Anfang bis Ende eines Typs)
