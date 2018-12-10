@@ -1,1 +1,1 @@
-<script src="https://mwithoeft.github.io/RustUMLBuilds/docsify/rust_uml.js" crossorigin="use-credentials"></script>
+<script src="../RustUMLBuilds/docsify/rust_uml.js"></script>
