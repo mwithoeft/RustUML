@@ -160,7 +160,7 @@ fn parse_keywords(s: &str) -> String {
     let re = Regex::new("^keywords\"([^\"]+?)\"$").unwrap();
     let mut keywords = String::from("");
     if re.is_match(s) {
-        keywords.push_str("<<");
+        keywords.push_str("&lt;&lt;");
         let caps = re.captures(s).unwrap();
         let u = caps.get(1).map_or(String::from(""), |m| String::from(m.as_str()));
         if u.contains(","){
@@ -175,7 +175,7 @@ fn parse_keywords(s: &str) -> String {
         } else {
             keywords.push_str(&u);
         }
-        keywords.push_str(">>");
+        keywords.push_str("&gt;&gt;");
     }
     keywords
 }
