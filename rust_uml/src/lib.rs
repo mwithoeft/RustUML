@@ -10,12 +10,9 @@ use yew::prelude::*;
 use stdweb::*;
 use std::boxed::Box;
 
-use svg::Document;
-use svg::node::element::Path;
-use svg::node::element::path::Data;
-use svg::node::element::Circle;
-
+mod build_class_svg;
 mod parsing;
+mod svglib;
 
 enum FormOption {
     CLASS, USECASE, ACTION, SEQUENCE, STATE, COMPONENT, PACKAGE, DEPLOYMENT, OBJECT
@@ -29,7 +26,6 @@ pub struct Model {
 
 pub enum Msg {
     GotInput(String),
-    Clicked,
     SelectType,
 }
 
@@ -48,8 +44,7 @@ impl Component for Model {
         match msg {
             Msg::GotInput(new_value) => {
                 self.text_area = new_value;
-            }
-            Msg::Clicked => {
+
                 let mut klassen: Vec<parsing::parse_class::Klasse> = Vec::new();
                 let mut beziehungen_class: Vec<parsing::parse_class::Beziehung> = Vec::new();
 
@@ -60,11 +55,14 @@ impl Component for Model {
                 match self.select {
 	                FormOption::CLASS => {
                         js!(console.log("Parse Class!"));  
-                        //DATEIEN NICHT MEHR VORHANDEN - NUR ZUR KENNZEICHNUNG //parsing::parse_class::parse(&mut vektor, &mut klassen, &mut beziehungen_class);
-                        //DATEIEN NICHT MEHR VORHANDEN - NUR ZUR KENNZEICHNUNG //build_class_diagram::build_klassendiagramm(&mut klassen, &mut beziehungen_class);
-                        let mut svg : String = test_svg();
+                        parsing::parse_class::parse(&mut vektor, &mut klassen, &mut beziehungen_class);
+
+                        let mut svg : String = build_class_svg::build_klassendiagramm(&mut klassen, &mut beziehungen_class).to_string();
                         svg = edit_svg(&svg);
-                        js!(document.getElementById("bild").style.backgroundImage = @{svg});
+                        js!{
+                            /*document.getElementById("bild").style.backgroundImage = @{svg};*/
+                            document.getElementById("bild").innerHTML = @{svg};
+                        }
                     }
 
 	                FormOption::USECASE => {
@@ -94,8 +92,7 @@ impl Component for Model {
                 else if s == "component" {self.select = FormOption::COMPONENT;}
                 else if s == "package" {self.select = FormOption::PACKAGE;}
                 else if s == "deployment" {self.select = FormOption::DEPLOYMENT;}
-                else if s == "object" {self.select = FormOption::OBJECT;}
-                js!(console.log("TypeSelected: " + @{s}));             
+                else if s == "object" {self.select = FormOption::OBJECT;}           
             }
 
         }
@@ -127,7 +124,6 @@ impl Renderable<Model> for Model {
                         <option value="deployment",>{"Verteilungsdiagramm"}</option>
                         <option value="object",>{"Objektdiagramm"}</option>
                     </select>
-                    <button onclick=|_| Msg::Clicked,>{ "Jetzt Parsen!" }</button>
                 </div>
             </div>
         }
@@ -144,8 +140,8 @@ fn get_type() -> String {
 fn edit_string(t: &str) -> Vec<&'static str> {
     let mut s = String::from(t);
     s = s.replace(" ", "");
-    s = s.replace("\"\r\n", "\"|");
-    s = s.replace("\r\n", "");
+    s = s.replace("\"\n", "\"|");
+    s = s.replace("\n", "");
 
     let split = s.split("|");
     let mut v: Vec<&'static str> = Vec::new();
@@ -162,7 +158,7 @@ fn edit_string(t: &str) -> Vec<&'static str> {
 
 fn edit_svg(s: &str) -> String {
     let mut t : String = String::from(s);
-    t = t.replace("%", "%25");
+    /*t = t.replace("%", "%25");
     t = t.replace(" ", "%20");
     t = t.replace("!", "%21");
     t = t.replace("\"", "%22");
@@ -199,47 +195,11 @@ fn edit_svg(s: &str) -> String {
     t = t.replace("|", "%7C");
     t = t.replace("}", "%7D");
     t = t.replace("~", "%7E");
-    t = t.replace("\n", "");
+    t = t.replace("\n", "");*/
 
-    let mut a : String = String::from("url(\"data:image/svg+xml,");
+    /*let mut a : String = String::from("url(\"data:image/svg+xml,");
     a.push_str(&t);
-    a.push_str("\")");
+    a.push_str("\")");*/
 
-    a
-}
-
-fn test_svg() -> String {
-
-    let data = Data::new()
-        .move_to((10, 10))
-        .line_by((0, 50))
-        .line_by((50, 0))
-        .line_by((0, -50))
-        .close();
-
-    let path = Path::new()
-        .set("fill", "none")
-        .set("stroke", "red")
-        .set("stroke-width", 3)
-        .set("d", data);
-
-    let cir = Circle::new()
-        .set("fill", "yellow")
-        .set("stroke", "green")
-        .set("stroke-width", 3)
-        .set("cx", 20)
-        .set("cy", 20)
-        .set("r", 10);
-
-
-
-    let document = Document::new()
-        .set("viewBox", (0, 0, 70, 70))
-        .add(path)
-        .add(cir);
-	
-
-    document.to_string()
-	
-
+    t
 }

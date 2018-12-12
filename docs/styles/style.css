@@ -19,7 +19,7 @@ textarea {
 	
 }
 
-button, select {
+select {
 	order: 2;
     background-color: #4CAF50;
     border: none;
@@ -36,10 +36,4 @@ button, select {
 option {
     color: black;
     background-color: rgb(121, 211, 124);
-}
-
-button:hover {
-    background-color: white; 
-    color: black; 
-    border: 2px solid #4CAF50;
 }

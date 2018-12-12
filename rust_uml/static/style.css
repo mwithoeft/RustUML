@@ -19,7 +19,7 @@ textarea {
     border: 2px solid black;
 }
 
-button, select {
+select {
     background-color: #4CAF50;
     border: none;
     color: white;
@@ -35,14 +35,4 @@ button, select {
 option {
     color: black;
     background-color: rgb(121, 211, 124);
-}
-
-button {
-	border: 1px solid #4CAF50;
-}
-
-button:hover {
-    background-color: white; 
-    color: black; 
-    border: 1px solid #4CAF50;
 }
