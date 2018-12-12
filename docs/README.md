@@ -7,7 +7,20 @@
 > Nicht viel. Auf unserer GitHub-Seite lässt sich die extra für dieses Programm definierte Syntax finden, mit der das UML-Diagramm erzeugt werden kann. Die Einarbeitung in der Syntax ist nicht schwer und zu jedem Aspekt sind Beispiele gegeben, die das Kennenlerne der Syntax erleichtern.
 
 # Programme und Kompatibilität
-> Zum Ausführen der Anwendung werden keine speziellen Programme benötigt. Zum Erstellen der Datei, in der die UML-Syntax steht wird ein Editor benötigt. Empfohlen wird hier **Visual Studio Code** oder **Notepad++**. Es ist bisher nur vom windowseigenen *Notepad* bekannt, dass dieser nicht mit dem Programm kompatibel ist. Denn dieser fügt selbst an den Angang der Datei ein Leerzeichen hinzu, wodurch das Parsen erschwert wird, da es nicht mit den normalen regulären Ausdrücken oder Methoden entfernt werden kann. Sonst sollte aber jeder beliebige, etwas fortschrittliche Texteditor funktionieren.
+
+<!-- tabs:start -->
+
+#### ** Website **
+
+Für die Nutzung der Webanwendung werden keine  speziellen Programme benötigt. Alles, was der Nutzer kenn sollte, ist die Syntax zur Spezifizierung der UML-Diagramme.
+
+#### ** HTML-Standalone **
+
+> Zum Nutzen der Anwendung werden keine speziellen Programme benötigt. Für die Nutzung der HTML-Standalone-Anwendung wird jedoch ein _fortgeschritterner_ Editor, wie z.B. **Visual Studio Code** oder **Notepad++** empfohlen. Vom windowseigenen Editor raten wir ab, da dieser HTML-Code nicht schön darstellt. Die genauere Nutzung der HTML-Anwendung wird in der Sekion HTML-Anwendung erläutert.
+
+
+<!-- tabs:end -->
+
 
 # Authors
 
