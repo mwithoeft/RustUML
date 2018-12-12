@@ -5,4 +5,5 @@
 * [Schnittstellen](schnittstelle.md)
 * [Reguläre Ausdrücke](regex.md)
 * [Diagrammplanung](diagrammplanung.md)
-* [Die Anwendung](anwendung.md)
+* [Web-Anwendung](web_anwendung.md)
+* [HTML-Anwendung](html_anwendung.md)
