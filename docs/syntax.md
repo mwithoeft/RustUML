@@ -9,25 +9,38 @@
 
 ## Festlegung des Diagrammtyps
 
-> Als Erstes erwartet der Parser die Festlegung des Diagrammtyps. 
-> Hier wird zuerst die Bezeichnung des Diagramms auf Deutsch aufgelistet, dahinter steht das Keywort, das für die Syntax und die Erkennung der richtigen Typs entscheidend ist!  Folgende Diagrammtypen stehen zur Verfügung:  
+<!-- tabs:start -->
 
-- Klassendiagramm: `"class diagram"`
-- Anwendungsfalldiagramm: `"usecase diagram"`
-- Akitivitätsdiagramm: `"action diagram"`
-- Sequenzdiagramm: `"sequence diagram"`
-- Zustandsdiagramm: `"state diagram"`
-- Komponentendiagramm: `"component diagram"`
-- Paketdiagramm: `"package diagram"`
-- Verteilungsdiagramm: `"deployment diagram"`
-- Objektdiagramm: `"object diagram"`  
+#### ** Website **
 
-> Zu wissen, wie die Diagrammtypen benannt werden reicht jedoch nicht. **Zuerst** schaut sich der Parser nämlich danach um, ob der Typ des Diagramms festlegt wird. Zusätzlich benötigen wir das Schlüsselwort `type`.
-> Die Erste Zeile einer Eingabe könnte also wie im folgenden Beispiel aussehen:  
+> Die Festlegung des Diagrammtyps erfolgt hier über eine graphische Oberfläche und muss nicht per Text spezifiziert werden.
 
-`type "class diagram"`  
+#### ** HTML-Standalone **
 
-> Das reicht um den Diagrammtypen festzulegen und dem Parser die Art des verwendeten UML-Diagramms mitzuteilen. Dabei dürfen die **Anführungszeichen** nicht vergessen werden!
+> Die Festlegung des Klassendiagramms in der HTML-Standalone-Anwendung erfolgt mit Hilfe des **HTML-Universalattributs** `data-type="TYP"`.  
+
+- Klassendiagramm: `"class"`
+- Anwendungsfalldiagramm: `"usecase"`
+- Akitivitätsdiagramm: `"action"`
+- Sequenzdiagramm: `"sequence"`
+- Zustandsdiagramm: `"state"`
+- Komponentendiagramm: `"component"`
+- Paketdiagramm: `"package"`
+- Verteilungsdiagramm: `"deployment"`
+- Objektdiagramm: `"object"`
+
+*Beispiele:*  
+`data-type="class"`  
+`data-type="deployment"`
+
+> Weitere Informationen zum Umgang mit der HTML-Standalone-Anwendung finden Sie unter **HTML-Anwendung**.
+
+#### ** Markdown-Standalone **
+> Aktuell steht die Markdown-Version nicht zur Verfügung.
+
+
+<!-- tabs:end -->
+
 
 ## Klassendiagramm
 
