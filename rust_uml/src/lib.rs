@@ -75,7 +75,7 @@ impl Component for Model {
                                 contain: true,
                                 center: false, 
                                 refreshRate: "auto"
-                                });
+                            });
                         }
                     }
 
