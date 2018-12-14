@@ -58,10 +58,24 @@ impl Component for Model {
                         parsing::parse_class::parse(&mut vektor, &mut klassen, &mut beziehungen_class);
 
                         let mut svg : String = build_class_svg::build_klassendiagramm(&mut klassen, &mut beziehungen_class).to_string();
-                        svg = edit_svg(&svg);
+
                         js!{
-                            /*document.getElementById("bild").style.backgroundImage = @{svg};*/
                             document.getElementById("bild").innerHTML = @{svg};
+                            svgPanZoom("#zoom", {
+                                panEnabled: true, 
+                                controlIconsEnabled: false, 
+                                zoomEnabled: true, 
+                                dblClickZoomEnabled: true, 
+                                mouseWheelZoomEnabled: true, 
+                                preventMouseEventsDefault: true, 
+                                zoomScaleSensitivity: 0.2, 
+                                minZoom: 0.5, 
+                                maxZoom: 10,
+                                fit: true, 
+                                contain: true,
+                                center: false, 
+                                refreshRate: "auto"
+                                });
                         }
                     }
 
@@ -154,52 +168,4 @@ fn edit_string(t: &str) -> Vec<&'static str> {
     }
     v
 
-}
-
-fn edit_svg(s: &str) -> String {
-    let mut t : String = String::from(s);
-    /*t = t.replace("%", "%25");
-    t = t.replace(" ", "%20");
-    t = t.replace("!", "%21");
-    t = t.replace("\"", "%22");
-    t = t.replace("#", "%23");
-    t = t.replace("$", "%24");
-    t = t.replace("&", "%26");
-    t = t.replace("'", "%27");
-    t = t.replace("(", "%28");
-    t = t.replace(")", "%29");
-    t = t.replace("*", "%2A");
-    t = t.replace("+", "%2B");
-    t = t.replace(",", "%2C");
-    t = t.replace("-", "%2D");
-    t = t.replace(".", "%2E");
-    t = t.replace("/", "%2F");
-
-    
-    t = t.replace(":", "%3A");
-    t = t.replace(";", "%3B");
-    t = t.replace("<", "%3C");
-    t = t.replace("=", "%3D");
-    t = t.replace(">", "%3E");
-    t = t.replace("?", "%3F");
-    t = t.replace("@", "%40");
-
-    t = t.replace("[", "%5B");
-    t = t.replace("\\", "%5C");
-    t = t.replace("]", "%5D");
-    t = t.replace("^", "%5D");
-    t = t.replace("_", "%5F");
-    t = t.replace("`", "%60");
-
-    t = t.replace("{", "%7B");
-    t = t.replace("|", "%7C");
-    t = t.replace("}", "%7D");
-    t = t.replace("~", "%7E");
-    t = t.replace("\n", "");*/
-
-    /*let mut a : String = String::from("url(\"data:image/svg+xml,");
-    a.push_str(&t);
-    a.push_str("\")");*/
-
-    t
 }
