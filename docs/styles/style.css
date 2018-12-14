@@ -16,8 +16,8 @@ textarea {
     position: relative;
     min-width: 600px;
     min-height: 600px;
-    max-width: 1000px;
-    max-height: 1500px;
+    max-width: 600px;
+    max-height: 600px;
     border: 2px solid black;
 	
 }
