@@ -4,7 +4,6 @@ extern crate stdweb;
 extern crate rust_uml;
 
 extern crate regex;
-extern crate rusttype;
 extern crate svg;
 
 use yew::prelude::*;
@@ -15,10 +14,10 @@ fn main() {
     yew::initialize();
 
     //Für Docsify
-    let body = document().query_selector("article").unwrap().unwrap();
+    //let body = document().query_selector("article").unwrap().unwrap();
 
 
-    //let body = document().query_selector("body").unwrap().unwrap();
+    let body = document().query_selector("body").unwrap().unwrap();
 
 
     let mount_class = "rust_uml";
