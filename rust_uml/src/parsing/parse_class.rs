@@ -84,7 +84,7 @@ fn build_beziehung(_beziehungstyp: Beziehungstyp, _von_klasse_name: String, _von
 }
 
 
-pub fn parse(string_vec: &mut Vec<&'static str>, mut klassen: &mut Vec<Klasse>, beziehungen : &mut Vec<Beziehung>) {
+pub fn parse(string_vec: &Vec<String>, mut klassen: &mut Vec<Klasse>, beziehungen : &mut Vec<Beziehung>) {
 
 
     let mut class : Klasse = build_klasse(String::from(""), String::from(""), String::from(""));

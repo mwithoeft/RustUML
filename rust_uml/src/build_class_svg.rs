@@ -46,7 +46,7 @@ fn buildclass(id: i32)->Pngclass{
 pub fn build_klassendiagramm(klassen: &mut Vec<parsing::parse_class::Klasse>, mut beziehungen : &mut Vec<parsing::parse_class::Beziehung>)->Document{
     let mut document = Document::new()
             .set("viewBox", (WIDTH-WIDTH, HEIGHT - HEIGHT , WIDTH, HEIGHT)) // Bild größe
-            .set("id","zoom");
+            .set("class","zoom");
     let mut class: Vec<Pngclass>= Vec::new();
     let mut i: i32 = 0;
     let mut j: i32 = 0;
