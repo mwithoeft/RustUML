@@ -12,7 +12,7 @@ const FONT_SIZE_TITLE: i32 = 20;
 const FONT_SIZE: i32 = 12;
 const TITEL_MIN: i32 = 30;
 const MIN_RAND_LINKS: i32 = 2;
-const FONT_SPACE: i32 = 6;
+const FONT_SPACE: i32 = 12;
 
 
 struct Pngclass{
@@ -45,8 +45,7 @@ fn buildclass(id: i32)->Pngclass{
 }
 pub fn build_klassendiagramm(klassen: &mut Vec<parsing::parse_class::Klasse>, mut beziehungen : &mut Vec<parsing::parse_class::Beziehung>)->Document{
     let mut document = Document::new()
-            .set("viewBox", (WIDTH-WIDTH, HEIGHT - HEIGHT , WIDTH, HEIGHT)) // Bild größe
-            .set("class","zoom");
+            .set("viewBox", (WIDTH-WIDTH, HEIGHT - HEIGHT , WIDTH, HEIGHT));
     let mut class: Vec<Pngclass>= Vec::new();
     let mut i: i32 = 0;
     let mut j: i32 = 0;
@@ -176,11 +175,11 @@ fn draw_class(mut document: Document, class: &mut Vec<Pngclass>, id:i32, i:i32, 
     for class in class {
         if class.id == id{
             //berechnete werte für Klassen namen einsetzten und kasten zeichnen
-            document = svglib::rechteck(document,x, y, class.breite, class.hoehe_kopf);
+            document = svglib::rectangle(document,x, y, class.breite, class.hoehe_kopf);
             //berechnete werte für Attribute namen einsetzten und kasten zeichnen
-            document = svglib::rechteck(document, x, y+class.hoehe_kopf as i32, class.breite, class.hoehe_att);
+            document = svglib::rectangle(document, x, y+class.hoehe_kopf as i32, class.breite, class.hoehe_att);
             //berechnete werte für Methoden namen einsetzten und kasten zeichnen
-            document = svglib::rechteck(document,x, y+class.hoehe_kopf as i32+class.hoehe_att as i32,class.breite, class.hoehe_meth);
+            document = svglib::rectangle(document,x, y+class.hoehe_kopf as i32+class.hoehe_att as i32,class.breite, class.hoehe_meth);
 
             class.rel_point_loru = ((x  , y + (class.hoehe_kopf+class.hoehe_att+class.hoehe_meth)/2),
                                     (x  +(class.breite/2) ,y ),
@@ -188,25 +187,30 @@ fn draw_class(mut document: Document, class: &mut Vec<Pngclass>, id:i32, i:i32, 
                                     (x  +(class.breite/2) ,(y +(class.hoehe_kopf+class.hoehe_att+class.hoehe_meth))));
 
             
-            //Klassen namen schreiben x wert = x des linken randes + die Differenz aus der hälfte der breite und die hälft der Wortlänge
-            // y wert = y wert des oberen randes + die Differenz aus der gesamten kopf höhe und der konstanten Titel_min
-            document = svglib::write(document, (x + class.breite as i32 / 2 - class.property.chars().count() as i32 * FONT_SIZE / 2 , y + 3), class.property.to_string(), FONT_SIZE_TITLE);
-           
-            //document = svglib::write(document, (x + class.breite / 2 - class.name.chars().count() as i32 * FONT_SIZE_TITLE / 2, 
-            //                y + class.hoehe_kopf - TITEL_MIN), class.name.to_string());
+            document = svglib::write(document, (x + class.breite / 2 - class.keywords.chars().count() as i32 * FONT_SIZE / 8, 
+                                                y + FONT_SIZE) , class.keywords.to_string(), FONT_SIZE);
+
+            //Falls es eine property gibt muss die bei der Platzierung des Klassennamens berücksichtigt werden
+            let mut property_space = 0;
+            if !class.property.is_empty(){
+                property_space = FONT_SIZE ;
+            }
+            //Klassen namen schreiben x wert = x des linken randes + die Differenz aus der hälfte der breite und ein viertel der Wortlänge
+            // y wert = y wert des oberen randes + die Differenz aus 3/4 der kopf höhe und der konstanten property_space
             document = svglib::write(document, (x + class.breite / 2 - class.name.chars().count() as i32 * FONT_SIZE_TITLE / 4, 
-                            y + class.hoehe_kopf - FONT_SPACE), class.name.to_string(), FONT_SIZE_TITLE);
+                                                y + (class.hoehe_kopf / 4) * 3 - property_space), class.name.to_string(), FONT_SIZE_TITLE);
             
-            document = svglib::write(document, (x + class.breite / 2 - class.keywords.chars().count() as i32 * FONT_SIZE /2 as i32, y + class.hoehe_kopf - 10) , class.keywords.to_string(), FONT_SIZE_TITLE);
+            document = svglib::write(document, (x + class.breite / 2 - class.property.chars().count() as i32 * FONT_SIZE / 5 , 
+                                                y + class.hoehe_kopf - FONT_SIZE), class.property.to_string(), FONT_SIZE);
            
             //Attribute schreiben
             for att in &class.attribute {
-                document = svglib::write(document, (x + MIN_RAND_LINKS, y + class.hoehe_kopf + counter), att.to_string(), FONT_SIZE);
+                document = svglib::write(document, (x + MIN_RAND_LINKS, y + class.hoehe_kopf + counter + FONT_SIZE), att.to_string(), FONT_SIZE);
                 counter += FONT_SPACE;
             }
             counter = 2;
             for meth in &class.methoden {
-                document = svglib::write(document, (x  + MIN_RAND_LINKS  , y + class.hoehe_kopf + class.hoehe_att + counter), meth.to_string(), FONT_SIZE);
+                document = svglib::write(document, (x  + MIN_RAND_LINKS  , y + class.hoehe_kopf + class.hoehe_att + counter + FONT_SIZE), meth.to_string(), FONT_SIZE);
                 counter+= FONT_SPACE;
             }
             
@@ -221,19 +225,25 @@ fn draw_relation(mut document: Document, relation: &mut Vec<parsing::parse_class
     let mut to: (i32, String, (i32,i32)) = (-1,"".to_string(),(-1,-1));
     let mut temp_point_from: ((i32,i32),(i32,i32),(i32,i32),(i32,i32)) = ((1,1),(1,1),(1,1),(1,1));
     let mut temp_point_to: ((i32,i32),(i32,i32),(i32,i32),(i32,i32)) = ((1,1),(1,1),(1,1),(1,1));
-    let start_point: i32;
-    let end_point: i32;
+    let _start_point: i32;
+    let _end_point: i32;
     //let scale = Scale { x: FONT_SIZE * 2 , y: FONT_SIZE};
     //let font = Vec::from(include_bytes!("DejaVuSans.ttf") as &[u8]);
     //let font = FontCollection::from_bytes(font).unwrap().into_font().unwrap();
     let mut horizontal:bool = true;
     let mut relation_finish:bool;
     let mut tausch:bool = false;
+    let mut nebeneinander:bool = true;
+    let mut max_height:i32 = 0;
 
     for r in relation{
         relation_finish = false;
         for c in &class{
             if !relation_finish{
+                
+                if c.hoehe_kopf + c.hoehe_att + c.hoehe_meth > max_height{
+                    max_height = c.hoehe_kopf + c.hoehe_att + c.hoehe_meth;
+                }
                
                 //println!("{}:{}",r._von_klasse_name,relation_finish);
                 // Wenn der Klassen name zum beziehungs von_klasse_namen passt
@@ -257,8 +267,23 @@ fn draw_relation(mut document: Document, relation: &mut Vec<parsing::parse_class
                 //wenn von und zu klasse gefunden wurde
                 if from.0 != -1 && to.0 != -1 {
                     //println!("Fromid: {}\n Toid:{}",from.0,to.0);
+                    //Wenn die beiden Klassen nicht nebeneinander aber in der selben Reihe sind
+                    if !(from.0 + 1 == to.0 || from.0 - 1 == to.0) && ((from.0 > 5 && to.0 > 5 ) ||(from.0 < 5 && to.0 < 5)) {
+                        nebeneinander = false;
+                        horizontal = false;
+                        from.2 = temp_point_from.3;
+                        to.2 = temp_point_to.3;
+                        if (from.2).1 < (to.2).1 {
+                             max_height = max_height - ((from.2).1 - (temp_point_from.1).1)/2;
+                        }else {
+                              max_height = max_height - ((to.2).1 - (temp_point_to.1).1)/2;
+                          }
+                        document = svglib::around_the_corner_arrow(document, from.2, to.2, r._von_klasse_pfeil, r._zu_klasse_pfeil, &r._beziehungstyp, max_height);
+                        max_height = 0;
+                        relation_finish = true;
+                    }
                     //Wenn die From id kleiner als die to id ist und to und from in der selben reihe stehen
-                    if from.0 < to.0 && from.0 < 5 && to.0 < 5 {
+                    else if from.0 < to.0 && from.0 < 5 && to.0 < 5 {
                         from.2 = temp_point_from.2;
                         to.2 = temp_point_to.0;
                         relation_finish = true;
@@ -303,35 +328,67 @@ fn draw_relation(mut document: Document, relation: &mut Vec<parsing::parse_class
             }
         }
         
+        if nebeneinander{
+            match r._beziehungstyp{
+                parsing::parse_class::Beziehungstyp::EXTENDS => {
+                    document = svglib::extends(document, from.2, to.2, r._von_klasse_pfeil, r._zu_klasse_pfeil, horizontal);
+                }
+                parsing::parse_class::Beziehungstyp::IMPLEMENTS=>{ 
+                    document = svglib::implements(document, from.2, to.2, r._von_klasse_pfeil, r._zu_klasse_pfeil, horizontal);
+                }
+                parsing::parse_class::Beziehungstyp::ASSOCIATION=>{
+                    document = svglib::association(document, from.2, to.2, r._von_klasse_pfeil, r._zu_klasse_pfeil, horizontal);
+                }
+                parsing::parse_class::Beziehungstyp::AGGREGATION=>{
+                    document = svglib::aggregation(document, from.2, to.2, r._von_klasse_pfeil, r._zu_klasse_pfeil, horizontal);
+                }
+                parsing::parse_class::Beziehungstyp::COMPOSITION=>{
+                    document = svglib::composition(document, from.2, to.2, r._von_klasse_pfeil, r._zu_klasse_pfeil, horizontal);
+                }
+                parsing::parse_class::Beziehungstyp::DEPENDENCY=>{
+                    document = svglib::dependency(document, from.2, to.2, r._von_klasse_pfeil, r._zu_klasse_pfeil, horizontal);
+                }
+                parsing::parse_class::Beziehungstyp::UNDEFINED=>{}
+            }
+        }
         
-        match r._beziehungstyp{
-            parsing::parse_class::Beziehungstyp::EXTENDS => {
-                document = svglib::extends(document, from.2, to.2, r._von_klasse_pfeil, r._zu_klasse_pfeil, horizontal);
+
+        
+        if !(r._von_klasse_mult.is_empty()) {
+            let mut p: (i32,i32) = (0,0);
+                p.0 = (from.2).0 + FONT_SIZE * 2;
+            if horizontal{
+                p.1 = (from.2).1 - FONT_SIZE;
+            }else {
+                p.1 = (from.2).1 + FONT_SIZE;
             }
-            parsing::parse_class::Beziehungstyp::IMPLEMENTS=>{ 
-                document = svglib::implements(document, from.2, to.2, r._von_klasse_pfeil, r._zu_klasse_pfeil, horizontal);
+
+            document = svglib::write(document, p, r._von_klasse_mult.to_string(), FONT_SIZE);;
+
+        }
+        if !(r._zu_klasse_mult.is_empty()){
+            let mut p: (i32,i32) = (0,0);
+                p.0 = (to.2).0  - (FONT_SIZE * r._zu_klasse_mult.chars().count() as i32 ) ;
+            if horizontal{
+                p.1 = (to.2).1  - FONT_SIZE;  
+            }else if !nebeneinander{
+                p.1 = (to.2).1  + FONT_SIZE; 
+            }else {
+                p.0 = (to.2).0 + FONT_SIZE * 2;
+                p.1 = (to.2).1  - FONT_SIZE;
+                 
             }
-            parsing::parse_class::Beziehungstyp::ASSOCIATION=>{
-                document = svglib::association(document, from.2, to.2, r._von_klasse_pfeil, r._zu_klasse_pfeil, horizontal);
-            }
-            parsing::parse_class::Beziehungstyp::AGGREGATION=>{
-                document = svglib::aggregation(document, from.2, to.2, r._von_klasse_pfeil, r._zu_klasse_pfeil, horizontal);
-            }
-            parsing::parse_class::Beziehungstyp::COMPOSITION=>{
-                document = svglib::composition(document, from.2, to.2, r._von_klasse_pfeil, r._zu_klasse_pfeil, horizontal);
-            }
-            parsing::parse_class::Beziehungstyp::DEPENDENCY=>{
-                document = svglib::dependency(document, from.2, to.2, r._von_klasse_pfeil, r._zu_klasse_pfeil, horizontal);
-            }
-            parsing::parse_class::Beziehungstyp::UNDEFINED=>{}
+
+
+            document = svglib::write(document, p, r._zu_klasse_mult.to_string(), FONT_SIZE);;
         }
         //reset
-        //println!("reset");
         from= (-1,"".to_string(),(-1,-1));
         to= (-1,"".to_string(),(-1,-1));
         temp_point_from = ((1,1),(1,1),(1,1),(1,1));
         temp_point_to = ((1,1),(1,1),(1,1),(1,1));
         horizontal = true;
+        nebeneinander = true;
         //zurücktauschen, wenn getausch wurde
         if tausch {
             let tmp = r._von_klasse_pfeil;
@@ -340,26 +397,7 @@ fn draw_relation(mut document: Document, relation: &mut Vec<parsing::parse_class
             
             tausch = false;
         }
-
-        /*
-        if !(r._von_klasse_mult.is_empty()) {
-            let mut p: (u32,u32) = (0,0);
-
-            p.0 = (from.2).0 as u32 +20;
-            p.1 = (from.2).1 as u32 -10;
-
-            draw_text_mut(&mut bild, _black, p.0, p.1, scale, &font, &r._von_klasse_mult);;
-
-        }
-        if !(r._zu_klasse_mult.is_empty()){
-            let mut p: (u32,u32) = (0,0);
-
-            p.0 = (to.2).0 as u32 -(FONT_SIZE as u32*r._zu_klasse_mult.chars().count()as u32 ) ;
-            p.1 = (to.2).1 as u32 -10;
-
-            draw_text_mut(&mut bild, _black, p.0, p.1, scale, &font, &r._zu_klasse_mult);;
-        }
-        */
+        
         
     }
     document

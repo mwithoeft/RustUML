@@ -53,7 +53,7 @@ fn build_beziehung(_beziehungstyp: Beziehungstyp, _von_element_mult: String, _zu
 
 
 
-pub fn parse(string_vec: &mut Vec<&'static str>, mut elementtypen: &mut Vec<Typ>, beziehungen : &mut Vec<Beziehung>) {
+pub fn parse(string_vec: &Vec<String>, mut elementtypen: &mut Vec<Typ>, beziehungen : &mut Vec<Beziehung>) {
 
 
     //Parse die Elementtypen

@@ -11,6 +11,7 @@ use stdweb::*;
 use std::boxed::Box;
 
 mod build_class_svg;
+mod build_usecase_svg;
 mod parsing;
 mod svglib;
 mod get_diagram_type;
@@ -135,14 +136,12 @@ fn work_on_input(input: &str) {
             }
 
             get_diagram_type::DiagramType::USECASE => {
-
-                //let mut typen: Vec<parsing::parse_usecase::Typ> = Vec::new();
-                //let mut beziehungen_usecase: Vec<parsing::parse_usecase::Beziehung> = Vec::new();
-
                 js!(console.log("Parse Usecase!")); 
-                
-                //DATEIEN NICHT MEHR VORHANDEN - NUR ZUR KENNZEICHNUNG //parsing::parse_usecase::parse(&mut vektor, &mut typen, &mut beziehungen_usecase);
-                //DATEIEN NICHT MEHR VORHANDEN - NUR ZUR KENNZEICHNUNG //build_usecase_diagram::build_usecase_diagramm(&mut typen, &mut beziehungen_usecase);
+                let mut typen: Vec<parsing::parse_usecase::Typ> = Vec::new();
+                let mut beziehungen_usecase: Vec<parsing::parse_usecase::Beziehung> = Vec::new();
+                parsing::parse_usecase::parse(&diagramm._input, &mut typen, &mut beziehungen_usecase);
+                let mut svg : String = build_usecase_svg::build_usecase_diagramm(&mut typen, &mut beziehungen_usecase).to_string();
+                make_tabs(number, counter, svg);
             }
 
             get_diagram_type::DiagramType::ACTION => { js!(console.log("Parse Action!"));  }
