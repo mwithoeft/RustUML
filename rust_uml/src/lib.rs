@@ -132,7 +132,7 @@ fn work_on_input(input: &str) {
                 let mut beziehungen_class: Vec<parsing::parse_class::Beziehung> = Vec::new();
                 parsing::parse_class::parse(&diagramm._input, &mut klassen, &mut beziehungen_class);
                 let mut svg : String = build_class_svg::build_klassendiagramm(&mut klassen, &mut beziehungen_class).to_string();
-                make_tabs(number, counter, svg);
+                make_tabs(number, counter, svg, &diagramm._name);
             }
 
             get_diagram_type::DiagramType::USECASE => {
@@ -141,7 +141,7 @@ fn work_on_input(input: &str) {
                 let mut beziehungen_usecase: Vec<parsing::parse_usecase::Beziehung> = Vec::new();
                 parsing::parse_usecase::parse(&diagramm._input, &mut typen, &mut beziehungen_usecase);
                 let mut svg : String = build_usecase_svg::build_usecase_diagramm(&mut typen, &mut beziehungen_usecase).to_string();
-                make_tabs(number, counter, svg);
+                make_tabs(number, counter, svg, &diagramm._name);
             }
 
             get_diagram_type::DiagramType::ACTION => { js!(console.log("Parse Action!"));  }
@@ -157,7 +157,7 @@ fn work_on_input(input: &str) {
     }
 }
 
-fn make_tabs(number: usize, counter: String, svg: String) {
+fn make_tabs(number: usize, counter: String, svg: String, diagrammname: &str) {
     js!{
         var panOptions = {
             viewportSelector: ".svg-pan-zoom_viewport",
@@ -229,7 +229,7 @@ fn make_tabs(number: usize, counter: String, svg: String) {
         };
 
         button.value = "d_" + @{(number+1).to_string()};
-        button.innerHTML = "Klassendiagramm " + @{(number+1).to_string()};
+        button.innerHTML = @{diagrammname.to_string()};
         var tab = document.getElementsByClassName("tab");
         for (var i = 0; i < tab.length; i++) {
             tab[i].appendChild(button);

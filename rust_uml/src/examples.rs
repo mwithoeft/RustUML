@@ -1,5 +1,5 @@
 /*Beispieleingaben*/
-pub static CLASS_EXAMPLE: &str = "type \"classdiagram\"
+pub static CLASS_EXAMPLE: &str = "type \"classdiagram:Firma\"
 
 classname \"Kunde\"
 attribute \"+, kundenNr, String\"
@@ -37,7 +37,7 @@ relationship \"aggregation, Kategorie, true, 1, Artikel, false, 1..*\"
 ";
 
 
-pub static USECASE_EXAMPLE: &str = "type \"usecase diagram\"
+pub static USECASE_EXAMPLE: &str = "type \"usecase diagram:CD\"
 
 elementtype \"subject, Multimediasystem\"
 
