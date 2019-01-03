@@ -25,6 +25,8 @@ pub struct Model {
 pub enum Msg {
     GotInput(String),
     SelectType,
+    Load,
+    LoadAll
 }
 
 impl Component for Model {
@@ -60,6 +62,15 @@ impl Component for Model {
                 work_on_input(&self.text_area);
             }
 
+            Msg::Load => {download_svg((js!{return document.getElementById("bild").dataset.counter}).into_string().unwrap());}
+            Msg::LoadAll => {
+                let anzahl_str = (js!{var tabcontent = document.getElementsByClassName("tabcontent");return String(tabcontent.length)}).into_string().unwrap();
+                let anzahl: i32 = anzahl_str.parse().unwrap();
+                for x in 0..anzahl {
+                    download_svg(x.to_string());
+                }
+            }
+
         }
         true
     }
@@ -91,6 +102,8 @@ impl Renderable<Model> for Model {
                         <option value="deployment",>{"Verteilungsdiagramm"}</option>
                         <option value="object",>{"Objektdiagramm"}</option>
                     </select>
+                    <button class="dlbutton", onclick=|_| Msg::Load,>{"Ausgewähltes downloaden"}</button>
+                    <button class="dlbutton", onclick=|_| Msg::LoadAll,>{"Alle downloaden"}</button>
                 </div>
             </div>
         }
@@ -119,6 +132,10 @@ fn work_on_input(input: &str) {
         tab.classList.add("tab");
         bild.appendChild(tab);
 
+        var dlbuttons = document.getElementsByClassName("dlbutton");
+        for (var i = 0; i < dlbuttons.length; i++) {
+            dlbuttons[i].style.display = "inline";
+        }
     }
 
     for (number, diagramm) in diagramme.iter().enumerate() {
@@ -151,7 +168,16 @@ fn work_on_input(input: &str) {
             get_diagram_type::DiagramType::PACKAGE => { js!(console.log("Parse Package!"));  }
             get_diagram_type::DiagramType::DEPLOYMENT => { js!(console.log("Parse Deployment!"));  }
             get_diagram_type::DiagramType::OBJECT => { js!(console.log("Parse Object!"));  }
-            get_diagram_type::DiagramType::NOTFOUND => { js!(console.log("NOTFOUND!"));  }
+            get_diagram_type::DiagramType::NOTFOUND => { 
+                js!{
+                    console.log("NOTFOUND!");
+                    document.getElementById("bild").dataset.counter = 0;
+                    var dlbuttons = document.getElementsByClassName("dlbutton");
+                    for (var i = 0; i < dlbuttons.length; i++) {
+                        dlbuttons[i].style.display = "none";
+                    }
+                }   
+            }
         }
 
     }
@@ -281,5 +307,36 @@ fn insert_at_caret(area_id: &str, text: &str) {
 			txtarea.focus();
 		}
 		txtarea.scrollTop = scrollPos;
+    }
+}
+
+fn download_svg(number: String){
+    js!{
+        var svg = document.getElementsByClassName("tabcontent")[@{number}].cloneNode(true);
+
+        var newParent = svg.firstChild;
+        var oldParent = svg.firstChild.firstChild;
+        while (oldParent.childNodes.length > 0) {
+            newParent.appendChild(oldParent.childNodes[0]);
+        }
+        oldParent.remove();
+        svg = svg.innerHTML;
+
+        var canvas = document.createElement("canvas");
+        canvas.height = 1080;
+	    canvas.width = 1920;
+        var ctx = canvas.getContext("2d");
+        var image = new Image();
+        image.src = "data:image/svg+xml," + svg;
+
+
+        image.onload = function() {
+            ctx.drawImage(image, 0, 0);
+            var a = document.createElement("a");
+            a.download = "diagramm.png";
+            a.href = canvas.toDataURL("image/png");
+            a.click();
+        };
+
     }
 }

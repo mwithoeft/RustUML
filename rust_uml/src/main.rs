@@ -1,4 +1,4 @@
-#![recursion_limit="8192"]
+#![recursion_limit="2048"]
 extern crate yew;
 extern crate stdweb;
 extern crate rust_uml;

@@ -30,7 +30,7 @@ select {
     background-color: #4CAF50;
     border: none;
     color: white;
-    padding: 16px 32px;
+    padding: 16px 16px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
@@ -44,7 +44,19 @@ option {
     background-color: rgb(121, 211, 124);
 }
 
-
+.dlbutton {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 16px 16px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 4px 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    display: none;
+}
 
 .tab {
     overflow: hidden;
