@@ -171,9 +171,7 @@ fn ellipse(from:(i32,i32), r:(i32,i32))-> Ellipse{
                 .set("cy",from.1)
                 .set("rx",r.0)
                 .set("ry",r.1)
-                .set("fill","white")
-                .set("storke","black")
-                .set("storke-width",2);
+                .set("style", "fill:white;stroke:black;stroke-width:2");
 
         ellipse
 }
@@ -181,17 +179,17 @@ pub fn actor(mut document:Document,from:(i32,i32), name:String, size:i32)-> Docu
         //Körper
         document = document.add(line(from, (from.0, from.1 - ACTOR_LINE)));
         //Linker Fuß
-        document = document.add(line(from, (from.0 - ACTOR_LINE, from.1 - ACTOR_LINE)));
+        document = document.add(line(from, (from.0 - ACTOR_LINE, from.1 + ACTOR_LINE)));
         //Rechter Fuß
-        document = document.add(line(from, (from.0 + ACTOR_LINE, from.1 - ACTOR_LINE)));
+        document = document.add(line(from, (from.0 + ACTOR_LINE, from.1 + ACTOR_LINE)));
         //Kopf
-        document = document.add(ellipse((from.0, from.1 + (ACTOR_LINE as f32 * 1.5) as i32),
+        document = document.add(ellipse((from.0, from.1 - (ACTOR_LINE as f32 * 1.5) as i32),
                                         (ACTOR_LINE / 2,ACTOR_LINE / 2)));
         //Arme
-        document = document.add(line((from.0 - ACTOR_LINE / 2, from.1), (from.0 + ACTOR_LINE / 2, from.1 )));
+        document = document.add(line((from.0 - ACTOR_LINE, from.1 - ACTOR_LINE / 2), (from.0 + ACTOR_LINE, from.1 - ACTOR_LINE / 2)));
         //Namen
         document = write(document, (from.0 - (name.chars().count() as i32) * size / 4
-                                , (from.1 - size - ACTOR_LINE)), name, size);
+                                , (from.1 + size + ACTOR_LINE)), name, size);
         document
 }
 pub fn usecase(mut document:Document, from:(i32,i32), name:String, size:i32)-> Document{
