@@ -1,6 +1,3 @@
-//use rand::distributions::{Distribution, Uniform};
-//use rand::Rng;
-//use rand::prelude::*;
 use std::string::String;
 use parsing;
 use svg::Document;
@@ -29,120 +26,231 @@ pub fn rectangle(mut document:Document,x:i32, y:i32, width:i32, height:i32)->Doc
         document
 }
 pub fn association(mut document:Document,from:(i32,i32), to:(i32,i32), _f_arrow:bool, _t_arrow:bool, horizontal:bool)->Document{
-        document=document.add(line(from, to));
+        let mut tmp_addition0:i32 = 0;
+        let mut tmp_addition1:i32 = 0;
+        let tmp_from:(i32,i32);
+        let tmp_to:(i32,i32);
+
+        //Jenachdem ob die Pfeile Horizontal oder Vertikal sind muss die x oder y achse und 10 verkleinert bzw vergrößert werden
         if horizontal{
-                if _f_arrow{
-                        document = document.add(dependency_arrow((from.0+ARROW,from.1), from, horizontal));
-                }
-                if _t_arrow{
-                        document = document.add(dependency_arrow((to.0-ARROW,to.1), to, horizontal));
-                }
+                tmp_addition0 = ARROW;
         }else {
-                if _f_arrow{
-                        document = document.add(dependency_arrow((from.0,from.1+ARROW), from, horizontal));
-                }
-                if _t_arrow{
-                        document = document.add(dependency_arrow((to.0,to.1-ARROW), to, horizontal));
-                }
+                tmp_addition1 = ARROW;
+        }
+        //Berechnung der neuen x/y Koordinaten für die Pfeile
+        tmp_from = (from.0 + tmp_addition0,from.1 + tmp_addition1);
+        tmp_to = (to.0 - tmp_addition0, to.1 - tmp_addition1);
+        //Ein Pfeil an From
+        if _f_arrow && !_t_arrow{
+                document = document.add(dependency_arrow(tmp_from, from, horizontal));
+                document=document.add(line(tmp_from, to));
+        }
+        //Ein Pfeil an To
+        else if _t_arrow && !_f_arrow{
+                document = document.add(dependency_arrow(tmp_to, to, horizontal));
+                document=document.add(line(from, tmp_to ));
+        }
+        //Pfeile in beiden Richtungen
+        else if  _t_arrow && _f_arrow{
+                document = document.add(dependency_arrow(tmp_from, from, horizontal));
+                document = document.add(dependency_arrow(tmp_to, to, horizontal));
+                document=document.add(line(tmp_from, tmp_to));
+        }
+        //keine Pfeile
+        else{
+                document=document.add(line(from, to));
         }
 
         document
 }
 pub fn extends(mut document:Document,from:(i32,i32), to:(i32,i32), _f_arrow:bool, _t_arrow:bool, horizontal:bool)->Document{
-        document = document.add(line(from, to));
-        if horizontal {
-                if _f_arrow{
-                        document = document.add(extends_arrow((from.0+ARROW,from.1), from, horizontal));
-                }
-                if _t_arrow{
-                        document = document.add(extends_arrow((to.0-ARROW,to.1), to, horizontal));
-                }
+        let mut tmp_addition0:i32 = 0;
+        let mut tmp_addition1:i32 = 0;
+        let tmp_from:(i32,i32);
+        let tmp_to:(i32,i32);
+
+        //Jenachdem ob die Pfeile Horizontal oder Vertikal sind muss die x oder y achse und 10 verkleinert bzw vergrößert werden
+        if horizontal{
+                tmp_addition0 = ARROW;
         }else {
-                if _f_arrow{
-                        document = document.add(extends_arrow((from.0,from.1+ARROW), from, horizontal));
-                }
-                if _t_arrow{
-                        document = document.add(extends_arrow((to.0,to.1-ARROW), to, horizontal));
-                }
+                tmp_addition1 = ARROW;
         }
+        //Berechnung der neuen x/y Koordinaten für die Pfeile
+        tmp_from = (from.0 + tmp_addition0,from.1 + tmp_addition1);
+        tmp_to = (to.0 - tmp_addition0, to.1 - tmp_addition1);
+        //Ein Pfeil an From
+        if _f_arrow && !_t_arrow{
+                document = document.add(extends_arrow(tmp_from, from, horizontal));
+                document=document.add(line(tmp_from, to));
+        }
+        //Ein Pfeil an To
+        else if _t_arrow && !_f_arrow{
+                document = document.add(extends_arrow(tmp_to, to, horizontal));
+                document=document.add(line(from, tmp_to ));
+        }
+        //Pfeile in beiden Richtungen
+        else if  _t_arrow && _f_arrow{
+                document = document.add(extends_arrow(tmp_from, from, horizontal));
+                document = document.add(extends_arrow(tmp_to, to, horizontal));
+                document=document.add(line(tmp_from, tmp_to));
+        }
+        //keine Pfeile
+        else{
+                document=document.add(line(from, to));
+        }
+
         document
 }
 pub fn implements(mut document:Document, from:(i32,i32), to:(i32,i32), _f_arrow:bool, _t_arrow:bool, horizontal:bool)->Document{
-        document = document.add(broken_line(from ,to));
-        if horizontal {
-                if _f_arrow{
-                        document = document.add(extends_arrow((from.0+ARROW,from.1), from, horizontal));
-                }
-                if _t_arrow{
-                        document = document.add(extends_arrow((to.0-ARROW,to.1), to, horizontal));
-                }
+        let mut tmp_addition0:i32 = 0;
+        let mut tmp_addition1:i32 = 0;
+        let tmp_from:(i32,i32);
+        let tmp_to:(i32,i32);
+
+        //Jenachdem ob die Pfeile Horizontal oder Vertikal sind muss die x oder y achse und 10 verkleinert bzw vergrößert werden
+        if horizontal{
+                tmp_addition0 = ARROW;
         }else {
-                if _f_arrow{
-                        document = document.add(extends_arrow((from.0,from.1+ARROW), from, horizontal));
-                }
-                if _t_arrow{
-                        document = document.add(extends_arrow((to.0,to.1-ARROW), to, horizontal));
-                }
+                tmp_addition1 = ARROW;
         }
+        //Berechnung der neuen x/y Koordinaten für die Pfeile
+        tmp_from = (from.0 + tmp_addition0,from.1 + tmp_addition1);
+        tmp_to = (to.0 - tmp_addition0, to.1 - tmp_addition1);
+        //Ein Pfeil an From
+        if _f_arrow && !_t_arrow{
+                document = document.add(extends_arrow(tmp_from, from, horizontal));
+                document=document.add(broken_line((tmp_from.0 + tmp_addition0 ,tmp_from.1 + tmp_addition1), to));
+        }
+        //Ein Pfeil an To
+        else if _t_arrow && !_f_arrow{
+                document = document.add(extends_arrow(tmp_to, to, horizontal));
+                document=document.add(broken_line(from, (tmp_to.0 - tmp_addition0 ,tmp_to.1 - tmp_addition1)));
+        }
+        //Pfeile in beiden Richtungen
+        else if  _t_arrow && _f_arrow{
+                document = document.add(extends_arrow(tmp_from, from, horizontal));
+                document = document.add(extends_arrow(tmp_to, to, horizontal));
+                document=document.add(broken_line((tmp_from.0 + tmp_addition0 ,tmp_from.1 + tmp_addition1), (tmp_to.0 - tmp_addition0 ,tmp_to.1 - tmp_addition1)));
+        }
+        //keine Pfeile
+        else{
+                document=document.add(broken_line(from, to));
+        }
+
         document
 }
 pub fn aggregation(mut document:Document, from:(i32,i32), to:(i32,i32), _f_arrow:bool, _t_arrow:bool, horizontal:bool)->Document{
-        document = document.add(line(from, to));
+        let mut tmp_addition0:i32 = 0;
+        let mut tmp_addition1:i32 = 0;
+        let tmp_from:(i32,i32);
+        let tmp_to:(i32,i32);
+
+        //Jenachdem ob die Pfeile Horizontal oder Vertikal sind muss die x oder y achse und 10 verkleinert bzw vergrößert werden
         if horizontal{
-                if _f_arrow{
-                        document = document.add(aggregation_arrow((from.0+ARROW,from.1), from, horizontal));
-                }
-                if _t_arrow{
-                        document = document.add(aggregation_arrow((to.0-ARROW,to.1), to, horizontal));
-                }
+                tmp_addition0 = ARROW;
         }else {
-                if _f_arrow{
-                        document = document.add(aggregation_arrow((from.0,from.1+ARROW), from, horizontal));
-                }
-                if _t_arrow{
-                        document = document.add(aggregation_arrow((to.0,to.1-ARROW), to, horizontal));
-                }
+                tmp_addition1 = ARROW;
         }
+        //Berechnung der neuen x/y Koordinaten für die Pfeile
+        tmp_from = (from.0 + tmp_addition0,from.1 + tmp_addition1);
+        tmp_to = (to.0 - tmp_addition0, to.1 - tmp_addition1);
+        //Ein Pfeil an From
+        if _f_arrow && !_t_arrow{
+                document = document.add(aggregation_arrow(tmp_from, from, horizontal));
+                document=document.add(line((tmp_from.0 + tmp_addition0 ,tmp_from.1 + tmp_addition1), to));
+        }
+        //Ein Pfeil an To
+        else if _t_arrow && !_f_arrow{
+                document = document.add(aggregation_arrow(tmp_to, to, horizontal));
+                document=document.add(line(from, (tmp_to.0 - tmp_addition0 ,tmp_to.1 - tmp_addition1)));
+        }
+        //Pfeile in beiden Richtungen
+        else if  _t_arrow && _f_arrow{
+                document = document.add(aggregation_arrow(tmp_from, from, horizontal));
+                document = document.add(aggregation_arrow(tmp_to, to, horizontal));
+                document=document.add(line((tmp_from.0 + tmp_addition0 ,tmp_from.1 + tmp_addition1), (tmp_to.0 - tmp_addition0 ,tmp_to.1 - tmp_addition1)));
+        }
+        //keine Pfeile
+        else{
+                document=document.add(line(from, to));
+        }
+
         document
 }
 pub fn composition(mut document:Document, from:(i32,i32), to:(i32,i32), _f_arrow:bool, _t_arrow:bool, horizontal:bool)->Document{
-        document = document.add(line(from, to));
+        let mut tmp_addition0:i32 = 0;
+        let mut tmp_addition1:i32 = 0;
+        let tmp_from:(i32,i32);
+        let tmp_to:(i32,i32);
+
+        //Jenachdem ob die Pfeile Horizontal oder Vertikal sind muss die x oder y achse und 10 verkleinert bzw vergrößert werden
         if horizontal{
-                if _f_arrow{
-                        document = document.add(composition_arrow((from.0+ARROW,from.1), from, horizontal));
-                }
-                if _t_arrow{
-                        document = document.add(composition_arrow((to.0-ARROW,to.1), to, horizontal));
-                }
+                tmp_addition0 = ARROW;
         }else {
-                if _f_arrow{
-                        document = document.add(composition_arrow((from.0,from.1+ARROW), from, horizontal));
-                }
-                if _t_arrow{
-                        document = document.add(composition_arrow((to.0,to.1-ARROW), to, horizontal));
-                }
+                tmp_addition1 = ARROW;
+        }
+        //Berechnung der neuen x/y Koordinaten für die Pfeile
+        tmp_from = (from.0 + tmp_addition0,from.1 + tmp_addition1);
+        tmp_to = (to.0 - tmp_addition0, to.1 - tmp_addition1);
+        //Ein Pfeil an From
+        if _f_arrow && !_t_arrow{
+                document = document.add(composition_arrow(tmp_from, from, horizontal));
+                document=document.add(line((tmp_from.0 + tmp_addition0 ,tmp_from.1 + tmp_addition1), to));
+        }
+        //Ein Pfeil an To
+        else if _t_arrow && !_f_arrow{
+                document = document.add(composition_arrow(tmp_to, to, horizontal));
+                document=document.add(line(from, (tmp_to.0 - tmp_addition0 ,tmp_to.1 - tmp_addition1)));
+        }
+        //Pfeile in beiden Richtungen
+        else if  _t_arrow && _f_arrow{
+                document = document.add(composition_arrow(tmp_from, from, horizontal));
+                document = document.add(composition_arrow(tmp_to, to, horizontal));
+                document=document.add(line((tmp_from.0 + tmp_addition0 ,tmp_from.1 + tmp_addition1), (tmp_to.0 - tmp_addition0 ,tmp_to.1 - tmp_addition1)));
+        }
+        //keine Pfeile
+        else{
+                document=document.add(line(from, to));
         }
         document
 }
 pub fn dependency(mut document:Document, from:(i32,i32), to:(i32,i32), _f_arrow:bool, _t_arrow:bool, horizontal:bool)->Document{
-        document = document.add(broken_line(from ,to));
-        if horizontal {
-                if _f_arrow{
-                        document = document.add(dependency_arrow((from.0+ARROW,from.1), from, horizontal));
-                }
-                if _t_arrow{
-                        document = document.add(dependency_arrow((to.0-ARROW,to.1), to, horizontal));
-                }
+        let mut tmp_addition0:i32 = 0;
+        let mut tmp_addition1:i32 = 0;
+        let tmp_from:(i32,i32);
+        let tmp_to:(i32,i32);
+
+        //Jenachdem ob die Pfeile Horizontal oder Vertikal sind muss die x oder y achse und 10 verkleinert bzw vergrößert werden
+        if horizontal{
+                tmp_addition0 = ARROW;
         }else {
-                if _f_arrow{
-                document = document.add(dependency_arrow((from.0,from.1+ARROW), from, horizontal));
-                }
-                if _t_arrow{
-                document = document.add(dependency_arrow((to.0,to.1-ARROW), to, horizontal));
-                }
+                tmp_addition1 = ARROW;
         }
-        
-        document 
+        //Berechnung der neuen x/y Koordinaten für die Pfeile
+        tmp_from = (from.0 + tmp_addition0,from.1 + tmp_addition1);
+        tmp_to = (to.0 - tmp_addition0, to.1 - tmp_addition1);
+        //Ein Pfeil an From
+        if _f_arrow && !_t_arrow{
+                document = document.add(dependency_arrow(tmp_from, from, horizontal));
+                document=document.add(broken_line((tmp_from.0 + tmp_addition0 ,tmp_from.1 + tmp_addition1), to));
+        }
+        //Ein Pfeil an To
+        else if _t_arrow && !_f_arrow{
+                document = document.add(dependency_arrow(tmp_to, to, horizontal));
+                document=document.add(broken_line(from, (tmp_to.0 - tmp_addition0 ,tmp_to.1 - tmp_addition1)));
+        }
+        //Pfeile in beiden Richtungen
+        else if  _t_arrow && _f_arrow{
+                document = document.add(dependency_arrow(tmp_from, from, horizontal));
+                document = document.add(dependency_arrow(tmp_to, to, horizontal));
+                document=document.add(broken_line((tmp_from.0 + tmp_addition0 ,tmp_from.1 + tmp_addition1), (tmp_to.0 - tmp_addition0 ,tmp_to.1 - tmp_addition1)));
+        }
+        //keine Pfeile
+        else{
+                document=document.add(broken_line(from, to));
+        }
+
+        document
 }
 fn line(from:(i32,i32), to:(i32,i32))-> Line{
         let line = Line::new()
