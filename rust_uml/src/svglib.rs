@@ -214,7 +214,7 @@ pub fn composition(mut document:Document, from:(i32,i32), to:(i32,i32), _f_arrow
         }
         document
 }
-pub fn dependency(mut document:Document, from:(i32,i32), to:(i32,i32), _f_arrow:bool, _t_arrow:bool, horizontal:bool)->Document{
+pub fn dependency(mut document:Document, from:(i32,i32), to:(i32,i32), _f_arrow:bool, _t_arrow:bool, horizontal:bool)->Document{ 
         let mut tmp_addition0:i32 = 0;
         let mut tmp_addition1:i32 = 0;
         let tmp_from:(i32,i32);
@@ -316,45 +316,40 @@ pub fn extpoint(mut document:Document, from:(i32,i32), width:i32, height:i32, ca
 
         document
 }
-pub fn around_the_corner_arrow(mut document:Document, from:(i32,i32), to:(i32,i32), _f_arrow:bool, _t_arrow:bool, rel:&parsing::parse_class::Beziehungstyp, max_height:i32)->Document{
-        //let mut rng = rand::thread_rng();
-        //let y: i32 = rng.gen_range(10,50);
-        //let mut y:i32;
+pub fn around_the_corner_arrow(mut document:Document, from:(i32,i32), to:(i32,i32), _f_arrow:bool, _t_arrow:bool, rel:String, max_height:i32)->Document{
         
-        
-        
-        match *rel{
-            parsing::parse_class::Beziehungstyp::EXTENDS => {
+        match rel.as_str(){
+            "extends" | "extend" => {
                 document = extends(document, from, (from.0,from.1+max_height), _f_arrow, false, false);
                 document = document.add(line((from.0,from.1+max_height),(to.0,from.1+max_height)));
                 document = extends(document, to, (to.0,from.1+max_height), _t_arrow,false , false);
             }
-            parsing::parse_class::Beziehungstyp::IMPLEMENTS=>{
+            "implements"=>{
                 document = implements(document, from, (from.0,from.1+max_height), _f_arrow, false, false);
                 document = document.add(broken_line((from.0,from.1+max_height),(to.0,from.1+max_height)));
                 document = implements(document, to, (to.0,from.1+max_height), _t_arrow,false , false);
             }
-            parsing::parse_class::Beziehungstyp::ASSOCIATION=>{     
+            "association"=>{     
                 document = association(document, from, (from.0,from.1+max_height), _f_arrow, false, false);
                 document = document.add(line((from.0,from.1+max_height),(to.0,from.1+max_height)));
                 document = association(document, to, (to.0,from.1+max_height), _t_arrow,false , false);
             }
-            parsing::parse_class::Beziehungstyp::AGGREGATION=>{
+            "aggregation"=>{
                 document = aggregation(document, from, (from.0,from.1+max_height), _f_arrow, false, false);
                 document = document.add(line((from.0,from.1+max_height),(to.0,from.1+max_height)));
                 document = aggregation(document, to, (to.0,from.1+max_height), _t_arrow,false , false);
             }
-            parsing::parse_class::Beziehungstyp::COMPOSITION=>{
+            "composition"=>{
                 document = composition(document, from, (from.0,from.1+max_height), _f_arrow, false, false);
                 document = document.add(line((from.0,from.1+max_height),(to.0,from.1+max_height)));
                 document = composition(document, to, (to.0,from.1+max_height), _t_arrow,false , false);
             }
-            parsing::parse_class::Beziehungstyp::DEPENDENCY=>{
+            "dependency" | "include"=>{
                 document = dependency(document, from, (from.0,from.1+max_height), _f_arrow, false, false);
                 document = document.add(broken_line((from.0,from.1+max_height),(to.0,from.1+max_height)));
                 document = dependency(document, to, (to.0,from.1+max_height), _t_arrow,false , false);
             }
-            parsing::parse_class::Beziehungstyp::UNDEFINED=>{}
+            _=>{}
         }
         
         document
@@ -554,4 +549,53 @@ pub fn write(mut document:Document, from:(i32,i32), _string:String, size:i32)->D
 
         document = document.add(text);
         document
+}
+pub fn class_enum_to_string(name:&parsing::parse_class::Beziehungstyp)->String{
+       
+        let mut string:String = String::new();
+        match *name{
+            parsing::parse_class::Beziehungstyp::EXTENDS => {
+                string = "extends".to_string();
+            }
+            parsing::parse_class::Beziehungstyp::IMPLEMENTS=>{
+                string = "implements".to_string();
+            }
+            parsing::parse_class::Beziehungstyp::ASSOCIATION=>{     
+               string = "association".to_string();
+            }
+            parsing::parse_class::Beziehungstyp::AGGREGATION=>{
+               string = "aggregation".to_string();
+            }
+            parsing::parse_class::Beziehungstyp::COMPOSITION=>{
+                string = "composition".to_string();
+            }
+            parsing::parse_class::Beziehungstyp::DEPENDENCY=>{
+               string = "dependency".to_string(); 
+            }
+            parsing::parse_class::Beziehungstyp::UNDEFINED=>{}
+        }
+        string
+}
+pub fn usecase_enum_to_string(name:&parsing::parse_usecase::Beziehungstyp)->String{
+
+        let mut string:String = String::new();
+        match *name{
+            parsing::parse_usecase::Beziehungstyp::EXTENDS => {
+                string = "extends".to_string();
+            }
+            parsing::parse_usecase::Beziehungstyp::INCLUDE=>{
+                string = "include".to_string();
+            }
+            parsing::parse_usecase::Beziehungstyp::ASSOCIATION=>{     
+               string = "association".to_string();
+            }
+            parsing::parse_usecase::Beziehungstyp::EXTEND=>{
+               string = "extend".to_string();
+            }
+            parsing::parse_usecase::Beziehungstyp::GENERALIZATION=>{
+                string = "generaliation".to_string();
+            }
+            parsing::parse_usecase::Beziehungstyp::UNDEFINED=>{}
+        }
+        string
 }

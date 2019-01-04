@@ -264,7 +264,7 @@ fn draw_relation(mut document: Document, relation: &mut Vec<parsing::parse_class
                     temp_point_to = c.rel_point_loru;
                     
                 }
-                //wenn von und zu klasse gefunden wurde
+                //wenn von und zu klasse gefunden wurden
                 if from.0 != -1 && to.0 != -1 {
                     //println!("Fromid: {}\n Toid:{}",from.0,to.0);
                     //Wenn die beiden Klassen nicht nebeneinander aber in der selben Reihe sind
@@ -278,7 +278,7 @@ fn draw_relation(mut document: Document, relation: &mut Vec<parsing::parse_class
                         }else {
                               max_height = max_height - ((to.2).1 - (temp_point_to.1).1)/2;
                           }
-                        document = svglib::around_the_corner_arrow(document, from.2, to.2, r._von_klasse_pfeil, r._zu_klasse_pfeil, &r._beziehungstyp, max_height);
+                        document = svglib::around_the_corner_arrow(document, from.2, to.2, r._von_klasse_pfeil, r._zu_klasse_pfeil, svglib::class_enum_to_string(&r._beziehungstyp), max_height);
                         max_height = 0;
                         relation_finish = true;
                     }
