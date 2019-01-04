@@ -102,7 +102,7 @@ pub fn build_usecase_diagramm(mut typen: &mut Vec<parsing::parse_usecase::Typ>, 
                     x = WIDTH / 2 - SUB_WIDTH / 2;
                     y = HEIGHT / 2 - SUB_HEIGHT / 2;
                     document = svglib::rectangle(document, x, y, SUB_WIDTH, SUB_HEIGHT);
-                    document = svglib::write(document, (x + MIN_RAND_LINKS, y + MIN_RAND_OBEN), t._elementname.to_string(), FONT_SIZE);
+                    document = svglib::write(document, (x + MIN_RAND_LINKS, y + FONT_SIZE_TITLE), t._elementname.to_string(), FONT_SIZE_TITLE);
                 } 
             }
             parsing::parse_usecase::TypEnum::ACTOR =>{
@@ -150,12 +150,13 @@ pub fn build_usecase_diagramm(mut typen: &mut Vec<parsing::parse_usecase::Typ>, 
 
     let mut x = WIDTH / 2 - SUB_WIDTH / 2;
     let mut y = HEIGHT / 2 - SUB_HEIGHT / 2 + TITEL_MIN + USECASE_MIN_OBEN / 2 + USECASEHOEHE / 2;
-    let mut res_flag = 0;
+    let mut res_flag = 0; //c
     let mut row = 1;
     let mut column = 0;
 
     //Usecase wird gezeichnet
     for u in &mut usecase{
+        // Wenn das case noch in die reihe passt
         if x < (WIDTH / 2 + SUB_WIDTH / 2) - USECASE_MIN_RECHTS - u.breite {
             x = x + u.breite / 2 + USECASE_MIN_RECHTS;
         }else {
@@ -163,6 +164,7 @@ pub fn build_usecase_diagramm(mut typen: &mut Vec<parsing::parse_usecase::Typ>, 
             res_flag = 1;
             column = 0;
         }
+        //Wenn eine Reihe voll ist wird das spalten reset falg gesetzt
         if res_flag != 0 {
             res_flag = 0;
             row = row +1;
@@ -177,10 +179,9 @@ pub fn build_usecase_diagramm(mut typen: &mut Vec<parsing::parse_usecase::Typ>, 
                             (u.center.0, u.center.1 + u.hoehe / 2));
         u.row = row;
         column = column +1;
-        u.column = u.column; //?
-        //
+        u.column = column; 
         if u.ext_name.is_empty() {
-            document = svglib::usecase(document, u.center, u.name.to_string(), FONT_SIZE);
+            document = svglib::usecase(document, u.center, u.breite / 2, u.hoehe / 2, u.name.to_string(), FONT_SIZE);
             //draw_hollow_ellipse_mut(&mut image, u.center, u.breite as i32 / 2 , u.hoehe as i32 /2 , _black);
             //draw_text_mut(&mut image, _black, x - (u.name.chars().count() as u32 * FONT_SIZE as u32 /2), y ,scale, &font, & u.name);
         }else {
@@ -189,7 +190,7 @@ pub fn build_usecase_diagramm(mut typen: &mut Vec<parsing::parse_usecase::Typ>, 
             if breite < u.ext_name.chars().count() as f32 * FONT_SIZE as f32 {
                 breite = u.ext_name.chars().count() as f32 * FONT_SIZE as f32 
             }
-            document = svglib::extpoint(document, u.center, u.breite, u.hoehe, u.name.to_string(), u.ext_name.to_string(), FONT_SIZE);
+            document = svglib::extpoint(document, u.center, u.breite / 2 , u.hoehe / 2 , u.name.to_string(), u.ext_name.to_string(), FONT_SIZE);
             //draw_hollow_ellipse_mut(&mut image, u.center, breite as i32 / 2 , hoehe as i32 /2 , _black);
             //draw_line_segment_mut(&mut image, (u.center.0 as f32 - breite/2.0 , u.center.1 as f32), (u.center.0 as f32 + breite/2.0 , u.center.1 as f32), _black);
             //draw_text_mut(&mut image, _black, x - (u.name.chars().count() as u32 * FONT_SIZE as u32 /2), y -10 ,scale, &font, & u.name);
@@ -205,15 +206,17 @@ pub fn build_usecase_diagramm(mut typen: &mut Vec<parsing::parse_usecase::Typ>, 
         let mut temp_point_to: ((i32,i32),(i32,i32),(i32,i32),(i32,i32)) = ((1,1),(1,1),(1,1),(1,1));
         let mut temp_from_row:i32 = -1; //reset
         let mut temp_to_row:i32 = -1; //reset
+        let mut temp_from_column:i32 = -1; //reset
+        let mut temp_to_column:i32 = -1; //reset
         let mut temp_from_id:i32 = -1; //reset
         let mut temp_to_id:i32 = -1; //reset
-        let mut temp_from_column:i32 = -1; 
-        let mut temp_to_column:i32 = -1;
         let mut name = b._von_element_name.pop();
-       
+        let mut horizontal:bool = true; // reset
+        let mut tausch:bool = false; //reset
 
         for u in &usecase {
-            //stimmt der erste name der beziehung mit einem usecas überein
+            //stimmt der erste name der beziehung mit einem usecase überein
+            // Some wird benötigt, weil name aus dem Vector gepopt wird.
             if name == Some(u.name.to_string()){
                 temp_from_row = u.row;
                 temp_point_from = u.rel_point_loru;
@@ -230,25 +233,37 @@ pub fn build_usecase_diagramm(mut typen: &mut Vec<parsing::parse_usecase::Typ>, 
             if !(temp_from_row == -1 && temp_to_row == -1){
                 //lieg der erste usecase über dem zweiten
                 if temp_from_row < temp_to_row{
+                    //print!("from:{} to:{}\n",temp_from_row,temp_to_row);
                     from = temp_point_from.3;
-                    to = temp_point_to.1;
-                //lieg der erste usecase unter dem zweiten    
-                }else if temp_from_row > temp_to_row {
+                    to = temp_point_to.1;  
+                    horizontal = false;
+                }
+                //lieg der erste usecase unter dem zweiten  
+                else if temp_from_row > temp_to_row {
                     from = temp_point_from.1;
                     to = temp_point_to.3;
-                }else {//sind sie nebeneinander
+                    horizontal = false;
+                }
+                //sind sie nebeneinander
+                else {
+                    //from links to rechts
                     if temp_from_column < temp_to_column {
-                        from = temp_point_from.0;
-                        to = temp_point_to.2;
-                    }else {
                         from = temp_point_from.2;
                         to = temp_point_to.0;
+                        //tausch = false;
+                        horizontal = true;
+                    }else if temp_from_column > temp_to_column {
+                        //from und to koordinaten und ob sie Pfeile haben müssen getauscht werden, weil sonst der Pfeil falsch dargestellt wird
+                        from = temp_point_to.2;
+                        to = temp_point_from.0;
+                        tausch = true;
+                        horizontal = true;
                     }
                 }
             }
             
         }
-        //Wenn nicht beide teile der beziehung gefunden wurde
+        //Wenn nicht beide teile der beziehung in usecase gefunden wurde
         if temp_from_row == -1 || temp_to_row == -1{
 
             for a in &actor {
@@ -341,36 +356,30 @@ pub fn build_usecase_diagramm(mut typen: &mut Vec<parsing::parse_usecase::Typ>, 
             }
             
         }
-        //reset
-            temp_from_row = -1; //reset
-            temp_to_row = -1; //reset
-            temp_from_id = -1; //reset
-            temp_to_id = -1; //reset
-            temp_from_column = -1; 
-            temp_to_column = -1;
 
         match b._beziehungstyp {
             parsing::parse_usecase::Beziehungstyp::ASSOCIATION =>{
-                document = svglib::association(document, from, to, false, false, true);
+                document = svglib::association(document, from, to, tausch, !tausch, horizontal);
                 //draw_line_segment_mut(&mut image, from, to, _black);
             }
             parsing::parse_usecase::Beziehungstyp::GENERALIZATION =>{
 
             }
             parsing::parse_usecase::Beziehungstyp::INCLUDE =>{
+                document = svglib::dependency(document, from, to, tausch, !tausch, horizontal);
                 //draw_line_segment_mut(&mut image, from, to, _black);
                 //draw_line_segment_mut(&mut image, (to.0 -10.0 , to.1 +10.0) , to, _black);
                 //draw_line_segment_mut(&mut image, (to.0 -10.0 , to.1 -10.0) , to, _black);
             }
             parsing::parse_usecase::Beziehungstyp::EXTEND =>{
-                document = svglib::extends(document, from, to, false, true, true);
+                document = svglib::extends(document, from, to, tausch, !tausch, horizontal);
                 //draw_line_segment_mut(&mut image, from, to, _black);
                 //draw_line_segment_mut(&mut image, (to.0 -10.0 , to.1 +10.0) , to, _black);
                 //draw_line_segment_mut(&mut image, (to.0 -10.0 , to.1 -10.0) , to, _black);
                 //draw_line_segment_mut(&mut image, (to.0 -10.0 , to.1 -10.0) , (to.0 -10.0 , to.1 +10.0), _black);
             }
             parsing::parse_usecase::Beziehungstyp::EXTENDS =>{
-                document = svglib::extends(document, from, to, false, true, true);
+                document = svglib::extends(document, from, to, tausch, !tausch, horizontal);
                 //draw_line_segment_mut(&mut image, from, to, _black);
                 //draw_line_segment_mut(&mut image, (to.0 -10.0 , to.1 +10.0) , to, _black);
                 //draw_line_segment_mut(&mut image, (to.0 -10.0 , to.1 -10.0) , to, _black);
@@ -379,6 +388,19 @@ pub fn build_usecase_diagramm(mut typen: &mut Vec<parsing::parse_usecase::Typ>, 
             parsing::parse_usecase::Beziehungstyp::UNDEFINED =>{
             }
         }
+        //reset
+        temp_from_row = -1; 
+        temp_to_row = -1; 
+        temp_from_id = -1; 
+        temp_to_id = -1; 
+        temp_from_column = -1; 
+        temp_to_column = -1;
+        horizontal = true;
+        from = (1,1);
+        to = (1,1);
+        temp_point_from = ((1,1),(1,1),(1,1),(1,1));
+        temp_point_to = ((1,1),(1,1),(1,1),(1,1));
+        tausch = false;
     }
     document
 }

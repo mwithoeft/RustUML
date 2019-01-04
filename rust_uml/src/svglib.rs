@@ -192,15 +192,15 @@ pub fn actor(mut document:Document,from:(i32,i32), name:String, size:i32)-> Docu
                                 , (from.1 + size + ACTOR_LINE)), name, size);
         document
 }
-pub fn usecase(mut document:Document, from:(i32,i32), name:String, size:i32)-> Document{
-        document = document.add(ellipse(from, (name.chars().count() as i32 * size , size * 2)));
+pub fn usecase(mut document:Document, from:(i32,i32),width:i32, height:i32, name:String, size:i32)-> Document{
+        document = document.add(ellipse(from, (width,height)));
         document = write(document, (from.0 - (name.chars().count() as i32) * size / 4 ,from.1), name, size);
         
         document
 }
 pub fn extpoint(mut document:Document, from:(i32,i32), width:i32, height:i32, case_name:String, point_name:String, size:i32)-> Document{
-        document = document.add(ellipse(from, (height / 2, width / 2)));
-        document = document.add(line( (from.0 - width / 2, from.1),(from.0 + width,from.1)));
+        document = document.add(ellipse(from, (width, height)));
+        document = document.add(line( (from.0 - width , from.1),(from.0 + width,from.1)));
         //write usecase
         document = write(document, (from.0 - (case_name.chars().count() as i32) * size / 4 ,from.1 + ARROW), case_name, size);
         //write expoint
