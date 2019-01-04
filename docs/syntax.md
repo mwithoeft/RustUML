@@ -7,13 +7,28 @@
 > Zuerst soll im Allgemeinen dargestellt werden, wie der Diagrammtyp in der Syntax festzulegen ist. Danach wird auf die einzelnen UML-Diagramme im Detail eingegangen, da sich die Syntax der verschiedenen Diagrammtypen unterscheidet.
 > Alle Keywörter beginnen immer mit einem **kleinen** Buchstaben! Die **Rechtschreibung** ist unbedingt zu beachten, damit die Eingabe korrekt verarbeitet werden kann! Nach der Eingabe einer Zeile folgt ein **Zeilenumbruch** als Trennung der einzelnen Eingaben.  
 
-## Festlegung des Diagrammtyps
+## Festlegung des Diagrammtyps und des Namens
 
 <!-- tabs:start -->
 
 #### ** Website **
 
-> Die Festlegung des Diagrammtyps erfolgt hier über eine graphische Oberfläche und muss nicht per Text spezifiziert werden.
+> Am Anfang einer jeden Diagrammdefinition steht die festlegung des Diagrammtyps. Soll beispielsweise in Klassendiagramm definiert werden erfolgt dies mit Hilfe der Zeile `type "classdiagram"`
+
+So lassen sich alle Diagrammtypen deklarieren:
+- Klassendiagramm: `type "classdiagram"`
+- Anwendungsfalldiagramm: `type "usecasediagram"`
+- Akitivitätsdiagramm: `type "actiondiagram"`
+- Sequenzdiagramm: `type "sequencediagram"`
+- Zustandsdiagramm: `type "statediagram"`
+- Komponentendiagramm: `type "componentdiagram"`
+- Paketdiagramm: `type "packagediagram"`
+- Verteilungsdiagramm: `type "deploymentdiagram"`
+- Objektdiagramm: `type "objectdiagram"`
+
+Zusätzlich <u>kann</u> dem Diagramm selbst noch ein Name gegeben werden, welche über einen Doppelpunkt `:` angehängt werden kann.
+
+*Beispiel:* `type "classdiagram:Firma"`
 
 #### ** HTML-Standalone **
 
