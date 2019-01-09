@@ -29,11 +29,17 @@ property \"abstract\"
 attribute \"-, name, String\"
 attribute \"-, vorname, String\"
 
-relationship \"association, Kunde, false, 1, Einkauf, false, 0..*\"
-relationship \"extends, Kunde, false, -, Person, true, -\"
-relationship \"aggregation, Einkauf, true, 0..*, Artikel, false, 1..*\"
-relationship \"implements, Artikel, false, -, Lagerbestand, true, -\"
-relationship \"aggregation, Kategorie, true, 1, Artikel, false, 1..*\"
+classname \"Hand\"
+attribute \"-, anzahlFinger, String\"
+method \"-, fingerBewegen, void\"
+
+relationship \"association, Kunde, false, 1, Einkauf, false, 0..*, -, -, -\"
+relationship \"extends, Kunde, false, -, Person, true, -, -, - ,-\"
+relationship \"aggregation, Einkauf, true, 0..*, Artikel, false, 1..*, -, -, -\"
+relationship \"implements, Artikel, false, -, Lagerbestand, true, -, hat, Ware, Anzahl\"
+relationship \"aggregation, Kategorie, true, 1, Artikel, false, 1..*, zählt, Genre, Ware\"
+relationship \"composition, Person, true, 1, Hand, false, 0..2, -, -, -\"
+relationship \"dependency, Kunde, false, -, Lagerbestand, true, -, -, -,-\"
 ";
 
 
