@@ -13,19 +13,15 @@ const SUB_HEIGHT: i32 = HEIGHT - (HEIGHT / 9);
 const SUB_WIDTH: i32 = (WIDTH / 16) * 10;
 const MIN_RAND_LINKS: i32 = 5;
 const MIN_RAND_OBEN: i32 = 10;
-const R: i32 = 40;
 const ACTOR_L :i32 = (WIDTH - SUB_WIDTH) / 4;
 const ACTOR_R :i32 = 3 * ACTOR_L + SUB_WIDTH;
 const ACTOR_O :i32 = HEIGHT / 4;
 const ACTOR_U :i32 = (HEIGHT / 4) * 3;
-const ACTOR_ABSTAND :i32 = 350;
-const ACTOR_SPANNWEITE : i32 = 100;
-const ACTOR_BEINE : i32 = 30;
-const ACTOR_BEINE_WINKEL : i32 = 30;
 const USECASEHOEHE : i32 = 50;
 const USECASE_MIN_OBEN: i32 = 120;
 const USECASE_MIN_RECHTS: i32 = 90;
 const ACTOR_LINE:i32 = 30;
+const ARROW_SPACE:i32 = 15;
 
 struct Usecase{
     id:i32,
@@ -39,7 +35,7 @@ struct Usecase{
     column : i32
 }
 
-fn buildUsecase(id: i32, name: String, breite:i32, hoehe: i32)->Usecase{
+fn build_usecase(id: i32, name: String, breite:i32, hoehe: i32)->Usecase{
     Usecase {
         id,
         center: (0,0),
@@ -60,7 +56,7 @@ struct Actor{
     name: String,
     
 }
-fn buildActor(id: i32, rel_point: (i32,i32), name:String)->Actor{
+fn build_actor(id: i32, rel_point: (i32,i32), name:String)->Actor{
     Actor {
         id,
         breite: 1,
@@ -120,14 +116,14 @@ pub fn build_usecase_diagramm(mut typen: &mut Vec<parsing::parse_usecase::Typ>, 
                     }else {
                         c.1 = ACTOR_O as i32;
                     }
-                    actor.push(buildActor(actor_id, (c.0 + ACTOR_LINE ,c.1 - ACTOR_LINE / 2), t._elementname.to_string()));
+                    actor.push(build_actor(actor_id, (c.0 + ACTOR_LINE ,c.1 - ACTOR_LINE / 2), t._elementname.to_string()));
                     document = svglib::actor(document, c, t._elementname.to_string(), FONT_SIZE);
                 }
             }
             parsing::parse_usecase::TypEnum::USECASE =>{
                 //Usecase Strucktur wird erstellt
                 usecase_id = usecase_id + 1;
-                usecase.push(buildUsecase(usecase_id, t._elementname.to_string(), t._elementname.chars().count() as i32 * FONT_SIZE  + 10, USECASEHOEHE));
+                usecase.push(build_usecase(usecase_id, t._elementname.to_string(), t._elementname.chars().count() as i32 * FONT_SIZE  + 10, USECASEHOEHE));
                /* for u in &mut usecase {
                     if usecase_id == u.id{
                         u.name = t._elementname.to_string();
@@ -200,6 +196,7 @@ pub fn build_usecase_diagramm(mut typen: &mut Vec<parsing::parse_usecase::Typ>, 
         x = x + u.breite / 2;
     }
     //Beziehungen werden gezeichnet
+    let mut max_height = USECASE_MIN_OBEN * (4/3);
     for b in beziehungen{
         let mut from: (i32,i32) = (1,1);
         let mut to: (i32,i32) = (1,1);
@@ -214,7 +211,6 @@ pub fn build_usecase_diagramm(mut typen: &mut Vec<parsing::parse_usecase::Typ>, 
         let mut name = b._von_element_name.pop();
         let mut horizontal:bool = true; // reset
         let mut tausch:bool = false; //reset
-        let mut max_height = USECASE_MIN_OBEN / 2;
         let mut rel_finish:bool = false;
 
         for u in &usecase {
@@ -251,12 +247,13 @@ pub fn build_usecase_diagramm(mut typen: &mut Vec<parsing::parse_usecase::Typ>, 
                 else {
                     //wen sie in einer reihe sind aber nicht nebeneinander
                     if !(temp_from_column + 1 == temp_to_column || temp_from_column - 1 == temp_to_column) {
-                        horizontal = false;
                         from = temp_point_from.3;
                         to = temp_point_to.3;
-                        max_height = max_height - MIN_RAND_OBEN;
-                        document = svglib::around_the_corner_arrow(document, from, to, tausch, !tausch, svglib::usecase_enum_to_string(&b._beziehungstyp) , max_height);
+                        max_height = max_height - ARROW_SPACE- ARROW_SPACE;
+                        document = svglib::around_the_corner_arrow(document, from, to, tausch, !tausch, svglib::usecase_enum_to_string(&b._beziehungstyp), max_height);
                         rel_finish = true;
+                        max_height = max_height + ARROW_SPACE;
+                        break;
                     }
                     //from links, to rechts
                     else if temp_from_column < temp_to_column {
@@ -302,37 +299,62 @@ pub fn build_usecase_diagramm(mut typen: &mut Vec<parsing::parse_usecase::Typ>, 
                     to = a.rel_point;
                 }
                 //wurde für beide beziehungstypen ein element gefunden?
-                if !(temp_from_row == -1 && temp_to_row == -1){
+                if !(temp_from_row == -1 && temp_to_row == -1 && !rel_finish){
                             
                     //sind es beide Actoure
                     if temp_from_id != -1 && temp_to_id != -1{
                         //Punkte sind schon gesetzt    
-                        
                     }else {
                         //Wenn from ein actor ist 
-                        if temp_to_id == -1 && temp_to_id != -1 {
+                        if temp_to_id == -1 && temp_from_id != -1 {
                             //Wenn from über usecase liegt
                             if temp_from_row < temp_to_row {
                                 to = temp_point_to.3;
-                               
                             }
                             // Wenn from unter usecase liegt
                             else if temp_from_row > temp_to_row {
-                                to = temp_point_to.1;
-                                 tausch = true;
-                                
+                                to = from;
+                                from = temp_point_to.3;
+                                tausch = true;
                             }
-                            //Wenn beie auf gleicher höhe sind
+                            //Wenn beiede auf gleicher höhe sind
                             else{
-                                if temp_to_id >2 {
-                                    to = temp_point_to.2;
-                                }else {
-                                    to = temp_point_to.0;
+                                //Wenn der Actor rechts ist
+                                if temp_from_id >2 {
+                                    //Wenn der Actor neben dem Usecase ist
+                                    if temp_to_row == 1 {
+                                        to = temp_point_to.2;
+                                    }
+                                    //Wenn sie nicht nebeneinander sind
+                                    else{
+                                        to = temp_point_to.3;
+                                        max_height = max_height - ARROW_SPACE;
+                                        document = svglib::around_the_corner_arrow(document, from, to, tausch, !tausch, svglib::usecase_enum_to_string(&b._beziehungstyp) , max_height);
+                                        rel_finish = true;
+                                        break;
+                                    }
                                 }
+                                //Wenn der Actor links ist
+                                else {
+                                    //Wenn der Actor neben dem Usecase ist
+                                    if temp_to_column == 1 {
+                                        to = temp_point_to.0;
+                                    }
+                                    //Wenn sie nicht nebeneinander sind
+                                    else{
+                                        to = temp_point_to.3;
+                                        max_height = max_height - ARROW_SPACE;
+                                        document = svglib::around_the_corner_arrow(document, from, to, tausch, !tausch, svglib::usecase_enum_to_string(&b._beziehungstyp) , max_height);
+                                        rel_finish = true;
+                                        break;
+                                    }
+                                }
+                                horizontal = true;
                             }
                         }
                         //Wenn to ein actor ist
-                        else if temp_from_id == -1 && temp_from_id != -1 {
+                        else if temp_from_id == -1 && temp_to_id != -1 {
+
                             if temp_from_row > temp_to_row {
                                 to = temp_point_from.3;
                             }else if temp_from_row < temp_to_row {
@@ -345,15 +367,7 @@ pub fn build_usecase_diagramm(mut typen: &mut Vec<parsing::parse_usecase::Typ>, 
                                 }
                             }
                         }
-                        else if temp_from_row < temp_to_row{
-                            from = temp_point_from.3;
-                            to = temp_point_to.1;
-                        }else if temp_from_row > temp_to_row {
-                            from = temp_point_from.1;
-                            to = temp_point_to.3;
-                        }
                     }
-                
                 }
             }
             
@@ -380,6 +394,7 @@ pub fn build_usecase_diagramm(mut typen: &mut Vec<parsing::parse_usecase::Typ>, 
             }   
         }
         //reset
+        /*
         temp_from_row = -1; 
         temp_to_row = -1; 
         temp_from_id = -1; 
@@ -393,6 +408,7 @@ pub fn build_usecase_diagramm(mut typen: &mut Vec<parsing::parse_usecase::Typ>, 
         temp_point_to = ((1,1),(1,1),(1,1),(1,1));
         tausch = false;
         rel_finish = false;
+        */
     }
     document
 }
