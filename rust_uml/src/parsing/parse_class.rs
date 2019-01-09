@@ -30,7 +30,10 @@ pub struct Beziehung {
     pub _von_klasse_mult: String,
     pub _zu_klasse_name: String,
     pub _zu_klasse_pfeil: bool,
-    pub _zu_klasse_mult: String
+    pub _zu_klasse_mult: String,
+    pub _assoziationsname: String,
+    pub _von_klasse_rolle: String,
+    pub _zu_klasse_rolle: String
 }
 pub enum Beziehungstyp {
     EXTENDS,
@@ -71,7 +74,7 @@ fn build_methode(_modifikator: char, _final: bool, _static: bool, _name: String,
         _parameter: Vec::new()
     }
 }
-fn build_beziehung(_beziehungstyp: Beziehungstyp, _von_klasse_name: String, _von_klasse_pfeil: bool, _von_klasse_mult: String, _zu_klasse_name: String, _zu_klasse_pfeil: bool, _zu_klasse_mult: String) -> Beziehung {
+fn build_beziehung(_beziehungstyp: Beziehungstyp, _von_klasse_name: String, _von_klasse_pfeil: bool, _von_klasse_mult: String, _zu_klasse_name: String, _zu_klasse_pfeil: bool, _zu_klasse_mult: String, _assoziationsname: String, _von_klasse_rolle: String, _zu_klasse_rolle: String) -> Beziehung {
     Beziehung {
         _beziehungstyp,
         _von_klasse_name,
@@ -79,7 +82,10 @@ fn build_beziehung(_beziehungstyp: Beziehungstyp, _von_klasse_name: String, _von
         _von_klasse_mult,
         _zu_klasse_name,
         _zu_klasse_pfeil,
-        _zu_klasse_mult
+        _zu_klasse_mult,
+        _assoziationsname,
+        _von_klasse_rolle,
+        _zu_klasse_rolle
     }
 }
 
@@ -238,7 +244,7 @@ fn parse_method(s: &str) -> Option<Methode> {
 fn parse_relationship(s: &str, mut klassen: &mut Vec<Klasse>) -> Option<Beziehung> {
     let re = Regex::new("^relationship\"([^\"]+?)\"$").unwrap();
     if re.is_match(s) {
-        let mut relationship : Beziehung = build_beziehung(Beziehungstyp::UNDEFINED, String::from(""), false, String::from(""), String::from(""), false, String::from(""));
+        let mut relationship : Beziehung = build_beziehung(Beziehungstyp::UNDEFINED, String::from(""), false, String::from(""), String::from(""), false, String::from(""), String::from(""), String::from(""), String::from(""));
         let caps = re.captures(s).unwrap();
         let u = caps.get(1).map_or(String::from(""), |m| String::from(m.as_str()));
         let v: Vec<&str> = u.split(',').collect();
@@ -264,6 +270,18 @@ fn parse_relationship(s: &str, mut klassen: &mut Vec<Klasse>) -> Option<Beziehun
             } else if i == 6 {
                 if item.to_string() != "-" {
                     relationship._zu_klasse_mult = item.to_string();
+                }
+            } else if i == 7 {
+                if item.to_string() != "-" {
+                    relationship._assoziationsname = item.to_string();
+                }
+            } else if i == 8 {
+                if item.to_string() != "-" {
+                    relationship._von_klasse_rolle = item.to_string();
+                }
+            } else if i == 9 {
+                if item.to_string() != "-" {
+                    relationship._zu_klasse_rolle = item.to_string();
                 }
             } else {
                 //Fehler in der Eingabe

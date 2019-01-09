@@ -59,7 +59,10 @@ pub struct Beziehung {
     _von_klasse_mult: String,
     _zu_klasse_name: String,
     _zu_klasse_pfeil: bool,
-    _zu_klasse_mult: String
+    _zu_klasse_mult: String,
+    _assoziationsname: String,
+    _von_klasse_rolle: String,
+    _zu_klasse_rolle: String
 }
 ```
 

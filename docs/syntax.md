@@ -99,13 +99,14 @@ Zusätzlich <u>kann</u> dem Diagramm selbst noch ein Name gegeben werden, welche
 > Nach dem Definieren der einzelnen Klassen können nun noch die Beziehung der einzelnen Klassen untereinander definiert werden:  
 
 **Beziehungen:**  
-`relationship "Beziehungstyp, 'von Klasse' Name, Pfeil auf 'von Klasse' (true/false), Multiplizität 'von Klasse', 'zu Klasse' Name, Pfeil auf 'zu Klasse' (true/false)  Multiplizität 'zu Klasse'"`  
+`relationship "Beziehungstyp, 'von Klasse' Name, Pfeil auf 'von Klasse' (true/false), Multiplizität 'von Klasse', 'zu Klasse' Name, Pfeil auf 'zu Klasse' (true/false),  Multiplizität 'zu Klasse', Assoziationsname, Rollenname 'von Klasse', Rollenname 'zu Klasse'"`  
 *Beispiele:*  
-`relationship "extends, Vater, false, -, Kind, true, -"`  
-`relationship "association, Gebäude, true, 1, Raum, false, 0..*"`  
+`relationship "extends, Vater, false, -, Kind, true, -, -, -, -"`  
+`relationship "association, Gebäude, true, 1, Raum, false, 0..*, hat, Wohnhaus, Wohnraum"`  
 *Beziehungstypen:* `extends`, `implements`, `association`, `aggregation`, `composition`, `dependency`
 
 > Soll *keine Multiplizität* angegeben werden schreibt man an der Stelle einfach ein `-`.
+> Soll *kein Assoziationsname oder Rollenname* angegeben werden schreibt man an der Stelle einfach ein `-`.
 
 ## Anwendungsfalldiagramm
 
