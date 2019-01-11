@@ -19,14 +19,22 @@ mod examples;
 
 
 pub struct Model {
-    text_area: String
+    text_area: String,
+    dltype: DownloadType
 }
 
 pub enum Msg {
     GotInput(String),
     SelectType,
+    SelectDownloadType,
+    StartParsing,
     Load,
     LoadAll
+}
+
+pub enum DownloadType {
+    SVG,
+    PNG
 }
 
 impl Component for Model {
@@ -35,7 +43,8 @@ impl Component for Model {
 
     fn create(_: Self::Properties, _: ComponentLink<Self>) -> Self {
         Model {
-            text_area: "".into()
+            text_area: "".into(),
+            dltype: DownloadType::SVG
         }
     }
 
@@ -43,6 +52,9 @@ impl Component for Model {
         match msg {
             Msg::GotInput(new_value) => {
                 self.text_area = new_value;
+            }
+
+            Msg::StartParsing => {
                 work_on_input(&self.text_area);
             }
 
@@ -59,15 +71,37 @@ impl Component for Model {
                 else if s == "object" {}
                 js!(document.getElementById("selectBox").selectedIndex = "0";);
                 self.text_area = (js!{return document.getElementById("eingabefeld").value}).into_string().unwrap();
-                work_on_input(&self.text_area);
             }
 
-            Msg::Load => {download_svg((js!{return document.getElementById("bild").dataset.counter}).into_string().unwrap());}
+            Msg::SelectDownloadType => {
+                let s : String = get_dl_type();
+                if s == "svg" {self.dltype = DownloadType::SVG;}
+                else if s == "png" {self.dltype = DownloadType::PNG;}
+            }
+
+            Msg::Load => {
+                match self.dltype {
+                    DownloadType::SVG => {
+                        download_svg((js!{return document.getElementById("bild").dataset.counter}).into_string().unwrap());
+                    }
+                    DownloadType::PNG => {
+                        download_png((js!{return document.getElementById("bild").dataset.counter}).into_string().unwrap());
+                    }
+                }
+            }
+
             Msg::LoadAll => {
                 let anzahl_str = (js!{var tabcontent = document.getElementsByClassName("tabcontent");return String(tabcontent.length)}).into_string().unwrap();
                 let anzahl: i32 = anzahl_str.parse().unwrap();
                 for x in 0..anzahl {
-                    download_svg(x.to_string());
+                    match self.dltype {
+                        DownloadType::SVG => {
+                            download_svg(x.to_string());
+                        }
+                        DownloadType::PNG => {
+                            download_png(x.to_string());
+                        }
+                    }
                 }
             }
 
@@ -102,6 +136,13 @@ impl Renderable<Model> for Model {
                         <option value="deployment",>{"Verteilungsdiagramm"}</option>
                         <option value="object",>{"Objektdiagramm"}</option>
                     </select>
+                    <button class="button", onclick=|_| Msg::StartParsing,>{"Eingabe Parsen"}</button>
+                </div>
+                <select id="selectDLBox", onchange=|_| Msg::SelectDownloadType,>
+                    <option value="svg",>{"SVG"}</option>
+                    <option value="png",>{"PNG"}</option>
+                </select>
+                <div id="dlelements",>
                     <button class="dlbutton", onclick=|_| Msg::Load,>{"Ausgewähltes downloaden"}</button>
                     <button class="dlbutton", onclick=|_| Msg::LoadAll,>{"Alle downloaden"}</button>
                 </div>
@@ -113,6 +154,12 @@ impl Renderable<Model> for Model {
 fn get_type() -> String {
     (js!{
         var selectBox = document.getElementById("selectBox");
+        var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+        return selectedValue}).into_string().unwrap()
+}
+fn get_dl_type() -> String {
+    (js!{
+        var selectBox = document.getElementById("selectDLBox");
         var selectedValue = selectBox.options[selectBox.selectedIndex].value;
         return selectedValue}).into_string().unwrap()
 }
@@ -132,6 +179,7 @@ fn work_on_input(input: &str) {
         tab.classList.add("tab");
         bild.appendChild(tab);
 
+        document.getElementById("selectDLBox").style.display = "inline";
         var dlbuttons = document.getElementsByClassName("dlbutton");
         for (var i = 0; i < dlbuttons.length; i++) {
             dlbuttons[i].style.display = "inline";
@@ -172,6 +220,7 @@ fn work_on_input(input: &str) {
                 js!{
                     console.log("NOTFOUND!");
                     document.getElementById("bild").dataset.counter = 0;
+                    document.getElementById("selectDLBox").style.display = "none";
                     var dlbuttons = document.getElementsByClassName("dlbutton");
                     for (var i = 0; i < dlbuttons.length; i++) {
                         dlbuttons[i].style.display = "none";
@@ -310,7 +359,7 @@ fn insert_at_caret(area_id: &str, text: &str) {
     }
 }
 
-fn download_svg(number: String){
+fn download_png(number: String){
     js!{
         var svg = document.getElementsByClassName("tabcontent")[@{number}].cloneNode(true);
 
@@ -337,6 +386,34 @@ fn download_svg(number: String){
             a.href = canvas.toDataURL("image/png");
             a.click();
         };
+
+    }
+}
+
+
+fn download_svg(number: String){
+    js!{
+        var svg = document.getElementsByClassName("tabcontent")[@{number}].cloneNode(true);
+
+        var newParent = svg.firstChild;
+        var oldParent = svg.firstChild.firstChild;
+        while (oldParent.childNodes.length > 0) {
+            newParent.appendChild(oldParent.childNodes[0]);
+        }
+        oldParent.remove();
+
+        svg = svg.firstChild;
+
+        var serializer = new XMLSerializer();
+        var source = serializer.serializeToString(svg);
+
+        source = "<?xml version='1.0' standalone='no'?>\r\n" + source;
+        var url = "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(source);
+
+        var a = document.createElement("a");
+        a.download = "diagramm.svg";
+        a.href = url;
+        a.click();
 
     }
 }
