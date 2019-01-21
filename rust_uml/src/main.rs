@@ -5,7 +5,6 @@ extern crate stdweb;
 extern crate regex;
 extern crate svg;
 
-
 pub mod api;
 pub mod api_yew;
 pub mod parsing;
