@@ -5,14 +5,14 @@
 > Zur besseren Erweiterbarkeit wurde kürzlich eine neue Form der Schnittstelle ins Programm hinzugefügt. In der Main-Methode des Programms gilt es zur Nutzung zwei Enums zu setzen: zum Einen ein Enum für die gewünschte Eingabe-Methode, die dann selbstständige in der Datei `api.rs` angelegt werden musst, sowie zum Anderen ein Enum für die Ausgabe. Es wurde bereits eine geeignete Struktur angelegt, in der die gewünschten Methoden an Hand der gesetzten Enums aufgerufen werden können.
 
 **Starten des Programms:**  
-```
+```rust
 let api = api::build_api(api::Eingaben::WEBTEXT, api::Ausgaben::SVGWEB);
 api.start();
 ```
 > Hier ist gut zusehen, wie beim Erzeugen des Objekts der Schnittstelle, die gewünschten Methoden zur Ein- und Ausgabe mitgegeben werden.
 
 **Einpflegen in das Programm:**
-```
+```rust
 impl Api {
     pub fn start(&self) {
         self.read();
