@@ -1,22 +1,32 @@
-#![recursion_limit="2048"]
-#[macro_use]
-extern crate yew;
-extern crate stdweb;
-extern crate regex;
-extern crate rusttype;
-extern crate svg;
-
 use yew::prelude::*;
+use stdweb::web::{IElement, INode, IParentNode, document};
 use stdweb::*;
 use std::boxed::Box;
 
-mod build_class_svg;
-mod build_usecase_svg;
-mod parsing;
-mod svglib;
-mod get_diagram_type;
-mod examples;
+use build_class_svg;
+use build_usecase_svg;
+use parsing;
+use get_diagram_type;
+use examples;
 
+
+pub fn run_yew() {
+    
+    yew::initialize();
+
+    //Für Docsify
+    //let body = document().query_selector("article").unwrap().unwrap();
+
+    let body = document().query_selector("body").unwrap().unwrap();
+
+    let mount_class = "rust_uml";
+    let mount_point = document().create_element("div").unwrap();
+    mount_point.class_list().add(mount_class).unwrap();
+    body.append_child(&mount_point);
+
+    App::<Model>::new().mount(mount_point);
+    yew::run_loop();
+}
 
 pub struct Model {
     text_area: String,
@@ -192,7 +202,7 @@ fn work_on_input(input: &str) {
 
         match diagramm._typ {
             get_diagram_type::DiagramType::CLASS => {
-                js!(console.log("Parse Class!"));     
+                js!(console.log("Parse Class!"));
                 let mut klassen: Vec<parsing::parse_class::Klasse> = Vec::new();
                 let mut beziehungen_class: Vec<parsing::parse_class::Beziehung> = Vec::new();
                 parsing::parse_class::parse(&diagramm._input, &mut klassen, &mut beziehungen_class);
