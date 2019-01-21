@@ -1,9 +1,48 @@
 # Definition der Schnittstellen
 
+## Schnittstelle - Erweiterbarkeit
+
+> Zur besseren Erweiterbarkeit wurde kürzlich eine neue Form der Schnittstelle ins Programm hinzugefügt. In der Main-Methode des Programms gilt es zur Nutzung zwei Enums zu setzen: zum Einen ein Enum für die gewünschte Eingabe-Methode, die dann selbstständige in der Datei `api.rs` angelegt werden musst, sowie zum Anderen ein Enum für die Ausgabe. Es wurde bereits eine geeignete Struktur angelegt, in der die gewünschten Methoden an Hand der gesetzten Enums aufgerufen werden können.
+
+**Starten des Programms:**  
+```
+let api = api::build_api(api::Eingaben::WEBTEXT, api::Ausgaben::SVGWEB);
+api.start();
+```
+> Hier ist gut zusehen, wie beim Erzeugen des Objekts der Schnittstelle, die gewünschten Methoden zur Ein- und Ausgabe mitgegeben werden.
+
+**Einpflegen in das Programm:**
+```
+impl Api {
+    pub fn start(&self) {
+        self.read();
+    }
+    fn read(&self) {
+        match self._eingabe {
+            Eingaben::WEBTEXT => {}
+            Eingaben::TEXTFILE => {}
+            Eingaben::VOICE => {}
+        }
+    }
+    fn parse(&self) {}
+    fn write (&self) {
+        match self._ausgabe {
+            Ausgaben::SVGWEB => {}
+            Ausgaben::PNGFILE => {}
+        }
+    }
+}
+
+```
+> In der Methode `start()` wird die erste Methode des Programms (normalweise das Einlesen) ausgeführt.  
+> In der Methode `read()` wird die Eingabemethode ausgewertet und ausgeführt.  
+> In der Methode `parse()` wird die zuvor getätigte Eingabe verarbeitet.  
+> In der Methode `write()` wird das Verarbeitete schließlich auf die gewünschte, festgelegte Art ausgegeben.
+
 ## Allgemeines zu den Schnittstellen
 
 > Schon während des Parsens wird eine Datenstruktur als Schnittstelle benötigt. In diese Datenstruktur können direkt die ausgewerteten Informationen eingespeichert werden, sodass diese nicht verloren gehen.
-> Jetzt könnte sich die Frage stellen, warum denn diese Datenstrukur. Eine Schnittstelle darstellt. Die Antwort ist sehr simpel. Die Datenstruktur dient nicht nur als Speicher während dem Einlesen der Informationen.
+> Jetzt könnte sich die Frage stellen, warum denn diese Datenstrukur eine Schnittstelle darstellt. Die Antwort ist sehr simpel. Die Datenstruktur dient nicht nur als Speicher während dem Einlesen der Informationen.
 > Mit ihr wird nach dem Parsen weitergearbeitet, um aus der aufgebauten Struktur ein visuelles Diagramm erstellen zu können. Sie wird also sowohl von dem Teil des Programms genutzt, das für das Parsen zuständig ist, als auch von dem Teil, der die Erzeugung der finalen Bilddatei regelt.
 > Jetzt wurde bisher immer von **der einen** Schnittstelle und **der einen** Datenstruktur gesprochen, es gibt jedoch **mehrere**. Einen für jeden Diagrammtyp.
 > Die Diagramme sind so vielfältig und unterschiedlich, dass für alle Typen des Diagramms eine Struktur bestehen muss. Die Struktur wird zusammen mit der Information, um welchen Diagrammtyp es sich handelt, übergeben. Diese soll im Folgenden mit Hilfe von Code-Snippets dargestellt und erläutert werden.
