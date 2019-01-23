@@ -32,21 +32,22 @@ Zusätzlich <u>kann</u> dem Diagramm selbst noch ein Name gegeben werden, welche
 
 #### ** HTML-Standalone **
 
-> Die Festlegung des Klassendiagramms in der HTML-Standalone-Anwendung erfolgt mit Hilfe des **HTML-Universalattributs** `data-type="TYP"`.  
+> Die Festlegung des Klassendiagramms in der HTML-Standalone-Anwendung erfolgt ähnlich wie in der normalen Webversion. Allerdings wird hier die Spezifikation direkt in die HTML-Datei geschrieben, sodass nach dem Öffnen der Datei keine weitere textuelle Eingabe nötig ist. Auch hier ist es möglich mehrere UML-Diagramme zu definieren, denn am Anfang einer jeden Diagrammdefinition steht die festlegung des Diagrammtyps. Soll beispielsweise in Klassendiagramm definiert werden erfolgt dies mit Hilfe der Zeile `type "classdiagram"`
 
-- Klassendiagramm: `"class"`
-- Anwendungsfalldiagramm: `"usecase"`
-- Akitivitätsdiagramm: `"action"`
-- Sequenzdiagramm: `"sequence"`
-- Zustandsdiagramm: `"state"`
-- Komponentendiagramm: `"component"`
-- Paketdiagramm: `"package"`
-- Verteilungsdiagramm: `"deployment"`
-- Objektdiagramm: `"object"`
+So lassen sich alle Diagrammtypen deklarieren:
+- Klassendiagramm: `type "classdiagram"`
+- Anwendungsfalldiagramm: `type "usecasediagram"`
+- Akitivitätsdiagramm: `type "actiondiagram"`
+- Sequenzdiagramm: `type "sequencediagram"`
+- Zustandsdiagramm: `type "statediagram"`
+- Komponentendiagramm: `type "componentdiagram"`
+- Paketdiagramm: `type "packagediagram"`
+- Verteilungsdiagramm: `type "deploymentdiagram"`
+- Objektdiagramm: `type "objectdiagram"`
 
-*Beispiele:*  
-`data-type="class"`  
-`data-type="deployment"`
+Zusätzlich <u>kann</u> dem Diagramm selbst noch ein Name gegeben werden, welche über einen Doppelpunkt `:` angehängt werden kann.
+
+*Beispiel:* `type "classdiagram:Firma"`
 
 > Weitere Informationen zum Umgang mit der HTML-Standalone-Anwendung finden Sie unter **HTML-Anwendung**.
 
