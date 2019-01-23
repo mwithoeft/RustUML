@@ -7,20 +7,13 @@ use build_class_svg;
 use build_usecase_svg;
 use parsing;
 use get_diagram_type;
-use examples;
 
 
-pub fn run_yew(run_docsify: bool) {
+pub fn run_yew() {
     
     yew::initialize();
 
-    let body;
-    if run_docsify {
-        body = document().query_selector("article").unwrap().unwrap();
-    } else {
-        body = document().query_selector("body").unwrap().unwrap();
-    }
-
+    let body = document().query_selector("body").unwrap().unwrap();
 
     let mount_class = "rust_uml";
     let mount_point = document().create_element("div").unwrap();
@@ -37,10 +30,8 @@ pub struct Model {
 }
 
 pub enum Msg {
-    GotInput(String),
-    SelectType,
+    Parse,
     SelectDownloadType,
-    StartParsing,
     Load,
     LoadAll
 }
@@ -63,27 +54,10 @@ impl Component for Model {
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            Msg::GotInput(new_value) => {
-                self.text_area = new_value;
-            }
 
-            Msg::StartParsing => {
+            Msg::Parse => {
+                self.text_area = (js!{var input = document.getElementById("uml_diagramm");return String(input.innerHTML)}).into_string().unwrap();
                 work_on_input(&self.text_area);
-            }
-
-            Msg::SelectType => {
-                let s : String = get_type();
-                if s == "class" {insert_at_caret("eingabefeld", examples::CLASS_EXAMPLE);}
-                else if s == "usecase" {insert_at_caret("eingabefeld", examples::USECASE_EXAMPLE);}
-                else if s == "action" {}
-                else if s == "sequence" {}
-                else if s == "state" {}
-                else if s == "component" {}
-                else if s == "package" {}
-                else if s == "deployment" {}
-                else if s == "object" {}
-                js!(document.getElementById("selectBox").selectedIndex = "0";);
-                self.text_area = (js!{return document.getElementById("eingabefeld").value}).into_string().unwrap();
             }
 
             Msg::SelectDownloadType => {
@@ -127,30 +101,7 @@ impl Renderable<Model> for Model {
     fn view(&self) -> Html<Self> {
         html! {
             <div id="mantel",>
-                <div id="bild", data-counter=0,></div>
-                <div id="textfeld",>
-                    <textarea rows=5,
-                        value=&self.text_area,
-                        oninput=|e| Msg::GotInput(e.value),
-                        placeholder="Hier können Sie ihre Spezifikation eintragen",
-                        id="eingabefeld",>
-                    </textarea>
-                </div>
-                <div id="buttons",>
-                    <select id="selectBox", onchange=|_| Msg::SelectType,>
-                        <option value="", disabled=true, required=true,>{"Beispieleingaben:"}</option>
-                        <option value="class",>{"Klassendiagramm"}</option>
-                        <option value="usecase",>{"Anwendungsfalldiagramm"}</option>
-                        <option value="action",>{"Aktivitätsdiagramm"}</option>
-                        <option value="sequence",>{"Sequenzdiagramm"}</option>
-                        <option value="state",>{"Zustandsdiagramm"}</option>
-                        <option value="component",>{"Komponentendiagramm"}</option>
-                        <option value="package",>{"Paketdiagramm"}</option>
-                        <option value="deployment",>{"Verteilungsdiagramm"}</option>
-                        <option value="object",>{"Objektdiagramm"}</option>
-                    </select>
-                    <button class="button", onclick=|_| Msg::StartParsing,>{"Eingabe Parsen"}</button>
-                </div>
+                <div id="bild", data-counter=0, ondoubleclick=|_| Msg::Parse,>{"Klick mich doppelt!"}</div>
                 <select id="selectDLBox", onchange=|_| Msg::SelectDownloadType,>
                     <option value="svg",>{"SVG"}</option>
                     <option value="png",>{"PNG"}</option>
@@ -164,13 +115,6 @@ impl Renderable<Model> for Model {
     }
 }
 
-fn get_type() -> String {
-    (js!{
-        var selectBox = document.getElementById("selectBox");
-        var selectedValue = selectBox.options[selectBox.selectedIndex].value;
-        return selectedValue}
-    ).into_string().unwrap()
-}
 fn get_dl_type() -> String {
     (js!{
         var selectBox = document.getElementById("selectDLBox");
@@ -254,7 +198,7 @@ fn make_tabs(number: usize, counter: String, svg: String, diagrammname: &str) {
             panEnabled: true, 
             controlIconsEnabled: false, 
             zoomEnabled: true, 
-            dblClickZoomEnabled: true, 
+            dblClickZoomEnabled: false, 
             mouseWheelZoomEnabled: true, 
             preventMouseEventsDefault: true, 
             zoomScaleSensitivity: 0.2, 
@@ -335,42 +279,6 @@ fn make_tabs(number: usize, counter: String, svg: String, diagrammname: &str) {
             tabcontent.style.display = "block";
             svgPanZoom(tabcontent.firstChild, panOptions);
         }
-    }
-}
-
-fn insert_at_caret(area_id: &str, text: &str) {
-    js!{
-        var txtarea = document.getElementById(@{area_id});
-		var scrollPos = txtarea.scrollTop;
-		var strPos = 0;
-		var br = ((txtarea.selectionStart || txtarea.selectionStart == '0') ? 
-			"ff" : (document.selection ? "ie" : false ) );
-		if (br == "ie") { 
-			txtarea.focus();
-			var range = document.selection.createRange();
-			range.moveStart ("character", -txtarea.value.length);
-			strPos = range.text.length;
-		}
-		else if (br == "ff") strPos = txtarea.selectionStart;
-	
-		var front = (txtarea.value).substring(0,strPos);  
-		var back = (txtarea.value).substring(strPos,txtarea.value.length); 
-		txtarea.value=front+@{text}+back;
-		strPos = strPos + @{text}.length;
-		if (br == "ie") { 
-			txtarea.focus();
-			var range = document.selection.createRange();
-			range.moveStart ("character", -txtarea.value.length);
-			range.moveStart ("character", strPos);
-			range.moveEnd ("character", 0);
-			range.select();
-		}
-		else if (br == "ff") {
-			txtarea.selectionStart = strPos;
-			txtarea.selectionEnd = strPos;
-			txtarea.focus();
-		}
-		txtarea.scrollTop = scrollPos;
     }
 }
 

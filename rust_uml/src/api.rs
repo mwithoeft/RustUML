@@ -1,5 +1,6 @@
 pub use parsing;
 use api_yew;
+use api_htmlfile;
 
 pub struct Api {
     _eingabe: Eingaben,
@@ -18,14 +19,16 @@ impl Api {
     fn read(&self) {
         match self._eingabe {
             Eingaben::WEBTEXT => {
-                api_yew::run_yew();
+                api_yew::run_yew(false);
             }
-            Eingaben::TEXTFILE => {
-                
+            Eingaben::DOCSIFY => {
+                api_yew::run_yew(true);
             }
-            Eingaben::VOICE => {
-                
+            Eingaben::HTMLFILE => {
+                api_htmlfile::run_yew();
             }
+            Eingaben::TEXTFILE => {}
+            Eingaben::VOICE => {}
         }
     }
     fn parse(&self) {
@@ -33,12 +36,8 @@ impl Api {
     }
     fn write (&self) {
         match self._ausgabe {
-            Ausgaben::SVGWEB => {
-
-            }
-            Ausgaben::PNGFILE => {
-                
-            }
+            Ausgaben::SVGWEB => {}
+            Ausgaben::PNGFILE => {}
         }
     }
 }
@@ -56,8 +55,10 @@ pub fn build_api(_eingabe: Eingaben, _ausgabe: Ausgaben) -> Api {
 
 pub enum Eingaben {
     WEBTEXT,
+    DOCSIFY,
     TEXTFILE,
-    VOICE
+    VOICE,
+    HTMLFILE
 }
 
 pub enum Ausgaben {

@@ -7,6 +7,7 @@ extern crate svg;
 
 pub mod api;
 pub mod api_yew;
+pub mod api_htmlfile;
 pub mod parsing;
 pub mod build_class_svg;
 pub mod build_usecase_svg;
@@ -15,6 +16,6 @@ pub mod get_diagram_type;
 pub mod examples;
 
 fn main() {
-    let api = api::build_api(api::Eingaben::WEBTEXT, api::Ausgaben::SVGWEB);
+    let api = api::build_api(api::Eingaben::HTMLFILE, api::Ausgaben::SVGWEB);
     api.start();
 }
