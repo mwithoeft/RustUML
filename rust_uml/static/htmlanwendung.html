@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>RustUML</title>
+        <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+        <style>
+            #bild {
+                position: relative;
+                min-width: 700px;
+                min-height: 700px;
+                max-width: 700px;
+                max-height: 700px;
+                border: 2px solid black;
+            }    
+            svg {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+            }           
+            .dlbutton {
+                background-color: #4CAF50;
+                border: none;
+                color: white;
+                padding: 16px 16px;
+                text-align: center;
+                text-decoration: none;
+                font-size: 16px;
+                margin: 4px 2px;
+                transition-duration: 0.4s;
+                cursor: pointer;
+                display: none;
+            }
+            select {
+                background-color: #4CAF50;
+                border: none;
+                color: white;
+                padding: 16px 16px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 4px 2px;
+                transition-duration: 0.4s;
+                cursor: pointer;
+            }
+            #selectDLBox {
+                display: none;
+            }        
+            .button {
+                background-color: #4CAF50;
+                border: none;
+                color: white;
+                padding: 16px 16px;
+                text-align: center;
+                text-decoration: none;
+                font-size: 16px;
+                margin: 4px 2px;
+                transition-duration: 0.4s;
+                cursor: pointer;
+            }         
+            .tab {
+                overflow: hidden;
+                border: 1px solid #ccc;
+                background-color: #f1f1f1;
+            }         
+            .tab button {
+                background-color: inherit;
+                float: left;
+                border: none;
+                outline: none;
+                cursor: pointer;
+                padding: 14px 16px;
+                transition: 0.3s;
+            }                  
+            .tab button:hover {
+                background-color: #ddd;
+            }         
+            .tab button.active {
+                background-color: #ccc;
+            }  
+            .tabcontent {
+                overflow: hidden;
+                position: absolute;
+                width: 100%;
+                height: 93%;
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+		<p id="uml_diagramm" style="display: none;">
+            type "classdiagram:Firma"
+
+            classname "Kunde"
+            attribute "+, kundenNr, String"
+
+            classname "Einkauf"
+            attribute "+, datum, Date"
+            attribute "+, bestellID, String"
+            method "+, bestellen, boolean"
+            method "+, artikelHinzufuegen, void, artikel:Artikel"
+
+            classname "Lagerbestand"
+            keywords "interface"
+            method "#, istAuslieferbar, boolean"
+            method "#, anzahl, integer, Object"
+
+            classname "Artikel"
+            attribute "-, bezeichnung, String"
+            attribute "-, preis, integer"
+            method "#, istAuslieferbar, boolean"
+            method "#, anzahl, integer, Artikel"
+
+            classname "Kategorie"
+            attribute "-, bezeichnung, String"
+
+            classname "Person"
+            property "abstract"
+            attribute "-, name, String"
+            attribute "-, vorname, String"
+
+            classname "Hand"
+            attribute "-, anzahlFinger, String"
+            method "-, fingerBewegen, void"
+
+            relationship "association, Kunde, false, 1, Einkauf, false, 0..*, -, -, -"
+            relationship "extends, Kunde, false, -, Person, true, -, -, - ,-"
+            relationship "aggregation, Einkauf, true, 0..*, Artikel, false, 1..*, -, -, -"
+            relationship "implements, Artikel, false, -, Lagerbestand, true, -, hat, Ware, Anzahl"
+            relationship "aggregation, Kategorie, true, 1, Artikel, false, 1..*, zählt, Genre, Ware"
+            relationship "composition, Person, true, 1, Hand, false, 0..2, -, -, -"
+            relationship "dependency, Kunde, false, -, Lagerbestand, true, -, -, -,-"
+		</p>
+        <script src="rust_uml.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.5.0/dist/svg-pan-zoom.min.js"></script>
+    </body>
+</html>

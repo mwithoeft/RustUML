@@ -27,7 +27,9 @@ impl Api {
             Eingaben::HTMLFILE => {
                 api_htmlfile::run_yew();
             }
-            Eingaben::TEXTFILE => {}
+            Eingaben::TEXTFILE => {
+                
+            }
             Eingaben::VOICE => {}
         }
     }

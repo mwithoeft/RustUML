@@ -16,6 +16,6 @@ pub mod get_diagram_type;
 pub mod examples;
 
 fn main() {
-    let api = api::build_api(api::Eingaben::HTMLFILE, api::Ausgaben::SVGWEB);
+    let api = api::build_api(api::Eingaben::WEBTEXT, api::Ausgaben::SVGWEB);
     api.start();
 }
