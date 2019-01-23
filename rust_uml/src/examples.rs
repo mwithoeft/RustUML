@@ -51,7 +51,7 @@ elementtype \"extpoint, Beschriftung, CD-erstellen\"
 
 relationship \"association, Benutzer1, -, CD-erstellen, -\"
 relationship \"association, Benutzer1, -, CD-brennen, -\"
-relationship \"association, Benutzer1, -, Booklet-erstellen, -\"
+relationship \"extends, Benutzer1, -, Benutzer2, -\"
 relationship \"association, Benutzer2, -, CD-beschriften, -\"
 relationship \"include, CD-erstellen, -, CD-brennen, -\"
 relationship \"include, CD-erstellen, -, Booklet-erstellen, -\"

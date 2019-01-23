@@ -50,8 +50,6 @@ fn build_usecase(id: i32, name: String, breite:i32, hoehe: i32)->Usecase{
 }
 struct Actor{
     id:i32,
-    breite: u32,
-    hoehe: u32,
     rel_point: (i32,i32),
     name: String,
     
@@ -59,20 +57,8 @@ struct Actor{
 fn build_actor(id: i32, rel_point: (i32,i32), name:String)->Actor{
     Actor {
         id,
-        breite: 1,
-        hoehe: 0,
         rel_point,
         name, 
-    }
-}
-struct Ex{
-    name:String,
-    ex_point:String
-}
-fn buildEx(name: String, ex_point: String)->Ex{
-    Ex {
-        name,
-        ex_point,
     }
 }
 
@@ -85,7 +71,7 @@ pub fn build_usecase_diagramm(mut typen: &mut Vec<parsing::parse_usecase::Typ>, 
     let mut actor: Vec<Actor>= Vec::new(); 
     let mut actor_id: i32 = 0;
     let mut sub :i32 = 0; // Kontrollvariable damit es nur ein subjekt gibt
-    let mut ex_points: Vec<Ex> = Vec::new();
+    //let mut ex_points: Vec<Ex> = Vec::new();
 
     for t in typen{
         match t._elementtyp{
@@ -116,7 +102,11 @@ pub fn build_usecase_diagramm(mut typen: &mut Vec<parsing::parse_usecase::Typ>, 
                     }else {
                         c.1 = ACTOR_O as i32;
                     }
-                    actor.push(build_actor(actor_id, (c.0 + ACTOR_LINE ,c.1 - ACTOR_LINE / 2), t._elementname.to_string()));
+                    let mut point:(i32,i32)=(c.0 + ACTOR_LINE + 5 ,c.1 - ACTOR_LINE / 2);
+                    if actor_id > 2{
+                        point = (point.0 - 10 - 2 * ACTOR_LINE, point.1);
+                    }
+                    actor.push(build_actor(actor_id, point, t._elementname.to_string()));
                     document = svglib::actor(document, c, t._elementname.to_string(), FONT_SIZE);
                 }
             }
@@ -202,15 +192,15 @@ pub fn build_usecase_diagramm(mut typen: &mut Vec<parsing::parse_usecase::Typ>, 
         let mut to: (i32,i32) = (1,1);
         let mut temp_point_from: ((i32,i32),(i32,i32),(i32,i32),(i32,i32)) = ((1,1),(1,1),(1,1),(1,1));
         let mut temp_point_to: ((i32,i32),(i32,i32),(i32,i32),(i32,i32)) = ((1,1),(1,1),(1,1),(1,1));
-        let mut temp_from_row:i32 = -1; //reset
-        let mut temp_to_row:i32 = -1; //reset
-        let mut temp_from_column:i32 = -1; //reset
-        let mut temp_to_column:i32 = -1; //reset
-        let mut temp_from_id:i32 = -1; //reset
-        let mut temp_to_id:i32 = -1; //reset
+        let mut temp_from_row:i32 = -1;
+        let mut temp_to_row:i32 = -1;
+        let mut temp_from_column:i32 = -1;
+        let mut temp_to_column:i32 = -1;
+        let mut temp_from_id:i32 = -1;
+        let mut temp_to_id:i32 = -1;
         let mut name = b._von_element_name.pop();
-        let mut horizontal:bool = true; // reset
-        let mut tausch:bool = false; //reset
+        let mut horizontal:bool = true;
+        let mut tausch:bool = false;
         let mut rel_finish:bool = false;
 
         for u in &usecase {
@@ -229,10 +219,9 @@ pub fn build_usecase_diagramm(mut typen: &mut Vec<parsing::parse_usecase::Typ>, 
                 temp_to_column = u.column
             }
             //wenn beide namen der beziehung gefunden wurden
-            if !(temp_from_row == -1 && temp_to_row == -1){
+            if (temp_from_row != -1 && temp_to_row != -1){
                 //lieg der erste usecase über dem zweiten
                 if temp_from_row < temp_to_row{
-                    //print!("from:{} to:{}\n",temp_from_row,temp_to_row);
                     from = temp_point_from.3;
                     to = temp_point_to.1;  
                     horizontal = false;
@@ -279,51 +268,62 @@ pub fn build_usecase_diagramm(mut typen: &mut Vec<parsing::parse_usecase::Typ>, 
                 //stimmt der name des ersten beziehungselement mit einem Actor überein
                 if name == Some(a.name.to_string()){
                     if a.id == 1 || a.id == 3 {
-                        temp_from_id = a.id;
                         temp_from_row = 1;
                     } else {
-                        temp_from_id = a.id;
                         temp_from_row = 3;
                     }
+                    temp_from_id = a.id;
                     from = a.rel_point;
                 }
                 //stimmt der name des zweiten beziehungselement mit einem Actor überein
                 if b._zu_element_name == a.name.to_string(){
                     if a.id == 1 || a.id == 3 {
-                        temp_to_id = a.id;
                         temp_to_row = 1;
                     } else {
-                        temp_from_id = a.id;
-                        temp_from_row = 3;
+                        temp_to_row = 3;
                     }
+                    temp_to_id = a.id;
                     to = a.rel_point;
                 }
                 //wurde für beide beziehungstypen ein element gefunden?
-                if !(temp_from_row == -1 && temp_to_row == -1 && !rel_finish){
+                if temp_from_row != -1 && temp_to_row != -1 && !rel_finish{
                             
                     //sind es beide Actoure
                     if temp_from_id != -1 && temp_to_id != -1{
-                        //Punkte sind schon gesetzt    
+                        //Wenn sie gegenüber liegen
+                        if to.0 == from.0{
+                            //tausch = true;
+                            horizontal = false;
+                        }
+                        else if temp_from_row == temp_to_row || temp_from_row != temp_to_row{
+                            max_height = max_height - ARROW_SPACE;
+                            document = svglib::around_the_corner_arrow(document, from, to, tausch, !tausch, svglib::usecase_enum_to_string(&b._beziehungstyp) , max_height);
+                            rel_finish = true;
+                            break;
+                        }//Wenn sie in einer spalte liegen
                     }else {
                         //Wenn from ein actor ist 
                         if temp_to_id == -1 && temp_from_id != -1 {
                             //Wenn from über usecase liegt
                             if temp_from_row < temp_to_row {
                                 to = temp_point_to.3;
+                                
                             }
                             // Wenn from unter usecase liegt
                             else if temp_from_row > temp_to_row {
                                 to = from;
                                 from = temp_point_to.3;
                                 tausch = true;
+                                horizontal = false;
                             }
                             //Wenn beiede auf gleicher höhe sind
                             else{
                                 //Wenn der Actor rechts ist
-                                if temp_from_id >2 {
+                                if temp_from_id > 2 {
                                     //Wenn der Actor neben dem Usecase ist
                                     if temp_to_row == 1 {
                                         to = temp_point_to.2;
+                                        
                                     }
                                     //Wenn sie nicht nebeneinander sind
                                     else{
@@ -339,6 +339,7 @@ pub fn build_usecase_diagramm(mut typen: &mut Vec<parsing::parse_usecase::Typ>, 
                                     //Wenn der Actor neben dem Usecase ist
                                     if temp_to_column == 1 {
                                         to = temp_point_to.0;
+                                        
                                     }
                                     //Wenn sie nicht nebeneinander sind
                                     else{
@@ -349,7 +350,7 @@ pub fn build_usecase_diagramm(mut typen: &mut Vec<parsing::parse_usecase::Typ>, 
                                         break;
                                     }
                                 }
-                                horizontal = true;
+                                //horizontal = true;
                             }
                         }
                         //Wenn to ein actor ist
@@ -357,11 +358,14 @@ pub fn build_usecase_diagramm(mut typen: &mut Vec<parsing::parse_usecase::Typ>, 
 
                             if temp_from_row > temp_to_row {
                                 to = temp_point_from.3;
+                                
                             }else if temp_from_row < temp_to_row {
                                 to = temp_point_from.1;
+                                
                             }else{
                                 if temp_from_id >2 {
                                     to = temp_point_from.2;
+                                   
                                 }else {
                                     to = temp_point_from.0;
                                 }
