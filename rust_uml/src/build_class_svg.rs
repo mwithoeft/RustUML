@@ -13,6 +13,7 @@ const FONT_SIZE: i32 = 12;
 const TITEL_MIN: i32 = 30;
 const MIN_RAND_LINKS: i32 = 2;
 const FONT_SPACE: i32 = 12;
+const ROW_LENGTH: i32 = 5;
 
 
 struct Pngclass{
@@ -53,7 +54,7 @@ pub fn build_klassendiagramm(klassen: &mut Vec<parsing::parse_class::Klasse>, mu
     for k in klassen {
         class.push(buildclass(id));
         berechne_werte(&k._name ,&k._property ,&k._keywords , &mut k._attribute, &mut k._methoden,  id, &mut class );
-        document = draw_class(document, &mut class,id, i, j);
+        document = draw_class(document, &mut class, id, i, j);
         i=i+1;
         id = id + 1;
         if i> 4 {
@@ -164,62 +165,58 @@ fn methode_to_string(methode: &mut Vec<parsing::parse_class::Methode>)-> Vec<Str
     }
     methoden_string
 }  
-fn draw_class(mut document: Document, class: &mut Vec<Pngclass>, id:i32, i:i32, j:i32)-> Document{
-    let x: i32 = 20+i*X_MIN;
-    let y: i32 = 70+j*Y_MIN;
-    //let title_scale = Scale { x: FONT_SIZE_TITLE*2.0 , y: FONT_SIZE_TITLE};
-    //let scale = Scale { x: FONT_SIZE * 2.0 , y: FONT_SIZE};
-    //let font = Vec::from(include_bytes!("DejaVuSans.ttf") as &[u8]);
-    //let font = FontCollection::from_bytes(font).unwrap().into_font().unwrap();
+fn draw_class(mut document: Document, klasse: &mut Vec<Pngclass>, id:i32, i:i32, j:i32)-> Document{
+    let mut x: i32 = 20+i*X_MIN;
+    let y: i32 = 70+j*X_MIN;
     let mut counter: i32 = 2;
-    for class in class {
-        if class.id == id{
-            //berechnete werte für Klassen namen einsetzten und kasten zeichnen
-            document = svglib::rectangle(document,x, y, class.breite, class.hoehe_kopf);
-            //berechnete werte für Attribute namen einsetzten und kasten zeichnen
-            document = svglib::rectangle(document, x, y+class.hoehe_kopf as i32, class.breite, class.hoehe_att);
-            //berechnete werte für Methoden namen einsetzten und kasten zeichnen
-            document = svglib::rectangle(document,x, y+class.hoehe_kopf as i32+class.hoehe_att as i32,class.breite, class.hoehe_meth);
+   if id!=0{
+       if id % 5 == 0{
+           x = 20;
+       }else{
+            x = (klasse[id as usize - 1].rel_point_loru.3).0 + klasse[id as usize - 1].breite;
+       }
+   }
+        //berechnete werte für Klassen namen einsetzten und kasten zeichnen
+        document = svglib::rectangle(document,x, y, klasse[id as usize].breite, klasse[id as usize].hoehe_kopf);
+        //berechnete werte für Attribute namen einsetzten und kasten zeichnen
+        document = svglib::rectangle(document, x, y+klasse[id as usize].hoehe_kopf as i32, klasse[id as usize].breite, klasse[id as usize].hoehe_att);
+        //berechnete werte für Methoden namen einsetzten und kasten zeichnen
+        document = svglib::rectangle(document,x, y+klasse[id as usize].hoehe_kopf as i32+klasse[id as usize].hoehe_att as i32,klasse[id as usize].breite, klasse[id as usize].hoehe_meth);
 
-            class.rel_point_loru = ((x  , y + (class.hoehe_kopf+class.hoehe_att+class.hoehe_meth)/2),
-                                    (x  +(class.breite/2) ,y ),
-                                    (x  +class.breite ,y+(class.hoehe_kopf+class.hoehe_att+class.hoehe_meth)/2),
-                                    (x  +(class.breite/2) ,(y +(class.hoehe_kopf+class.hoehe_att+class.hoehe_meth))));
+        klasse[id as usize].rel_point_loru= ((x  , y + (klasse[id as usize].hoehe_kopf+klasse[id as usize].hoehe_att+klasse[id as usize].hoehe_meth)/2),
+                                (x  +(klasse[id as usize].breite/2) ,y ),
+                                (x  +klasse[id as usize].breite ,y+(klasse[id as usize].hoehe_kopf+klasse[id as usize].hoehe_att+klasse[id as usize].hoehe_meth)/2),
+                                (x  +(klasse[id as usize].breite/2) ,(y +(klasse[id as usize].hoehe_kopf+klasse[id as usize].hoehe_att+klasse[id as usize].hoehe_meth))));
+        document = svglib::write(document, (x + klasse[id as usize].breite / 2 - klasse[id as usize].keywords.chars().count() as i32 * FONT_SIZE / 8, 
+                                            y + FONT_SIZE) , klasse[id as usize].keywords.to_string(), FONT_SIZE);
 
-            
-            document = svglib::write(document, (x + class.breite / 2 - class.keywords.chars().count() as i32 * FONT_SIZE / 8, 
-                                                y + FONT_SIZE) , class.keywords.to_string(), FONT_SIZE);
-
-            //Falls es eine property gibt muss die bei der Platzierung des Klassennamens berücksichtigt werden
-            let mut property_space = 0;
-            if !class.property.is_empty(){
-                property_space = FONT_SIZE ;
-            }
-            //Klassen namen schreiben x wert = x des linken randes + die Differenz aus der hälfte der breite und ein viertel der Wortlänge
-            // y wert = y wert des oberen randes + die Differenz aus 3/4 der kopf höhe und der konstanten property_space
-            document = svglib::write(document, (x + class.breite / 2 - class.name.chars().count() as i32 * FONT_SIZE_TITLE / 4, 
-                                                y + (class.hoehe_kopf / 4) * 3 - property_space), class.name.to_string(), FONT_SIZE_TITLE);
-            
-            document = svglib::write(document, (x + class.breite / 2 - class.property.chars().count() as i32 * FONT_SIZE / 5 , 
-                                                y + class.hoehe_kopf - FONT_SIZE), class.property.to_string(), FONT_SIZE);
-           
-            //Attribute schreiben
-            for att in &class.attribute {
-                document = svglib::write(document, (x + MIN_RAND_LINKS, y + class.hoehe_kopf + counter + FONT_SIZE), att.to_string(), FONT_SIZE);
-                counter += FONT_SPACE;
-            }
-            counter = 2;
-            for meth in &class.methoden {
-                document = svglib::write(document, (x  + MIN_RAND_LINKS  , y + class.hoehe_kopf + class.hoehe_att + counter + FONT_SIZE), meth.to_string(), FONT_SIZE);
-                counter+= FONT_SPACE;
-            }
-            
-
-
+        //Falls es eine property gibt muss die bei der Platzierung des Klassennamens berücksichtigt werden
+        let mut property_space = 0;
+        if !klasse[id as usize].property.is_empty(){
+            property_space = FONT_SIZE ;
         }
-    }
+        //Klassen namen schreiben x wert = x des linken randes + die Differenz aus der hälfte der breite und ein viertel der Wortlänge
+        // y wert = y wert des oberen randes + die Differenz aus 3/4 der kopf höhe und der konstanten property_space
+        document = svglib::write(document, (x + klasse[id as usize].breite / 2 - klasse[id as usize].name.chars().count() as i32 * FONT_SIZE_TITLE / 4, 
+                                            y + (klasse[id as usize].hoehe_kopf / 4) * 3 - property_space), klasse[id as usize].name.to_string(), FONT_SIZE_TITLE);
+        
+        document = svglib::write(document, (x + klasse[id as usize].breite / 2 - klasse[id as usize].property.chars().count() as i32 * FONT_SIZE / 5 , 
+                                            y + klasse[id as usize].hoehe_kopf - FONT_SIZE), klasse[id as usize].property.to_string(), FONT_SIZE);
+        
+        //Attribute schreiben
+        for att in &klasse[id as usize].attribute {
+            document = svglib::write(document, (x + MIN_RAND_LINKS, y + klasse[id as usize].hoehe_kopf + counter + FONT_SIZE), att.to_string(), FONT_SIZE);
+            counter += FONT_SPACE;
+        }
+        counter = 2;
+        for meth in &klasse[id as usize].methoden {
+            document = svglib::write(document, (x  + MIN_RAND_LINKS  , y + klasse[id as usize].hoehe_kopf + klasse[id as usize].hoehe_att + counter + FONT_SIZE), meth.to_string(), FONT_SIZE);
+            counter+= FONT_SPACE;
+        }
+    
     document
 }
+
 fn draw_relation(mut document: Document, relation: &mut Vec<parsing::parse_class::Beziehung>, class:  Vec<Pngclass> )-> Document{
     let mut from: (i32, String, (i32,i32)) = (-1,"".to_string(),(-1,-1));
     let mut to: (i32, String, (i32,i32)) = (-1,"".to_string(),(-1,-1));
@@ -227,9 +224,6 @@ fn draw_relation(mut document: Document, relation: &mut Vec<parsing::parse_class
     let mut temp_point_to: ((i32,i32),(i32,i32),(i32,i32),(i32,i32)) = ((1,1),(1,1),(1,1),(1,1));
     let _start_point: i32;
     let _end_point: i32;
-    //let scale = Scale { x: FONT_SIZE * 2 , y: FONT_SIZE};
-    //let font = Vec::from(include_bytes!("DejaVuSans.ttf") as &[u8]);
-    //let font = FontCollection::from_bytes(font).unwrap().into_font().unwrap();
     let mut horizontal:bool = true;
     let mut relation_finish:bool;
     let mut tausch:bool = false;
@@ -245,7 +239,6 @@ fn draw_relation(mut document: Document, relation: &mut Vec<parsing::parse_class
                     max_height = c.hoehe_kopf + c.hoehe_att + c.hoehe_meth;
                 }
                
-                //println!("{}:{}",r._von_klasse_name,relation_finish);
                 // Wenn der Klassen name zum beziehungs von_klasse_namen passt
                 //werden der name, die ID und die relation points zwischengespeichert
                 if r._von_klasse_name == c.name{
@@ -264,11 +257,10 @@ fn draw_relation(mut document: Document, relation: &mut Vec<parsing::parse_class
                     temp_point_to = c.rel_point_loru;
                     
                 }
-                //wenn von und zu klasse gefunden wurde
+                //wenn von und zu klasse gefunden wurden
                 if from.0 != -1 && to.0 != -1 {
-                    //println!("Fromid: {}\n Toid:{}",from.0,to.0);
                     //Wenn die beiden Klassen nicht nebeneinander aber in der selben Reihe sind
-                    if !(from.0 + 1 == to.0 || from.0 - 1 == to.0) && ((from.0 > 5 && to.0 > 5 ) ||(from.0 < 5 && to.0 < 5)) {
+                    if !(from.0 + 1 == to.0 || from.0 - 1 == to.0) && same_row(from.0,to.0) {
                         nebeneinander = false;
                         horizontal = false;
                         from.2 = temp_point_from.3;
@@ -278,12 +270,13 @@ fn draw_relation(mut document: Document, relation: &mut Vec<parsing::parse_class
                         }else {
                               max_height = max_height - ((to.2).1 - (temp_point_to.1).1)/2;
                           }
-                        document = svglib::around_the_corner_arrow(document, from.2, to.2, r._von_klasse_pfeil, r._zu_klasse_pfeil, &r._beziehungstyp, max_height);
+                        document = svglib::around_the_corner_arrow(document, from.2, to.2, r._von_klasse_pfeil, r._zu_klasse_pfeil, svglib::class_enum_to_string(&r._beziehungstyp), max_height);
                         max_height = 0;
                         relation_finish = true;
                     }
                     //Wenn die From id kleiner als die to id ist und to und from in der selben reihe stehen
-                    else if from.0 < to.0 && from.0 < 5 && to.0 < 5 {
+                    //same_row(from.0,to.0)
+                    else if from.0 < to.0 && same_row(from.0,to.0) {
                         from.2 = temp_point_from.2;
                         to.2 = temp_point_to.0;
                         relation_finish = true;
@@ -293,7 +286,7 @@ fn draw_relation(mut document: Document, relation: &mut Vec<parsing::parse_class
                         
                     }
                     //Wenn die From id größer als die to id ist und to und from in der selben reihe stehen
-                    else if from.0 > to.0 && from.0 < 5 && to.0 < 5 {
+                    else if from.0 > to.0 && same_row(from.0,to.0) {
                         //from und to koordinaten und ob sie Pfeile haben müssen getauscht werden, weil sonst der Pfeil falsch dargestellt wird
                         from.2 = temp_point_to.2;
                         to.2 = temp_point_from.0;
@@ -302,25 +295,22 @@ fn draw_relation(mut document: Document, relation: &mut Vec<parsing::parse_class
                         r._zu_klasse_pfeil = tmp;
                         relation_finish = true;
                         tausch = true;
-                        //println!("1");
                         
                     }
                     //Wenn die From id kleiner als die to id ist und to unter from steht
-                    else if from.0 < to.0 && to.0 >= 5 && from.0 < 5 {
+                    else if from.0 < to.0 && !same_row(from.0,to.0) {
                         from.2 = temp_point_from.3;
                         to.2 = temp_point_to.1;
                         horizontal = false;
                         relation_finish = true;
-                        //println!("2");
                         
                     }
                     //Wenn die From id größer als die to id ist und to über from steht
-                    else if from.0 > to.0 && to.0 < 5 && from.0 >= 5 {
+                    else if from.0 > to.0 && !same_row(from.0,to.0) {
                         from.2 = temp_point_from.1;
                         to.2 = temp_point_to.3;
                         horizontal = false;
                         relation_finish = true;
-                        //println!("3");
                         
                     }
                     
@@ -401,4 +391,19 @@ fn draw_relation(mut document: Document, relation: &mut Vec<parsing::parse_class
         
     }
     document
+}
+
+fn same_row(id1:i32,id2:i32)->bool{
+    let is_same_row:bool = false;
+    let max_id = if id1 > id2 { id1 } else { id2 };  
+    let idrow = (max_id-(max_id%ROW_LENGTH))/ROW_LENGTH;
+
+    for x in 1..idrow+2{
+
+        if (id1 < ROW_LENGTH*x && id1 >= ROW_LENGTH*(x-1)) && (id2 < ROW_LENGTH*x && id2 >= ROW_LENGTH*(x-1)){
+            return true;
+        }
+    }
+
+    is_same_row
 }
