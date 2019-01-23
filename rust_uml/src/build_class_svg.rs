@@ -6,8 +6,8 @@ use svglib;
 
 const WIDTH: i32 = 1680;
 const HEIGHT: i32 = 720;
-const X_MIN: i32 = 300; // mindest abstand x-Achse
-const Y_MIN: i32 = 200; // mindest abstand y-Achse
+const X_MIN: i32 = 100; // mindest abstand x-Achse
+const Y_MIN: i32 = 300; // mindest abstand y-Achse
 const FONT_SIZE_TITLE: i32 = 20;
 const FONT_SIZE: i32 = 12;
 const TITEL_MIN: i32 = 30;
@@ -167,13 +167,13 @@ fn methode_to_string(methode: &mut Vec<parsing::parse_class::Methode>)-> Vec<Str
 }  
 fn draw_class(mut document: Document, klasse: &mut Vec<Pngclass>, id:i32, i:i32, j:i32)-> Document{
     let mut x: i32 = 20+i*X_MIN;
-    let y: i32 = 70+j*X_MIN;
+    let y: i32 = 70+j*Y_MIN;
     let mut counter: i32 = 2;
    if id!=0{
        if id % 5 == 0{
            x = 20;
        }else{
-            x = (klasse[id as usize - 1].rel_point_loru.3).0 + klasse[id as usize - 1].breite;
+            x = (klasse[id as usize - 1].rel_point_loru.3).0 + klasse[id as usize - 1].breite +X_MIN;
        }
    }
         //berechnete werte für Klassen namen einsetzten und kasten zeichnen
@@ -233,11 +233,11 @@ fn draw_relation(mut document: Document, relation: &mut Vec<parsing::parse_class
     for r in relation{
         relation_finish = false;
         for c in &class{
+            if c.hoehe_kopf + c.hoehe_att + c.hoehe_meth > max_height{
+                max_height = c.hoehe_kopf + c.hoehe_att + c.hoehe_meth;
+            }
             if !relation_finish{
                 
-                if c.hoehe_kopf + c.hoehe_att + c.hoehe_meth > max_height{
-                    max_height = c.hoehe_kopf + c.hoehe_att + c.hoehe_meth;
-                }
                
                 // Wenn der Klassen name zum beziehungs von_klasse_namen passt
                 //werden der name, die ID und die relation points zwischengespeichert
@@ -342,25 +342,37 @@ fn draw_relation(mut document: Document, relation: &mut Vec<parsing::parse_class
             }
         }
         
-
+        //zurücktauschen, wenn getausch wurde
+        if tausch {
+            let tmp = r._von_klasse_pfeil;
+            let tmp2 = from.2;
+            from.2 = to.2;
+            to.2 = tmp2;
+            r._von_klasse_pfeil = r._zu_klasse_pfeil;
+            r._zu_klasse_pfeil = tmp;
+            
+            
+        }
         
+        //Schreibt die from mult
         if !(r._von_klasse_mult.is_empty()) {
             let mut p: (i32,i32) = (0,0);
-                p.0 = (from.2).0 + FONT_SIZE * 2;
+                p.0 = (from.2).0 + FONT_SIZE / 2 ;
             if horizontal{
-                p.1 = (from.2).1 - FONT_SIZE;
+                p.1 = (from.2).1 - FONT_SIZE / 2  ;
             }else {
-                p.1 = (from.2).1 + FONT_SIZE;
+                p.1 = (from.2).1 + FONT_SIZE * 2;
             }
 
             document = svglib::write(document, p, r._von_klasse_mult.to_string(), FONT_SIZE);;
 
         }
+         //Schreibt die to mult
         if !(r._zu_klasse_mult.is_empty()){
             let mut p: (i32,i32) = (0,0);
-                p.0 = (to.2).0  - (FONT_SIZE * r._zu_klasse_mult.chars().count() as i32 ) ;
+                p.0 = (to.2).0  - (FONT_SIZE * r._zu_klasse_mult.chars().count() as i32 ) / 2 ;
             if horizontal{
-                p.1 = (to.2).1  - FONT_SIZE;  
+                p.1 = (to.2).1  - FONT_SIZE / 2;  
             }else if !nebeneinander{
                 p.1 = (to.2).1  + FONT_SIZE; 
             }else {
@@ -372,6 +384,74 @@ fn draw_relation(mut document: Document, relation: &mut Vec<parsing::parse_class
 
             document = svglib::write(document, p, r._zu_klasse_mult.to_string(), FONT_SIZE);;
         }
+        
+        //schreibe from Rollen name
+        if !(r._von_klasse_rolle.is_empty()){
+            let mut p: (i32,i32) = (0,0);
+            if horizontal{
+                if tausch{
+                    p.0 = (from.2).0 - (FONT_SIZE * r._zu_klasse_rolle.chars().count() as i32);
+                    p.1 = (from.2).1 + FONT_SIZE;
+                }else{
+                    p.0 = (from.2).0 + FONT_SIZE;
+                    p.1 = (from.2).1 + FONT_SIZE;
+                }
+            }else if !nebeneinander{
+                p.0 = (from.2).0 ;
+                p.1 = (from.2).1 + max_height / 2 + FONT_SIZE * 2; 
+            }
+            else {
+                p.1 = (from.2).1 + FONT_SIZE * 2;
+                p.0 = (from.2).0 - (FONT_SIZE * r._von_klasse_rolle.chars().count() as i32 ) / 2;
+            }
+
+            document = svglib::write(document, p, r._von_klasse_rolle.to_string(), FONT_SIZE);;
+
+        }
+        //schreibe zu Rollen name
+        if !(r._zu_klasse_rolle.is_empty()){
+            let mut p: (i32,i32) = (0,0);
+            if horizontal{
+                if tausch{
+                    p.0 = (to.2).0 + FONT_SIZE;
+                    p.1 = (to.2).1 + FONT_SIZE;  
+                }else {
+                    p.0 = (to.2).0 - (FONT_SIZE * r._zu_klasse_rolle.chars().count() as i32 );
+                    p.1 = (to.2).1 + FONT_SIZE / 2;  
+                }
+            }else if !nebeneinander{
+                p.0 = (to.2).0 - (FONT_SIZE * r._zu_klasse_rolle.chars().count() as i32 ) / 2 ;
+                p.1 = (to.2).1 + max_height / 2 + FONT_SIZE * 2; 
+            }else {
+                p.0 = (to.2).0 - (FONT_SIZE * r._zu_klasse_rolle.chars().count() as i32 );
+                p.1 = (to.2).1 - FONT_SIZE;
+                 
+            }
+
+
+            document = svglib::write(document, p, r._zu_klasse_rolle.to_string(), FONT_SIZE);;
+        }
+        //Schreibe assoziationsname
+        if !(r._assoziationsname.is_empty()){
+            let mut p: (i32,i32) = (0,0);
+            if horizontal{
+                if tausch{
+                    p.0 = (to.2).0 + ((from.2).0 - (to.2).0) / 2 - (FONT_SIZE * r._assoziationsname.chars().count() as i32 ) / 4 ;
+                    p.1 = (to.2).1  + FONT_SIZE;
+                }else{
+                    p.0 = (from.2).0 + ((to.2).0 - (from.2).0) / 2 - (FONT_SIZE * r._assoziationsname.chars().count() as i32 ) / 4 ;
+                    p.1 = (to.2).1  + FONT_SIZE;
+                }
+            }else if !nebeneinander{
+                p.0 = (from.2).0 + ((to.2).0 - (from.2).0) / 2  - (FONT_SIZE * r._assoziationsname.chars().count() as i32 ) / 4; 
+                p.1 = (from.2).1 + max_height / 2 + FONT_SIZE * 2 ;
+            }else {
+                p.0 = (to.2).0 - (FONT_SIZE * r._assoziationsname.chars().count() as i32 ) / 2;
+                p.1 = (from.2).1 + ((to.2).1 - (from.2).1) /2;
+            }
+            document = svglib::write(document, p, r._assoziationsname.to_string(), FONT_SIZE);;
+        }
+
         //reset
         from= (-1,"".to_string(),(-1,-1));
         to= (-1,"".to_string(),(-1,-1));
@@ -379,14 +459,7 @@ fn draw_relation(mut document: Document, relation: &mut Vec<parsing::parse_class
         temp_point_to = ((1,1),(1,1),(1,1),(1,1));
         horizontal = true;
         nebeneinander = true;
-        //zurücktauschen, wenn getausch wurde
-        if tausch {
-            let tmp = r._von_klasse_pfeil;
-            r._von_klasse_pfeil = r._zu_klasse_pfeil;
-            r._zu_klasse_pfeil = tmp;
-            
-            tausch = false;
-        }
+        tausch = false;
         
         
     }
